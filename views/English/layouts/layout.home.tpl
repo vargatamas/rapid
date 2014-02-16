@@ -1,0 +1,1 @@
+<!-- default layout -->{$APPLICATION_CONTENT}<!-- default layout end -->

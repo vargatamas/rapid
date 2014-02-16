@@ -1,0 +1,88 @@
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Raleway Light'), local('Raleway-Light'), url(/lib/fonts/-_Ctzj9b56b8RgXW8FAriRsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Raleway'), url(/lib/fonts/IczWvq5y_Cwwv_rBjOtT0w.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Raleway Medium'), local('Raleway-Medium'), url(/lib/fonts/CcKI4k9un7TZVWzRVT-T8xsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Raleway SemiBold'), local('Raleway-SemiBold'), url(/lib/fonts/xkvoNo9fC8O2RDydKj12bxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Raleway Bold'), local('Raleway-Bold'), url(/lib/fonts/JbtMzqLaYbbbCL9X6EvaIxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+
+h1, h2, h3, h4, h5, h6, h7 {
+    font-family: 'Raleway';
+    font-weight: 300;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: 'Raleway';
+}
+
+#background-image {
+    z-index: -999;
+    min-height: 100%;
+    background: url('/lib/images/background.png') center center repeat;
+    background-size: 800px 250px;
+    width: 100%;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.panel-group {
+    margin: 10px 0px;
+}
+
+.hided {
+    display: none;
+}
+
+/* LARGE SCREENS */
+@media screen and (min-width: 960px) {
+    #background-image {
+        min-width: 960px;
+    }
+}
+
+/* MEDIUM SCREENS */
+@media screen and (min-width: 650px) and (max-width: 959px) {
+    #background-image {
+        min-width: 650px;
+    }
+}
+
+/* SMALL SCREENS */
+@media screen and (max-width: 649px) {
+    #background-image {
+        max-width: 649px;
+    }
+}
