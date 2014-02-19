@@ -26,6 +26,7 @@
                         <td>{$value.from|substr:0,60}</td>
                         <td>{$value.to|substr:0,60}</td>
                         <td>
+                            <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Edit Translation"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
                             <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Remove Translation"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>

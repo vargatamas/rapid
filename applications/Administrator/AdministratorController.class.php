@@ -64,8 +64,8 @@ class AdministratorController extends RapidAuth {
                             if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . '/layouts/layout.' . $filename . '.' . Rpd::$c['raintpl']['tpl_ext'], $content) )
                                 $created[] = $language;
                     if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/layouts/layout.' . $filename . '.' . Rpd::$c['raintpl']['tpl_ext']) )
-                        Rpd::a('success', "The Layout is stored correctly." . ( 0 < count($created) ? ' Layouts created for ' . count($created) . ' language(s).' : '' ));
-                    else Rpd::a('error', "Something went wrong while saving the Layout. Probably permission denied on layouts directory (" . Rpd::$c['raintpl']['tpl_dir'] . "). Layout does not saved.");
+                        Rpd::a('success', "The Layout is stored correctly.#text#", array(( 0 < count($created) ? ' Layouts created for ' . count($created) . ' language(s).' : '' )));
+                    else Rpd::a('error', "Something went wrong while saving the Layout. Probably permission denied on layouts directory (#text#). Layout does not saved.", array(Rpd::$c['raintpl']['tpl_dir']));
                     $this->layoutsAction();
                 } else {
                     Rpd::a('error', "You not filled the name or content field or the content does not contain the {\$APPLICATION_CONTENT} variable.");
@@ -93,7 +93,7 @@ class AdministratorController extends RapidAuth {
                     $content = $_POST['layout']['content'];
                     if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/layouts/' . $filename, $content) )
                         Rpd::a('success', "The Layout is updated correctly.");
-                    else Rpd::a('error', "Something went wrong while saving the Layout. Probably permission denied on templates directory (" . Rpd::$c['raintpl']['tpl_dir'] . ") or the file already exists (" . $filename . "). Layout does not saved.");
+                    else Rpd::a('error', "Something went wrong while saving the Layout. Probably permission denied on templates directory (#text#) or the file already exists (#text#). Layout does not saved.", array(Rpd::$c['raintpl']['tpl_dir'], $filename));
                     $this->layoutsAction(array('edit', 'filename' => $filename));
                 } else {
                     Rpd::a('error', "You not filled the name or content field or the content does not contain the {\$APPLICATION_CONTENT} variable.");
@@ -108,7 +108,7 @@ class AdministratorController extends RapidAuth {
         } else if ( 'remove' == $args[0] && Rpd::rq($args['filename']) ) {
             $filename = $args['filename'];
             if ( !@unlink(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/layouts/' . $filename) )
-                Rpd::a('error', "Something went wrong while trying to remove the Layout file (<em>layout." . $layout . "." . Rpd::$c['raintpl']['tpl_ext'] . "</em>). Try to remove manually.");
+                Rpd::a('error', "Something went wrong while trying to remove the Layout file (<em>layout.#text#.#text#</em>). Try to remove manually.", array($layout, Rpd::$c['raintpl']['tpl_ext']));
             else {
                 @AdministratorModell::removeAllLinkedLayout($filename);
                 Rpd::a('success', "The selected Layout was removed.");
@@ -266,7 +266,7 @@ class AdministratorController extends RapidAuth {
                             if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . '/templates/' . $application . $filename, $content) )
                                 $created[] = $language;
                     if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . $application . $filename) )
-                        Rpd::a('success', "The Template is created for " . count($created) . " language.");
+                        Rpd::a('success', "The Template is created for #text# language.", array(count($created)));
                     else Rpd::a('error', "Something went wrong (probably Permission Denied) while trying to save Template.");
                     
                     $this->templatesAction();
@@ -298,7 +298,7 @@ class AdministratorController extends RapidAuth {
                         
                         AdministratorController::$template = 'template.edit';
                     } else {
-                        Rpd::a('error', "Something went wrong while trying to load the Template. Template not found in <em>" . $path . "</em>.");
+                        Rpd::a('error', "Something went wrong while trying to load the Template. Template not found in <em>#text#</em>.", array($path));
                         $this->templatesAction();
                     }
                 } else {
@@ -315,7 +315,7 @@ class AdministratorController extends RapidAuth {
                         if ( @file_put_contents($path, $content) ) {
                             Rpd::a('success', "The Template is saved.");
                         } else Rpd::a('error', "Something went wrong (probably Permission Denied) while trying to save Template.");
-                    } else Rpd::a('error', "Something went wrong while trying to save Template, the Template not found in <em>" . $path . "</em>.");
+                    } else Rpd::a('error', "Something went wrong while trying to save Template, the Template not found in <em>#text#</em>.", array($path));
                     $this->templatesAction(array('edit', 'application' => $application, 'template' => $filename));
                 } else {
                     Rpd::a('error', "You not filled one or more field.");
@@ -328,7 +328,7 @@ class AdministratorController extends RapidAuth {
                 if ( @unlink(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . $args['application'] . '/' . $args['template']) )
                     Rpd::a('success', "The Template is removed.");
                 else Rpd::a('error', "Something went wrong while trying to remove Template. Template not removed.");
-            } else Rpd::a('error', "Something went wrong while trying to remove Template. The Template is not exists in <em>" . Rpd::$c['raintpl']['tpl_dir'] . $args['application'] . '/' . $args['template'] . "</em>.");
+            } else Rpd::a('error', "Something went wrong while trying to remove Template. The Template is not exists in <em>#text#</em>.", array(Rpd::$c['raintpl']['tpl_dir'] . $args['application'] . '/' . $args['template']));
             
             $this->templatesAction();
         } else $this->templatesAction();
@@ -412,7 +412,7 @@ class AdministratorController extends RapidAuth {
                     $fields = array_unique($fields);
                     if ( Rpd::nE($name) && Rpd::nE($fields[0]) ) {
                         if ( AdministratorModell::createBean($name, $fields) ) {
-                            Rpd::a('success', "The Bean <em>" . $name . "</em> is created with <em>" . count($fields) . "</em> fields.");
+                            Rpd::a('success', "The Bean <em>#text#</em> is created with <em>#text#</em> fields.", array($name, count($fields)));
                             $this->beansAction(array('bean' => $name));
                         } else {
                             Rpd::a('error', "Something went wrong while trying to create Bean. Bean already exists.");
@@ -437,7 +437,7 @@ class AdministratorController extends RapidAuth {
                 // List
                 $inspect = AdministratorModell::inspectBean($bean);
                 if ( 0 < count($inspect) ) Rpd::a('bean', $inspect);
-                else Rpd::a('error', "Something went wrong while trying to load this Bean (" . $bean . ").");
+                else Rpd::a('error', "Something went wrong while trying to load this Bean (#text#).", array($bean));
                 
                 $beans = AdministratorModell::findBeans($bean);
                 $beansArray = array();
@@ -543,7 +543,7 @@ class AdministratorController extends RapidAuth {
                                 $uploaded++;
                         }
                         if ( 0 < $uploaded )
-                            Rpd::a('success', "The selected " . $uploaded . " file(s) uploaded to <em>lib/" . $path . "</em>.");
+                            Rpd::a('success', "The selected #text# file(s) uploaded to <em>lib/#text#</em>.", array($uploaded, $path));
                         else Rpd::a('error', "Something went wrong (probably permission denied) while trying to upload the selected file(s). No file(s) uploaded.");
                     } else Rpd::a('error', "Something went wrong while trying to upload file. No file(s) selected.");
                 } else Rpd::a('error', "Something went wrong while trying to upload file. The selected path is wrong.");
@@ -556,7 +556,7 @@ class AdministratorController extends RapidAuth {
                     $dirname = $_POST['lib-mkdir']['name'];
                     if ( @is_dir('lib/' . $path) ) {
                         if ( @mkdir('lib/' . ( empty($path) ? '' : $path . '/' ) . $dirname) )
-                            Rpd::a('success', "The new directory (<em>lib/" . ( empty($path) ? '' : $path . '/' ) . $dirname . "</em>) is created.");
+                            Rpd::a('success', "The new directory (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . '/' ) . $dirname));
                         else Rpd::a('error', "Something went wrong while trying to create directory. Permission denied.");
                     } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong path.");
                 } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
@@ -569,7 +569,7 @@ class AdministratorController extends RapidAuth {
                     $filename = $_POST['lib-mkfile']['name'];
                     if ( !@is_file('lib/' . $path . '/' . $filename ) ) {
                         if ( false !== file_put_contents('lib/' . ( empty($path) ? '' : $path . '/' ) . $filename, 'This is an automatic generated file.') )
-                            Rpd::a('success', "The new file (<em>lib/" . ( empty($path) ? '' : $path . '/' ) . $filename . "</em>) is created.");
+                            Rpd::a('success', "The new file (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . '/' ) . $filename));
                         else Rpd::a('error', "Something went wrong while trying to create file. Permission denied.");
                     } else Rpd::a('error', "Something went wrong while trying to create file. This file is already exists.");
                 } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
@@ -580,7 +580,7 @@ class AdministratorController extends RapidAuth {
                 $path = substr(str_replace('../', '', $path), 0, -1);
                 if ( @is_dir($path) ) {
                     if ( @rmdir($path) )
-                        Rpd::a('success', "The selected directory (<em>" . $args[$x-1] . "</em>) is removed.");
+                        Rpd::a('success', "The selected directory (<em>#text#</em>) is removed.", array($args[$x-1]));
                     else Rpd::a('error', "Something went wrong while trying to remove directory. Permission denied or non-empty directory.");
                 } else Rpd::a('error', "Something went wrong while trying to remove directory. Wrong path.");
                 $this->libraryAction();
@@ -590,9 +590,9 @@ class AdministratorController extends RapidAuth {
                 for ( $x = 1; $x < count($args); $x++ ) $path .= $args[$x] . ( $x+1 == count($args) ? '' : '/' );
                 if ( @is_file($path) ) {
                     if ( @unlink($path) )
-                        Rpd::a('success', "The selected file (<em>" . $args[$x-1] . "</em>) is removed.");
-                    else Rpd::a('error', "Something went wrong while trying to remove file (<em>" . $args[$x-1] . "</em>). Permission denied.");
-                } else Rpd::a('error', "Something went wrong while trying to remove file (<em>" . $args[$x-1] . "</em>). Wrong path.");
+                        Rpd::a('success', "The selected file (<em>#text#</em>) is removed.", array($args[$x-1]));
+                    else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Permission denied.", array($args[$x-1]));
+                } else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Wrong path.", array($args[$x-1]));
                 $this->libraryAction();
             } else if ( 'view' == $args[0] ) {
                 unset($args[0]);
@@ -748,7 +748,11 @@ class AdministratorController extends RapidAuth {
                                 if ( Rpd::nE($_POST['application']['languages']) )
                                     foreach ( $_POST['application']['languages'] as $language ) $data['languages'][$language] = true;
                                 if ( !Rpd::rq($data['languages'][Rpd::$c['rapid']['culture']]) ) $data['languages'][Rpd::$c['rapid']['culture']] = true;
-                                @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . '/templates/' . $name . '/' . Rpd::$c['rapid']['metaFile'], json_encode($data));
+                                if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $language . '/' . Rpd::$c['rapid']['metaFile']) )
+                                    $metaData = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . '/' . Rpd::$c['rapid']['metaFile']));
+                                else $metaData = array();
+                                $metaData[$name] = $data;
+                                @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . '/' . Rpd::$c['rapid']['metaFile'], json_encode($metaData));
                             }
                         }
                     }
@@ -769,9 +773,10 @@ class AdministratorController extends RapidAuth {
             // Edit
             $application = $args['application'];
             if ( 'save' != $args[1] ) {
-                Rpd::a('languages', Rpd::gC());
-                if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . $application . '/' . Rpd::$c['rapid']['metaFile']) )
-                    Rpd::a('appMeta', json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . $application . '/' . Rpd::$c['rapid']['metaFile']), true));
+                if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']) ) {
+                    $appMeta = json_decode(@file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']), true);
+                    Rpd::a('appMeta', $appMeta[$application]);
+                }
                 Rpd::a('application', $application);
                 AdministratorController::$template = 'application.edit';
             } else {
@@ -788,11 +793,14 @@ class AdministratorController extends RapidAuth {
                 }
                 if ( Rpd::nE($_POST['application']['description']) ) $data['description'] = $_POST['application']['description'];
                 if ( Rpd::nE($_POST['application']['analytics']) ) $data['analytics'] = $_POST['application']['analytics'];
-                if ( Rpd::nE($_POST['application']['languages']) )
-                    foreach ( $_POST['application']['languages'] as $language ) $data['languages'][$language] = true;
-                if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . $application . '/' . Rpd::$c['rapid']['metaFile'], json_encode($data)) )
+                $metaData = array();
+                if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']) )
+                    $metaData = json_decode(@file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']), true);
+                else $metaData = array();
+                $metaData[$application] = $data;
+                if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile'], json_encode($metaData)) )
                     Rpd::a('success', "Application is saved.");
-                else Rpd::a('error', "Something went wrong while trying to save the Application. Application is not saved.");
+                else Rpd::a('error', "Something went wrong while trying to save the Application. Application is not saved (probably permission denied).");
                 $this->applicationsAction();
             }
         } else if ( 'remove' == $args[0] && Rpd::rq($args['application']) ) {
@@ -833,13 +841,14 @@ class AdministratorController extends RapidAuth {
                     if ( 'i18n' == $info['extension'] ) {
                         $content = json_decode(file_get_contents(Rpd::$c['rapid']['translationsDir'] . '/' . $file), true);
                         $index = 1;
-                        foreach ( $content as $from => $to )
-                            $translationsArray[] = array(
-                                                            'language' => $info['filename'],
-                                                            'from' => $from,
-                                                            'to' => $to,
-                                                            'index' => $index++
-                                                        );
+                        if ( 0 < count($content) )
+                            foreach ( $content as $from => $to )
+                                $translationsArray[] = array(
+                                                                'language' => $info['filename'],
+                                                                'from' => $from,
+                                                                'to' => $to,
+                                                                'index' => $index++
+                                                            );
                     }
                 }
                 if ( 1 < $index ) Rpd::a('translations', $translationsArray);
@@ -869,6 +878,39 @@ class AdministratorController extends RapidAuth {
                     $this->translationsAction(array('add'));
                 }
             }
+        } else if ( 'edit' == $args[0] && Rpd::nE($args['language']) && Rpd::nE($args['index']) ) {
+            $language = $args['language'];
+            $index = $args['index'];
+            Rpd::a('tLanguage', $language);
+            Rpd::a('tIndex', $index);
+            $content = json_decode(@file_get_contents(Rpd::$c['rapid']['translationsDir'] . $language . '.i18n'), true);
+            if ( 'save' != $args[1] ) {
+                $cIndex = 1;
+                foreach ( $content as $key => $line )
+                    if ( $cIndex++ == $index ) $translate = array('from' => $key, 'to' => $line);
+                if ( !isset($translate) ) {
+                    Rpd::a('error', "Something went wrong while trying to allocate translation.");
+                    $this->translationsAction();
+                } else Rpd::a('translation', $translate);
+                AdministratorController::$template = 'translation.edit';
+            } else {
+                if ( Rpd::nE($_POST['translation']['from']) && Rpd::nE($_POST['translation']['to']) ) {
+                    $from = $_POST['translation']['from'];
+                    $to = $_POST['translation']['to'];
+                    $cIndex = 1;
+                    foreach ( $content as $key => &$value )
+                        if ( $cIndex++ == $index ) unset($content[$key]);
+                    $content[$from] = $to;
+                    if ( @file_put_contents(Rpd::$c['rapid']['translationsDir'] . '/' . $language . '.i18n', json_encode($content)) )
+                        Rpd::a('success', "The Translation is saved.");
+                    else Rpd::a('error', "Something went wrong while trying to save Translation. Translation is not saved (probably permission denied).");
+                    $this->translationsAction();
+                } else {
+                    Rpd::a('error', "Something went wrong while trying to save Translation. Every fields have to filled.");
+                    Rpd::a('translation', $_POST['translation']);
+                    AdministratorController::$template = 'translation.edit';
+                }
+            }
         } else if ( 'remove' == $args[0] && Rpd::nE($args['language']) && Rpd::nE($args['index']) ) {
             $language = $args['language'];
             $index = $args['index'];
@@ -892,13 +934,13 @@ class AdministratorController extends RapidAuth {
         Rpd::a('menu', array('preferencesActive' => true));
         
         if ( '' == $args[0] ) {
-            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['siteFile']) ) {
-                if ( $siteArray = json_decode(@file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['siteFile']), true) )
+            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . '/' . Rpd::$c['rapid']['siteFile']) ) {
+                if ( $siteArray = json_decode(@file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . '/' . Rpd::$c['rapid']['siteFile']), true) )
                     Rpd::a('preferences', $siteArray);
-            } else @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['siteFile'], json_encode(array('analytics'=>"",'titlePrefix'=>"")));
+            } else @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . '/' . Rpd::$c['rapid']['siteFile'], json_encode(array('titlePrefix'=>"",'author'=>"",'favicon'=>"")));
         } else if ( 'save' == $args[0] ) {
-            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['siteFile']) ) {
-                if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['siteFile'], json_encode($_POST['preferences'])) )
+            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . '/' . Rpd::$c['rapid']['siteFile']) ) {
+                if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . '/' . Rpd::$c['rapid']['siteFile'], json_encode($_POST['preferences'])) )
                     Rpd::a('success', "The Preferences are saved.");
                 else Rpd::a('error', "Something went wrong while trying to save Preferences. Probably permission denied.");
             } else Rpd::a('error', "Something went wrong while trying to save Preferences. Preferences not saved.");
@@ -988,10 +1030,10 @@ class AdministratorController extends RapidAuth {
                                         @copy(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['culture'] . '/' . $file, Rpd::$c['raintpl']['tpl_dir'] . $name . '/' . $file);
                                     else if ( is_dir(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['culture'] . '/' . $file) )
                                         $this->languagesAction(array(0 => 'add', 'source' => Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['culture'] . '/' . $file, 'destination' => Rpd::$c['raintpl']['tpl_dir'] . $name . '/' . $file));
-                                Rpd::a('success', "The new Language is created (<em>" . $name . "</em>) and files are copied from default language.");
-                            } else Rpd::a('success', "The new Language is created: <em>" . $name . "</em>.");
+                                Rpd::a('success', "The new Language is created (<em>#text#</em>) and files are copied from default language.", array($name));
+                            } else Rpd::a('success', "The new Language is created: <em>#text#</em>.", array($name));
                         } else Rpd::a('error', "Something went wrong while trying to add new Language. Probably permission denied.");
-                    } else Rpd::a('error', "Something went wrong while trying to add new Language. The Language <em>" . $name . "</em> is already exists.");
+                    } else Rpd::a('error', "Something went wrong while trying to add new Language. The Language <em>#text#</em> is already exists.", array($name));
                 } else Rpd::a('error', "Something went wrong while trying to add new Language. The name field is empty.");
                 $this->languagesAction();
             }
@@ -1057,8 +1099,8 @@ class AdministratorController extends RapidAuth {
                 fclose($fh);
             }
             if ( !is_file($path) )
-                Rpd::a('error', "Something went wrong while trying to download Update." . ( isset($downloadError) ? "Message: <em>" . $downloadError . "</em>." : "" ));
-            else Rpd::a('success', "The new version of Rapid is downloaded (at " . date("Y. m. d. - H:i:s", filemtime($path)) . ") successful, the filesize is " . number_format(filesize($path) / 1048576, 2) . " MB. This version is not installed yet, click on <em>Install Update</em> to confirm update.");
+                Rpd::a('error', "Something went wrong while trying to download Update.#text#", array(( isset($downloadError) ? "Message: <em>" . $downloadError . "</em>." : "" )));
+            else Rpd::a('success', "The new version of Rapid is downloaded (at #text#) successful, the filesize is #text# MB. This version is not installed yet, click on <em>Install Update</em> to confirm update.", array(date("Y. m. d. - H:i:s", filemtime($path)), number_format(filesize($path) / 1048576, 2)));
         } else {
             $updater = Rpd::$c['rapid']['updaterFile'];
             if ( !is_file(Rapid::$dir . '/' . $updater) )

@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.1.1";
+                      $version =        "v1.1.2";
         
         public $task =                  array(),
                $errors =                array();
@@ -357,9 +357,11 @@
          *  Load the defined Meta data for Application (or set defaults).
         */ 
         private function assignMeta() {
-            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . $this->task['application'] . '/' . Rpd::$c['rapid']['metaFile']) )
-                $appData = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . $this->task['application'] . '/' . Rpd::$c['rapid']['metaFile']), true);
-            else $appData = array('title' => "Rapid.", 'keywords' => "rapid,framework", 'description' => "The Rapid Framework.");
+            $defData = array('title' => "Rapid.", 'keywords' => "rapid,framework", 'description' => "The Rapid Framework.");
+            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']) )
+                $data = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']), true);
+                if ( isset($data[$this->task['application']]) ) $appData = $data[$this->task['application']];
+            else $appData = $defData;
             Rpd::a('APP', $appData);
         }
         
@@ -367,8 +369,8 @@
          *  Assign the preferences of the site.
         */ 
         private function assignPreferences() {
-            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['siteFile']) )
-                Rpd::a('SITE', array_merge(array('url' => $_SERVER['HTTP_HOST']), json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['siteFile']), true)));
+            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['siteFile']) )
+                Rpd::a('SITE', array_merge(array('url' => $_SERVER['HTTP_HOST']), json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['siteFile']), true)));
         }
 
         /**
@@ -388,11 +390,11 @@
         /**
          *  Assign variables to template files.
         */ 
-        public static function assign($name, $value = '') {
+        public static function assign($name, $value = '', $variables = array()) {
             $notAllowed = array('LAYOUT_CONTENT', 'APPLICATION_CONTENT', 'CULTURE');
             if ( !empty($name) && !in_array($name, $notAllowed) ) {
-                Rapid::$tpl->assign($name, Rapid::translation($value));
-                return false;
+                Rapid::$tpl->assign($name, Rapid::translation($value, $variables));
+                return true;
             } else return false;
         }
 
@@ -452,22 +454,18 @@
          * Looking for translation for input.
          * @return string String with translation or input string
         */ 
-        public static function translation($value) {
+        public static function translation($value, $variables = array()) {
             if ( is_file(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n') && Rpd::$cl != Rpd::$c['rapid']['culture'] ) {
-                $translations = json_decode(file_get_contents(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n'), true);
+                $translations = json_decode(@file_get_contents(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n'), true);
                 if ( "string" == gettype($value) ) {
-                    if ( isset($translations[$value]) ) $value = $translations[$value];
-                    else {
-                        $fromArray = array_keys($translations);
-                        foreach ( $fromArray as $from ) {
-                            $matches = null;
-                            $from = str_replace('#text#', '.+', $from);
-                            $returnValue = preg_match('/' . $from . '/', $value, $matches);
-                            if ( 0 < count($matches) )
-                                for ( $x = 1; $x < count($matches); $x++ )
-                                    $value = preg_replace('/\#text\#/', $matches[$x], $translations[str_replace('.+', '#text#', $from)], 1);
-                        }
-                    }
+                    if ( isset($translations[$value]) ) $translate = $translations[$value];
+                    else $translate = $value;
+                    $count = 0;
+                    while ( -1 < strpos($translate, '#text#') ) 
+                        if ( isset($variables[$count]) )
+                            $translate = preg_replace("/#text#/", $variables[$count++], $translate, 1);
+                        else break;
+                    $value = $translate;
                 }
             }
             return $value;
@@ -615,7 +613,7 @@
         
         public static $v = '';
         
-        public static function a($n, $v = '') { return Rapid::assign($n, $v); }
+        public static function a($n, $v = '', $vb = array()) { return Rapid::assign($n, $v, $vb); }
         
         public static function gA(){ return Rapid::getApplications(); }
         

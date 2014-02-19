@@ -1,16 +1,12 @@
-<h1>New Translation</h1>
+<h1>Edit Translation</h1>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
-<form method="post" action="{$baseURL}administrator/translations/add/save" class="form-horizontal" role="form">
+<form method="post" action="{$baseURL}administrator/translations/edit/save/language:{$tLanguage}/index:{$tIndex}" class="form-horizontal" role="form">
     <div class="form-group">
         <label for="language" class="col-lg-2 control-label">Language</label>
         <div class="col-lg-3">
-            <select id="language" name="translation[language]" class="form-control">
-                <option value="" selected="selected"> :: Choose :: </option>
-                {loop="languages"}<option value="{$value}">{$value}</option>{/loop}
-            </select>
-            <p class="help-block">Translated to <em>{$CULTURE}</em>.</p>
+            <p class="form-control-static">{$tLanguage}</p>
         </div>
     </div>
     <div class="form-group">

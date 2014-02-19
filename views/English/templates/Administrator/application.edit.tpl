@@ -40,17 +40,6 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-2 control-label">Languages</label>
-        <div class="col-lg-10">
-            <p class="form-control-static">
-                {loop="appMeta.languages"}
-                    <input type="hidden" class="hided" name="application[languages][]" value="{$key}" />
-                    {$key}&nbsp;
-                {/loop}
-            </p>
-        </div>
-    </div>
-    <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
             <button type="submit" class="btn btn-primary">Save</button>&nbsp;
             <a href="{$baseURL}administrator/applications">Cancel and back to list</a>

@@ -1,16 +1,12 @@
-<h1>Új Fordítás</h1>
+<h1>Fordítás szerkesztése</h1>
 {if="'' != $error"}
-<div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
+<div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
-<form method="post" action="{$baseURL}administrator/translations/add/save" class="form-horizontal" role="form">
+<form method="post" action="{$baseURL}administrator/translations/edit/save/language:{$tLanguage}/index:{$tIndex}" class="form-horizontal" role="form">
     <div class="form-group">
         <label for="language" class="col-lg-2 control-label">Cél nyelv</label>
         <div class="col-lg-3">
-            <select id="language" name="translation[language]" class="form-control">
-                <option value="" selected="selected"> :: Válassz :: </option>
-                {loop="languages"}<option value="{$value}">{$value}</option>{/loop}
-            </select>
-            <p class="help-block">Fordítva <em>{$CULTURE}</em> nyelvre.</p>
+            <p class="form-control-static">{$tLanguage}</p>
         </div>
     </div>
     <div class="form-group">
@@ -23,7 +19,7 @@
     <div class="form-group">
         <label for="to" class="col-lg-2 control-label">Mire</label>
         <div class="col-lg-10">
-            <input type="text" name="translation[to]" value="{$translation.to}" class="form-control" id="to" placeholder="Ez egy üzenet." />
+            <input type="text" name="translation[to]" value="{$translation.to}" class="form-control" id="to" placeholder="Dies ist ein Nachricht." />
             <p class="help-block">Amennyiben vannak változóid, balról jobbra kerülnek lecserélésre, sorban.</p>
         </div>
     </div>
