@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.1.2";
+                      $version =        "v1.1.3";
         
         public $task =                  array(),
                $errors =                array();
@@ -27,15 +27,20 @@
             spl_autoload_register('Rapid::autoload');
 
             // RedBean
-            if ( is_file(Rapid::$dir . '/rb.php') ) {
-                require_once Rapid::$dir . '/rb.php';
+            if ( is_file(Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.php') ) {
+                require_once Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.php';
                 if ( Rpd::rq(Rpd::$c['db']) && 0 < count(Rpd::$c['db']) )
                     R::setup('mysql:host=' . Rpd::$c['db']['host'] . ';dbname=' . Rpd::$c['db']['dbname'], Rpd::$c['db']['username'], Rpd::$c['db']['password']);
                 else {
                     Rpd::a('DBTMP', true);
                     R::setup();
                 }
-            } else $this->crash('Error in Rapid class contructor function: RedBean file (' . getcwd() . '/' . Rapid::$dir . '/rb.php) does not exists.');
+            } else $this->crash('Error in Rapid class contsructor function: RedBean file (' . getcwd() . DIRECTORY_SEPARATOR . Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.php) does not exists.');
+            
+            // PHPMailer
+            if ( is_file(Rapid::$dir . DIRECTORY_SEPARATOR . 'phpmailer.php') )
+                require_once Rapid::$dir . DIRECTORY_SEPARATOR . 'phpmailer.php';
+            else $this->crash('Error in Rapid class constructor function: PHPMailer file (' . getcwd() . DIRECTORY_SEPARATOR . Rapid::$dir . DIRECTORY_SEPARATOR . 'phpmailer.php) does not exists.');
             
             // Rapid gives control to application
             $this->pathToTask();
@@ -57,17 +62,17 @@
                             $return = $application->$action($this->task['args']);
                             $template = eval('return (isset(' . $this->task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ')?' . $this->task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ':"' . strtolower(str_replace('Action', '', $this->task['action'])) . '");');
                             if ( !is_null($return) ) $applicationContent = $return;
-                            else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . '/templates/' . $this->task['application'] . '/' . $template . '.' . Rpd::$c['raintpl']['tpl_ext']) ) 
-                                $applicationContent = Rapid::$tpl->draw($culture . '/templates/' . $this->task['application'] . '/' . $template, $return_string = true);
-                            else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['culture'] . '/templates/' . $this->task['application'] . '/' . $template . '.' . Rpd::$c['raintpl']['tpl_ext']) )
-                                $applicationContent = Rapid::$tpl->draw(Rpd::$c['rapid']['culture'] . '/templates/' . $this->task['application'] . '/' . $template, $return_string = true);
+                            else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . $template . '.' . Rpd::$c['raintpl']['tpl_ext']) ) 
+                                $applicationContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . $template, $return_string = true);
+                            else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['culture'] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . $template . '.' . Rpd::$c['raintpl']['tpl_ext']) )
+                                $applicationContent = Rapid::$tpl->draw(Rpd::$c['rapid']['culture'] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . $template, $return_string = true);
                             else $applicationContent = 'The template (' . $template . '.' . Rpd::$c['raintpl']['tpl_ext'] . ') file for application (' . $this->task['application'] . ') does not exists.';
-                        } else $applicationContent = Rapid::$tpl->draw($culture . '/templates/' . $this->task['application'] . '/' . $this->task['static'], $return_string = true);
+                        } else $applicationContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . $this->task['static'], $return_string = true);
                     }
 
                     // Build the template
                     if ( isset($authError) ) {
-                        $applicationContent = Rapid::$tpl->draw($culture . '/' . Rpd::$c['rapid']['authTpl'], $return_string = true);
+                        $applicationContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['authTpl'], $return_string = true);
                         Rapid::$tpl->assign('LAYOUT_CONTENT', $applicationContent);
                         Rapid::$tpl->draw('frame');
                     } else {
@@ -76,11 +81,11 @@
                         else if ( 'layout' == $this->buildLevel() ) {
                             $layout = $this->loadLayout();
                             Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $applicationContent . '<!-- application content end -->');
-                            Rapid::$tpl->draw($culture . '/layouts/' . $layout);
+                            Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout);
                         } else {
                             $layout = $this->loadLayout();
                             Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $applicationContent . '<!-- application content end -->');
-                            $layoutContent = Rapid::$tpl->draw($culture . '/layouts/' . $layout, $return_string = true);
+                            $layoutContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout, $return_string = true);
                             Rapid::$tpl->assign('LAYOUT_CONTENT', $layoutContent);
                             Rapid::$tpl->draw('frame');
                         }
@@ -94,18 +99,20 @@
          * This function do the configuration of Rapid and set the defaults.
         */ 
         public static function configuration($return = false) {
-            if ( is_file(Rapid::$dir . '/' . Rapid::$configFile) ) {
-                require_once Rapid::$dir . '/' . Rapid::$configFile;
+            if ( is_file(Rapid::$dir . DIRECTORY_SEPARATOR . Rapid::$configFile) ) {
+                require_once Rapid::$dir . DIRECTORY_SEPARATOR . Rapid::$configFile;
                 Rpd::$c = $configuration;
-                if ( '/' != substr(Rpd::$c['raintpl']['tpl_dir'], -1) ) Rpd::$c['raintpl']['tpl_dir'] .= '/';
-                if ( '/' != substr(Rpd::$c['rapid']['translationsDir'], -1) ) Rpd::$c['rapid']['translationsDir'] .= '/';
+                if ( DIRECTORY_SEPARATOR != substr(Rpd::$c['raintpl']['tpl_dir'], -1) ) Rpd::$c['raintpl']['tpl_dir'] .= DIRECTORY_SEPARATOR;
+                if ( DIRECTORY_SEPARATOR != substr(Rpd::$c['raintpl']['cache_dir'], -1) ) Rpd::$c['raintpl']['cache_dir'] .= DIRECTORY_SEPARATOR;
+                if ( DIRECTORY_SEPARATOR != substr(Rpd::$c['rapid']['translationsDir'], -1) ) Rpd::$c['rapid']['translationsDir'] .= DIRECTORY_SEPARATOR;
+                if ( DIRECTORY_SEPARATOR != substr(Rpd::$c['rapid']['mailsDir'], -1) ) Rpd::$c['rapid']['mailsDir'] .= DIRECTORY_SEPARATOR;
                 if ( '$' != substr(Rpd::$c['rapid']['controllerTemplateVar'], 0, 1) ) 
                     Rpd::$c['rapid']['controllerTemplateVar'] = '$' . Rpd::$c['rapid']['controllerTemplateVar'];
             } else {
                 Rpd::$c['raintpl'] = array(
-                                                'tpl_dir' => 'views/',
+                                                'tpl_dir' => 'views' . DIRECTORY_SEPARATOR,
                                                 'tpl_ext' => 'tpl',
-                                                'cache_dir' => 'cache/',
+                                                'cache_dir' => 'cache' . DIRECTORY_SEPARATOR,
                                                 'path_replace' => false
                                             );
                 Rpd::$c['rapid'] = array(
@@ -118,19 +125,20 @@
                                                 'authTpl' => 'auth',
                                                 'controllerAuthVar' => 'auth_depth',
                                                 'language' => 'English',
-                                                'translationsDir' => 'translations/',
+                                                'translationsDir' => 'translations' . DIRECTORY_SEPARATOR,
                                                 'metaFile' => 'meta.json',
                                                 'siteFile' => 'site.json',
                                                 'editAdmin' => false,
                                                 'libEditables' => array('js', 'less', 'css', 'txt'),
 												'updaterFile' => 'updater.php',
-												'installerFile' => 'creator.php'
+												'installerFile' => 'creator.php',
+                                                'mailsDir' => 'mails' . DIRECTORY_SEPARATOR
                                             );
                 Rpd::$c['db'] = array();
             }
 
             // load RainTPL
-            require_once Rapid::$dir . '/rain.tpl.class.php';
+            require_once Rapid::$dir . DIRECTORY_SEPARATOR . 'rain.tpl.class.php';
             if ( isset(Rpd::$c['raintpl']) )
                 foreach ( Rpd::$c['raintpl'] as $key => $value ) raintpl::configure($key, $value);
             Rapid::$tpl = new RainTPL();
@@ -141,7 +149,7 @@
                 $_SESSION['culture'] = $_POST['culture']['name'];
             if ( Rpd::rq($_SESSION['culture']) ) {
                 $sCulture = $_SESSION['culture'];
-                if ( @is_dir(Rpd::$c['raintpl']['tpl_dir'] . '/' . $sCulture) ) $culture = $_SESSION['culture'];
+                if ( @is_dir(Rpd::$c['raintpl']['tpl_dir'] . DIRECTORY_SEPARATOR . $sCulture) ) $culture = $_SESSION['culture'];
             }
             Rapid::$tpl->assign('CULTURE', $culture);
             Rapid::$culture = $culture;
@@ -202,7 +210,7 @@
                 $this->task['controller'] = ( !empty($pathArray[0]) ? $pathArray[0] : Rpd::$c['rapid']['defaultApplication'] );
                 if ( !empty($pathArray[1]) ) $this->task['action'] = $pathArray[1];
                 else {
-                    if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . Rpd::$c['rapid']['defaultApplication'] . '/' . $pathArray[0] . '.' . Rpd::$c['raintpl']['tpl_ext']) )
+                    if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['defaultApplication'] . DIRECTORY_SEPARATOR . $pathArray[0] . '.' . Rpd::$c['raintpl']['tpl_ext']) )
                         $this->task['action'] = $pathArray[0];
                     else $this->task['action'] = Rpd::$c['rapid']['defaultAction'];
                 }
@@ -241,52 +249,52 @@
         */
         private function loadApplication() {
             $application = null;
-            if ( is_dir('applications/' . $this->task['controller']) ) {
-                if ( is_file('applications/' . $this->task['controller'] . '/' . $this->task['controller'] . 'Controller.class.php') ) {
-                    require_once 'applications/' . $this->task['controller'] . '/' . $this->task['controller'] . 'Controller.class.php';
+            if ( is_dir('applications' . DIRECTORY_SEPARATOR . $this->task['controller']) ) {
+                if ( is_file('applications' . DIRECTORY_SEPARATOR . $this->task['controller'] . DIRECTORY_SEPARATOR . $this->task['controller'] . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . $this->task['controller'] . DIRECTORY_SEPARATOR . $this->task['controller'] . 'Controller.class.php';
                     $this->task['controller'] = $this->task['controller'] . 'Controller';
                     $application = new $this->task['controller']();
-                } else if ( is_file('applications/' . $this->task['controller'] . '/' . ucfirst($this->task['controller']) . 'Controller.class.php') ) {
-                    require_once 'applications/' . $this->task['controller'] . '/' . ucfirst($this->task['controller']) . 'Controller.class.php';
+                } else if ( is_file('applications' . DIRECTORY_SEPARATOR . $this->task['controller'] . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . $this->task['controller'] . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . 'Controller.class.php';
                     $this->task['controller'] = ucfirst($this->task['controller']) . 'Controller';
                     $application = new $this->task['controller']();
-                } else if ( is_file('applications/' . $this->task['controller'] . '/' . strtolower($this->task['controller']) . 'Controller.class.php') ) {
-                    require_once 'applications/' . $this->task['controller'] . '/' . strtolower($this->task['controller']) . 'Controller.class.php';
+                } else if ( is_file('applications' . DIRECTORY_SEPARATOR . $this->task['controller'] . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . $this->task['controller'] . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . 'Controller.class.php';
                     $this->task['controller'] = strtolower($this->task['controller']) . 'Controller';
                     $application = new $this->task['controller']();
-                } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications/" . $this->task['controller'] . "</em>.";
-            } else if ( is_dir('applications/' . ucfirst($this->task['controller'])) ) {
-                if ( is_file('applications/' . ucfirst($this->task['controller']) . '/' . $this->task['controller'] . 'Controller.class.php') ) {
-                    require_once 'applications/' . ucfirst($this->task['controller']) . '/' . $this->task['controller'] . 'Controller.class.php';
+                } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . $this->task['controller'] . "</em>.";
+            } else if ( is_dir('applications' . DIRECTORY_SEPARATOR . ucfirst($this->task['controller'])) ) {
+                if ( is_file('applications' . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . DIRECTORY_SEPARATOR . $this->task['controller'] . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . DIRECTORY_SEPARATOR . $this->task['controller'] . 'Controller.class.php';
                     $this->task['controller'] = $this->task['controller'] . 'Controller';
                     $application = new $this->task['controller']();
-                } else if ( is_file('applications/' . ucfirst($this->task['controller']) . '/' . ucfirst($this->task['controller']) . 'Controller.class.php') ) {
-                    require_once 'applications/' . ucfirst($this->task['controller']) . '/' . ucfirst($this->task['controller']) . 'Controller.class.php';
+                } else if ( is_file('applications' . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . 'Controller.class.php';
                     $this->task['controller'] = ucfirst($this->task['controller']) . 'Controller';
                     $application = new $this->task['controller']();
-                } else if ( is_file('applications/' . ucfirst($this->task['controller']) . '/' . strtolower($this->task['controller']) . 'Controller.class.php') ) {
-                    require_once 'applications/' . ucfirst($this->task['controller']) . '/' . strtolower($this->task['controller']) . 'Controller.class.php';
+                } else if ( is_file('applications' . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . 'Controller.class.php';
                     $this->task['controller'] = strtolower($this->task['controller']) . 'Controller';
                     $application = new $this->task['controller']();
-                } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications/" . ucfirst($this->task['controller']) . "</em>.";
-            } else if ( is_dir('applications/' . strtolower($this->task['controller'])) ) {
-                if ( is_file('applications/' . strtolower($this->task['controller']) . '/' . $this->task['controller'] . 'Controller.class.php') ) {
-                    require_once 'applications/' . strtolower($this->task['controller']) . '/' . $this->task['controller'] . 'Controller.class.php';
+                } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . "</em>.";
+            } else if ( is_dir('applications' . DIRECTORY_SEPARATOR . strtolower($this->task['controller'])) ) {
+                if ( is_file('applications' . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . DIRECTORY_SEPARATOR . $this->task['controller'] . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . DIRECTORY_SEPARATOR . $this->task['controller'] . 'Controller.class.php';
                     $this->task['controller'] = $this->task['controller'] . 'Controller';
                     $application = new $this->task['controller']();
-                } else if ( is_file('applications/' . strtolower($this->task['controller']) . '/' . ucfirst($this->task['controller']) . 'Controller.class.php') ) {
-                    require_once 'applications/' . strtolower($this->task['controller']) . '/' . ucfirst($this->task['controller']) . 'Controller.class.php';
+                } else if ( is_file('applications' . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . DIRECTORY_SEPARATOR . ucfirst($this->task['controller']) . 'Controller.class.php';
                     $this->task['controller'] = ucfirst($this->task['controller']) . 'Controller';
                     $application = new $this->task['controller']();
-                } else if ( is_file('applications/' . strtolower($this->task['controller']) . '/' . strtolower($this->task['controller']) . 'Controller.class.php') ) {
-                    require_once 'applications/' . strtolower($this->task['controller']) . '/' . strtolower($this->task['controller']) . 'Controller.class.php';
+                } else if ( is_file('applications' . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . 'Controller.class.php';
                     $this->task['controller'] = strtolower($this->task['controller']) . 'Controller';
                     $application = new $this->task['controller']();
-                } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications/" . strtolower($this->task['controller']) . "</em>.";
+                } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . "</em>.";
             } else {
                 if ( isset(Rpd::$c['rapid']) && isset(Rpd::$c['rapid']['defaultApplication']) && $action = Rpd::$c['rapid']['defaultApplication'] ) {
-                    if ( is_file('applications/' . $action . '/' . $action . 'Controller.class.php') ) {
-                        require_once 'applications/' . $action . '/' . $action . 'Controller.class.php';
+                    if ( is_file('applications' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $action . 'Controller.class.php') ) {
+                        require_once 'applications' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $action . 'Controller.class.php';
                         $this->task['controller'] = $action . 'Controller';
                         $application = new $this->task['controller']();
                     } else $this->errors[] = "Error in Rapid class loadApplication function: defaultApplication is defined (<em>" . Rpd::$c['rapid']['defaultApplication'] . "</em>), but does not exists in applications dir.";
@@ -310,7 +318,7 @@
                 } else if ( method_exists($application, strtolower($this->task['action']) . 'Action') ) {
                     $this->task['action'] = strtolower($this->task['action']) . 'Action';
                     return $this->task['action'];
-                } else if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/templates/' . Rpd::$c['rapid']['defaultApplication'] . '/' . $this->task['action'] . '.' . Rpd::$c['raintpl']['tpl_ext']) ) {
+                } else if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['defaultApplication'] . DIRECTORY_SEPARATOR . $this->task['action'] . '.' . Rpd::$c['raintpl']['tpl_ext']) ) {
                     $this->task['static'] = $this->task['action'];
                     $this->task['action'] = null;
                     return $this->task['action'];
@@ -333,9 +341,9 @@
                 else return $this->loadLayout(true);
             } else {
                 $culture = Rapid::$culture;
-                if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . '/layouts/layout.' . strtolower($this->task['application']) . '.' . Rpd::$c['raintpl']['tpl_ext']) )
+                if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.' . strtolower($this->task['application']) . '.' . Rpd::$c['raintpl']['tpl_ext']) )
                     $return = strtolower($this->task['application']);
-                else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . '/layouts/layout.' . ucfirst($this->task['application']) . '.' . Rpd::$c['raintpl']['tpl_ext']) )
+                else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.' . ucfirst($this->task['application']) . '.' . Rpd::$c['raintpl']['tpl_ext']) )
                     $return = ucfirst($this->task['application']);
                 else $return = Rpd::$c['rapid']['defaultLayout'];
             }
@@ -347,8 +355,8 @@
          *  Check if the application own sources and load them.
         */ 
         private function assignSources() {
-            if ( is_file('applications/' . $this->task['application'] . '/' . Rpd::$c['rapid']['sourcesFile']) ) {
-                $sources = json_decode(file_get_contents('applications/' . $this->task['application'] . '/' . Rpd::$c['rapid']['sourcesFile']), true);
+            if ( is_file('applications' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile']) ) {
+                $sources = json_decode(file_get_contents('applications' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile']), true);
                 Rapid::assign('SOURCES', $sources);
             }
         }
@@ -358,8 +366,8 @@
         */ 
         private function assignMeta() {
             $defData = array('title' => "Rapid.", 'keywords' => "rapid,framework", 'description' => "The Rapid Framework.");
-            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']) )
-                $data = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['metaFile']), true);
+            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']) )
+                $data = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
                 if ( isset($data[$this->task['application']]) ) $appData = $data[$this->task['application']];
             else $appData = $defData;
             Rpd::a('APP', $appData);
@@ -369,8 +377,8 @@
          *  Assign the preferences of the site.
         */ 
         private function assignPreferences() {
-            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['siteFile']) )
-                Rpd::a('SITE', array_merge(array('url' => $_SERVER['HTTP_HOST']), json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/' . Rpd::$c['rapid']['siteFile']), true)));
+            if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile']) )
+                Rpd::a('SITE', array_merge(array('url' => $_SERVER['HTTP_HOST']), json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile']), true)));
         }
 
         /**
@@ -403,9 +411,9 @@
         */ 
         public static function autoload($class) {
             $backtrace = debug_backtrace();
-            $dir = explode('/', $backtrace[1]['file']);
+            $dir = explode(DIRECTORY_SEPARATOR, $backtrace[1]['file']);
             $calldir = "";
-            for ( $x = 0; $x < count($dir)-1; $x++ ) $calldir .= $dir[$x] . '/';
+            for ( $x = 0; $x < count($dir)-1; $x++ ) $calldir .= $dir[$x] . DIRECTORY_SEPARATOR;
             if ( is_file($calldir . $class . '.class.php') ) $require = $class;
             else if ( is_file($calldir . strtolower($class) . '.class.php') ) $require = strtolower($class);
             else if ( is_file($calldir . ucfirst($class) . '.class.php') ) $require = ucfirst($class);
@@ -420,7 +428,7 @@
         public static function getApplications() {
             $applicationsArray = array_diff(scandir('applications'), array('.', '..'));
             foreach ( $applicationsArray as $key => $application )
-                if ( !is_dir('applications/' . $application) ) unset($applicationsArray[$key]);
+                if ( !is_dir('applications' . DIRECTORY_SEPARATOR . $application) ) unset($applicationsArray[$key]);
             return $applicationsArray;
         }
 
@@ -429,7 +437,7 @@
          * @return array Array with the Layouts
         */ 
         public static function getLayouts() {
-            $tpl_dir = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . '/layouts/';
+            $tpl_dir = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR;
             $tpl_ext = Rpd::$c['raintpl']['tpl_ext'];
             $scan = array_diff(scandir($tpl_dir), array('.', '..'));
             $layouts = array();
@@ -455,18 +463,18 @@
          * @return string String with translation or input string
         */ 
         public static function translation($value, $variables = array()) {
-            if ( is_file(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n') && Rpd::$cl != Rpd::$c['rapid']['culture'] ) {
+            if ( is_file(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n') && Rpd::$cl != Rpd::$c['rapid']['culture'] )
                 $translations = json_decode(@file_get_contents(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n'), true);
-                if ( "string" == gettype($value) ) {
-                    if ( isset($translations[$value]) ) $translate = $translations[$value];
-                    else $translate = $value;
-                    $count = 0;
-                    while ( -1 < strpos($translate, '#text#') ) 
-                        if ( isset($variables[$count]) )
-                            $translate = preg_replace("/#text#/", $variables[$count++], $translate, 1);
-                        else break;
-                    $value = $translate;
-                }
+            else $translations = array();
+            if ( "string" == gettype($value) ) {
+                if ( isset($translations[$value]) ) $translate = $translations[$value];
+                else $translate = $value;
+                $count = 0;
+                while ( -1 < strpos($translate, '#text#') ) 
+                    if ( isset($variables[$count]) )
+                        $translate = preg_replace("/#text#/", $variables[$count++], $translate, 1);
+                    else break;
+                $value = $translate;
             }
             return $value;
         }
@@ -489,6 +497,15 @@
             
             if ( $return ) return $content[0]->name;
             if ( $zipUrl ) return $content[0]->zipball_url;
+        }
+
+        /**
+         * Remove directories recursively.
+        */
+        public static function delTree($dir) {
+            $files = array_diff(scandir($dir), array('.', '..'));
+            foreach ($files as $file) ( is_dir($dir . DIRECTORY_SEPARATOR . $file) ) ? Rapid::delTree($dir . DIRECTORY_SEPARATOR . $file) : unlink($dir . DIRECTORY_SEPARATOR . $file);
+            return rmdir($dir);
         }
 
     }
@@ -620,6 +637,8 @@
         public static function gL(){ return Rapid::getLayouts(); }
         
         public static function gC(){ return Rapid::getCultures(); }
+        
+        public static function dT($d) { return Rapid::delTree($d); }
         
         //RapidValidate shorthands
         public static function nE($f){ return RapidValidate::nonEmpty($f); }

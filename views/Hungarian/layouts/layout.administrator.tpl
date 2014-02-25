@@ -13,12 +13,13 @@
     
     <div class="collapse navbar-collapse" id="navbar-collapse">
         <ul class="nav navbar-nav">
-            <li class="dropdown{$menu.layoutActive || $menu.linkLayoutsActive || $menu.templatesActive?" active":""}">
+            <li class="dropdown{$menu.layoutActive || $menu.linkLayoutsActive || $menu.templatesActive || $menu.mailsActive?" active":""}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sablon Motor <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li{$menu.layoutsActive?' class="active"':''}><a href="{$baseURL}administrator/layouts">Layoutok menedzselése</a></li>
                     <li{$menu.linkLayoutsActive?' class="active"':''}><a href="{$baseURL}administrator/linkLayouts">Layoutok összerendelése</a></li>
                     <li{$menu.templatesActive?' class="active"':''}><a href="{$baseURL}administrator/templates">Sablonok</a></li>
+                    <li{$menu.mailsActive?' class="active"':''}><a href="{$baseURL}administrator/mails">E-mailek</a></li>
                 </ul>
             </li>
             {if="'' != $navBeans"}
@@ -102,9 +103,11 @@
             <li>Adatbázis ORM: <a href="http://redbeanphp.com/" target="_blank">RedBean PHP</a></li>
             <li>UI elemek: <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a></li>
             <li>Stílus tömörítő: <a href="http://lesscss.org/" target="_blank">LessCSS</a></li>
+            <li>E-mail könyvtár: <a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHPMailer</a></li>
         </ul>
       </div>
       <div class="modal-footer">
+        <a href="{$baseURL}administrator/">Köszöntő oldal</a>&nbsp;&nbsp;
         <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
         {if="isset($currentVersion)"}
             <a href="{$baseURL}administrator/update" class="btn btn-success">Frissítés erre: {$currentVersion}</a>

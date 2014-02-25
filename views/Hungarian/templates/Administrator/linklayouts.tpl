@@ -21,17 +21,30 @@
             <tbody>
                 {loop="linkedlayouts"}
                     <tr>
-                        <td>{$key}</td>
-                        <td>{$value}</td>
+                        <td>{$value.from}</td>
+                        <td>{$value.to}</td>
                         <td>
-                            <a href="{$baseURL}administrator/linkLayouts/edit/application:{$key}" title="Layout összerendelés szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$key}');" title="Layout összerendelés eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{$baseURL}administrator/linkLayouts/edit/application:{$value.from}" title="Layout összerendelés szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$value.from}');" title="Layout összerendelés eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}
             </tbody>
         </table>
     </div>
+    {if="isset($prevStart) || isset($nextStart) || isset($page)"}
+        <div class="container text-center">
+            <strong>{$page}. page</strong><br /><br />
+            <div class="btn-group">
+                {if="isset($prevStart)"}
+                    <a href="{$baseURL}administrator/linkLayouts/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;előző</a>
+                {/if}
+                {if="isset($nextStart)"}
+                    <a href="{$baseURL}administrator/linkLayouts/start:{$nextStart}" class="btn btn-default">következő&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                {/if}
+            </div>
+        </div>
+    {/if}
 {else}
     <div class="alert alert-info">
         <strong>Nincsenek Layout összerendelések</strong>. Hozzá tudsz adni új Layout összerendeléseket, csak kattints az <em>Új Layout összerendelés</em> gombra felül.

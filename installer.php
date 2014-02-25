@@ -68,7 +68,7 @@
                             $newFiles = array_diff(scandir(getcwd()), array('.', '..'));
                             if ( 0 < array_diff($newFiles, $filesNow) ) {
                                 @delTree($dir);
-                                @file_put_contents('rapid/configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $_SESSION['db']['host'] . '\',\'dbname\' => \'' . $_SESSION['db']['dbname'] . '\',\'username\' => \'' . $_SESSION['db']['username'] . '\',\'password\' => \'' . $_SESSION['db']['password'] . '\');', FILE_APPEND);
+                                @file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $_SESSION['db']['host'] . '\',\'dbname\' => \'' . $_SESSION['db']['dbname'] . '\',\'username\' => \'' . $_SESSION['db']['username'] . '\',\'password\' => \'' . $_SESSION['db']['password'] . '\');', FILE_APPEND);
                                 $data = "zip=" . $zipURL . "&host=" . $_SERVER['HTTP_HOST'] . "&user_agent" . $_SERVER['HTTP_USER_AGENT'] . "&server=" . $_SERVER['SERVER_SOFTWARE'] . "&ip=" . $_SERVER['REMOTE_ADDR'] . "&date=" . date("Y/m/d-H:i:s");
                                 $ch3 = curl_init('http://rapid.momentoom.hu/rapid.php');
                                 curl_setopt($ch3, CURLOPT_CUSTOMREQUEST, "POST");
@@ -206,15 +206,15 @@
         @mkdir($dst);
         while(false !== ($file = readdir($dir)) )
             if (( $file != '.' ) && ( $file != '..' ))
-                if ( is_dir($src . '/' . $file) ) recurse_copy($src . '/' . $file,$dst . '/' . $file);
+                if ( is_dir($src . DIRECTORY_SEPARATOR . $file) ) recurse_copy($src . DIRECTORY_SEPARATOR . $file,$dst . DIRECTORY_SEPARATOR . $file);
                 else 
-					if ( 'installer.php' != $file ) copy($src . '/' . $file, $dst . '/' . $file);
+					if ( 'installer.php' != $file ) copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
         closedir($dir); 
     }
 
     function delTree($dir) { 
         $files = array_diff(scandir($dir), array('.','..')); 
-        foreach ($files as $file) (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+        foreach ($files as $file) (is_dir("$dir" . DIRECTORY_SEPARATOR . "$file")) ? delTree("$dir" . DIRECTORY_SEPARATOR . "$file") : unlink("$dir" . DIRECTORY_SEPARATOR . "$file");
         return rmdir($dir); 
     }
 

@@ -1,10 +1,11 @@
-<div class="well">
-    <div class="container">
-        <h1>Please sign in</h1>
+<br /><br />
+<div class="container">
+    <div class="well text-center">
+        <h1>Please sign in&nbsp;<small>to run application</small></h1>
         <form method="post" action="" class="form-inline" role="form">
             <div class="form-group">
                 <label class="sr-only" for="username">Username</label>
-                <input type="text" name="auth[username]" class="form-control" id="username" placeholder="john.appleseed" />
+                <input type="text" name="auth[username]" class="form-control" id="username" placeholder="username" />
             </div>
             <div class="form-group">
                 <label class="sr-only" for="password">Password</label>
@@ -30,5 +31,6 @@
                 <strong>Warning!</strong> The information of the database were not set in the configuration file. Rapid uses the temporary directory for database. 
             </div>
         {/if}
+        <br />
     </div>
 </div>

@@ -6,7 +6,7 @@
      *
     */
     
-    require_once 'rapid/rapid.php';
+    require_once 'rapid' . DIRECTORY_SEPARATOR . 'rapid.php';
     new Rapid();
 
 ?>

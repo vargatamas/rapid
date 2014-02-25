@@ -1,6 +1,6 @@
 {if="'' == $recursive"}
     <h1>Könyvtár</h1>
-    <h5>Tölts fel vagy törölj fájlokat a <em>lib</em> könyvtárból.</h5>
+    <h5>Tölts fel, szerkessz vagy törölj fájlokat a <em>lib</em> könyvtáradba.</h5>
     <br /><br />
     {if="'' != $error"}
         <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
@@ -14,9 +14,9 @@
             <input type="hidden" name="library[path]" id="upload-path" class="hidden" />
         </form>
         <div id="lib-tree">
-            <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile">Új fájl</a>&nbsp;
-            <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir">Új könyvtár</a>&nbsp;
-            <button class="btn btn-xs btn-primary lib-upload">Fájl(ok) feltöltése</button>
+            <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile"><i class="glyphicon glyphicon-file"></i>&nbsp;Új fájl</a>&nbsp;
+            <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir"><i class="glyphicon glyphicon-folder-close"></i>&nbsp;Új könyvtár</a>&nbsp;
+            <button class="btn btn-xs btn-primary lib-upload"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Fájl(ok) feltöltése</button>
             {loop="$tree"}
                 <div class="panel-group" id="accordion-{$counter}">
                     <div class="panel panel-default">
@@ -29,15 +29,16 @@
                                     </a>
                                     <div class="lib-controls pull-right hided">
                                         <a href="{$baseURL}administrator/library/rmdir" class="btn btn-xs btn-default lib-rmdir"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
-                                        <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile">Új fájl</a>&nbsp;
-                                        <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir">Új könyvtár</a>&nbsp;
-                                        <button class="btn btn-xs btn-primary lib-upload">Fájl(ok) feltöltése</button>
+                                        <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile"><i class="glyphicon glyphicon-file"></i>&nbsp;Új fájl</a>&nbsp;
+                                        <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir"><i class="glyphicon glyphicon-folder-close"></i>&nbsp;Új könyvtár</a>&nbsp;
+                                        <button class="btn btn-xs btn-primary lib-upload"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Fájl(ok) feltöltése</button>
                                     </div>
                                 {else}
                                     <i class="glyphicon glyphicon-file"></i>&nbsp;
-                                    <a href="{$baseURL}administrator/library/view" title="Edit file">{$value}</a>
+                                    {$value}
                                     <div class="lib-controls pull-right hided">
                                         <a href="{$baseURL}administrator/library/rmfile" class="btn btn-xs btn-default lib-rmfile"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
+                                        <a href="{$baseURL}administrator/library/view" class="btn btn-xs btn-default lib-vwfile"><i class="glyphicon glyphicon-pencil"></i></a>
                                     </div>
                                 {/if}
                             </h4>
@@ -76,7 +77,7 @@
                             <div class="form-group">
                                 <label for="mkdir-name" class="col-lg-4 control-label">Könyvtár neve</label>
                                 <div class="col-lg-8">
-                                    <input type="text" name="lib-mkdir[name]" class="form-control" id="mkdir-name" placeholder="Fotó galéria" />
+                                    <input type="text" name="lib-mkdir[name]" class="form-control" id="mkdir-name" placeholder="Galéria" />
                                 </div>
                             </div>
                         </div>
@@ -96,7 +97,7 @@
                         <input type="hidden" name="lib-mkfile[path]" id="lib-mkfile-path-input" class="hided" />
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id="mkfile-modal-title">Új Fájl</h4>
+                            <h4 class="modal-title" id="mkfile-modal-title">Új fájl</h4>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
@@ -122,7 +123,7 @@
         </div>
     {else}
         <div class="alert alert-info">
-            <strong>Nem lehet olvasni a könyvtárat</strong>, feltehetőleg hozzáférési probléma történhetett.
+            <strong>Nem lehet átnézni a könyvtárat</strong>, feltehetőleg jogosultsági probléma lépett fel.
         </div>
     {/if}
 {else}
@@ -138,15 +139,16 @@
                             </a>
                             <div class="lib-controls pull-right hided">
                                 <a href="{$baseURL}administrator/library/rmdir" class="btn btn-xs btn-default lib-rmdir"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
-                                <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile">Új fájl</a>&nbsp;
-                                <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir">Új könyvtár</a>&nbsp;
-                                <button class="btn btn-xs btn-primary lib-upload">Fájl(ok) feltöltése</button>
+                                <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile"><i class="glyphicon glyphicon-file"></i>&nbsp;Új fájl</a>&nbsp;
+                                <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir"><i class="glyphicon glyphicon-folder-close"></i>&nbsp;Új könyvtár</a>&nbsp;
+                                <button class="btn btn-xs btn-primary lib-upload"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Fájlok feltöltése</button>
                             </div>
                         {else}
                             <i class="glyphicon glyphicon-file"></i>&nbsp;
-                            <a href="{$baseURL}administrator/library/view" title="Edit file">{$value}</a>
+                            {$value}
                             <div class="lib-controls pull-right hided">
                                 <a href="{$baseURL}administrator/library/rmfile" class="btn btn-xs btn-default lib-rmfile"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
+                                <a href="{$baseURL}administrator/library/view" class="btn btn-xs btn-default lib-vwfile"><i class="glyphicon glyphicon-pencil"></i></a>
                             </div>
                         {/if}
                     </h4>

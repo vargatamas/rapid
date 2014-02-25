@@ -24,7 +24,7 @@
 	<div class="form-group">
         <label for="layoutContent" class="col-lg-2 control-label">Layout tartalma</label>
         <div class="col-lg-10">
-            <textarea class="form-control summernote" name="layout[content]" id="layoutContent" rows="12">{if="'' != $layout.content"}{$layout.content}{else}{noparse}{$APPLICATION_CONTENT}{/noparse}{/if}</textarea>
+            <textarea class="form-control codemirror" name="layout[content]" id="layoutContent" rows="12">{if="'' != $layout.content"}{$layout.content}{else}{noparse}{$APPLICATION_CONTENT}{/noparse}{/if}</textarea>
             <p class="help-block">A tartalomnak tartalmaznia kell a <strong>{noparse}{$APPLICATION_CONTENT}{/noparse}</strong> nevű változót, amibe az alkalmazás tartalma kerül.</p>
         </div>
     </div>

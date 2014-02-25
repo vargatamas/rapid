@@ -29,7 +29,7 @@
 			</tbody>
 		</table>
 	</div>
-    {if="'' != $beans.0"}
+    {if="isset($beans)"}
         <br />
 		<div class="table-responsive">
 			<table class="table table-striped table-condensed">
@@ -58,6 +58,19 @@
 				</tbody>
 			</table>
 		</div>
+        {if="isset($prevStart) || isset($nextStart) || isset($page)"}
+            <div class="container text-center">
+                <strong>{$page}. page</strong><br /><br />
+                <div class="btn-group">
+                    {if="isset($prevStart)"}
+                        <a href="{$baseURL}administrator/beans/bean:{$beanName}/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;previous</a>
+                    {/if}
+                    {if="isset($nextStart)"}
+                        <a href="{$baseURL}administrator/beans/bean:{$beanName}/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                    {/if}
+                </div>
+            </div>
+        {/if}
     {else}
         <div class="alert alert-info">
             <strong>No Beans</strong> found here.

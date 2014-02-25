@@ -1,10 +1,11 @@
-<div class="well">
-    <div class="container">
-        <h1>Jelentkezz be</h1>
+<br /><br />
+<div class="container">
+    <div class="well text-center">
+        <h1>Jelentkezz be&nbsp;<small>az alkalmazás futtatásához</small></h1>
         <form method="post" action="" class="form-inline" role="form">
             <div class="form-group">
                 <label class="sr-only" for="username">Felhasználónév</label>
-                <input type="text" name="auth[username]" class="form-control" id="username" placeholder="john.appleseed" />
+                <input type="text" name="auth[username]" class="form-control" id="username" placeholder="felhasználónév" />
             </div>
             <div class="form-group">
                 <label class="sr-only" for="password">Jelszó</label>
@@ -30,5 +31,6 @@
                 <strong>Figyelem!</strong> A konfigurációs fájlban nem lettek beállítva az adatbázis hozzáférési információi. A Rapid jelenleg a temporális könyvtárt használja adatbázisként. 
             </div>
         {/if}
+        <br />
     </div>
 </div>

@@ -16,10 +16,10 @@
     $zip = new ZipArchive;
     if ( true !== $zip->open($update) ) $messages[] = "Error: Can not open <em>" . $update . "</em> update file.";
     else {
-        if ( @is_file("lib/" . $backup) ) @unlink("lib/" . $backup);
-        if ( true !== @Zip(getcwd(), "lib/" . $backup) ) $messages[] = "Error: Can not create backup of Rapid.";
+        if ( @is_file("lib" . DIRECTORY_SEPARATOR . $backup) ) @unlink("lib" . DIRECTORY_SEPARATOR . $backup);
+        if ( true !== @Zip(getcwd(), "lib" . DIRECTORY_SEPARATOR . $backup) ) $messages[] = "Error: Can not create backup of Rapid.";
         else {
-            $messages[] = "Backup archive created of Rapid (<a href=\"/lib/" . $backup . "\" target=\"_blank\">" . $backup . "</a> - " . number_format(filesize("lib/" . $backup) / 1048576, 2) . " MB).";
+            $messages[] = "Backup archive created of Rapid (<a href=\"/lib/" . $backup . "\" target=\"_blank\">" . $backup . "</a> - " . number_format(filesize("lib" . DIRECTORY_SEPARATOR . $backup) / 1048576, 2) . " MB).";
 
             $files = array_diff(scandir(getcwd()), array('.', '..'));
             $zip->extractTo(getcwd());
@@ -30,7 +30,7 @@
             if ( !empty($dir) ) {
                 $messages[] = "Update pack is extracted to <em>" . $dir . "</em>";
                 
-                require_once 'rapid/configuration.php';
+                require_once 'rapid' . DIRECTORY_SEPARATOR . 'configuration.php';
                 $dbconf = $configuration['db'];
                 $copied = @recurse_copy($dir, getcwd());
                 if ( 0 < $copied ) {
@@ -38,7 +38,7 @@
                     
                     @delTree($dir);
                     @unlink($update);
-                    @file_put_contents('rapid/configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $dbconf['host'] . '\',\'dbname\' => \'' . $dbconf['dbname'] . '\',\'username\' => \'' . $dbconf['username'] . '\',\'password\' => \'' . $dbconf['password'] . '\');', FILE_APPEND);
+                    @file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $dbconf['host'] . '\',\'dbname\' => \'' . $dbconf['dbname'] . '\',\'username\' => \'' . $dbconf['username'] . '\',\'password\' => \'' . $dbconf['password'] . '\');', FILE_APPEND);
                     $updated = true;
                     $messages[] = "Temporary files are removed.";
                     
@@ -88,7 +88,7 @@
     // Functions
     function delTree($dir) { 
         $files = array_diff(scandir($dir), array('.','..')); 
-        foreach ($files as $file) (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+        foreach ($files as $file) (is_dir("$dir" . DIRECTORY_SEPARATOR . "$file")) ? delTree("$dir" . DIRECTORY_SEPARATOR . "$file") : unlink("$dir" . DIRECTORY_SEPARATOR . "$file");
         return rmdir($dir); 
     }
     
@@ -96,15 +96,15 @@
         if ( !extension_loaded('zip') || !file_exists($source) ) return false;
         $zip = new ZipArchive();
         if ( !$zip->open($destination, ZIPARCHIVE::CREATE) ) return false;
-        $source = str_replace('\\', '/', realpath($source));
+        $source = str_replace('\\', DIRECTORY_SEPARATOR, realpath($source));
         if (is_dir($source) === true) {
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
             foreach ($files as $file) {
-                $file = str_replace('\\', '/', $file);
-                if ( in_array(substr($file, strrpos($file, '/')+1), array('.', '..')) ) continue;
+                $file = str_replace('\\', DIRECTORY_SEPARATOR, $file);
+                if ( in_array(substr($file, strrpos($file, DIRECTORY_SEPARATOR)+1), array('.', '..')) ) continue;
                 $file = realpath($file);
-                if (is_dir($file) === true) $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
-                else if (is_file($file) === true) $zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+                if (is_dir($file) === true) $zip->addEmptyDir(str_replace($source . DIRECTORY_SEPARATOR, '', $file . DIRECTORY_SEPARATOR));
+                else if (is_file($file) === true) $zip->addFromString(str_replace($source . DIRECTORY_SEPARATOR, '', $file), file_get_contents($file));
             }
         } else if (is_file($source) === true) $zip->addFromString(basename($source), file_get_contents($source));
         return $zip->close();
@@ -116,9 +116,9 @@
         $copied = 0;
         while(false !== ($file = readdir($dir)) )
             if (( $file != '.' ) && ( $file != '..' ))
-                if ( is_dir($src . '/' . $file) ) $copied += recurse_copy($src . '/' . $file,$dst . '/' . $file);
+                if ( is_dir($src . DIRECTORY_SEPARATOR . $file) ) $copied += recurse_copy($src . DIRECTORY_SEPARATOR . $file,$dst . DIRECTORY_SEPARATOR . $file);
                 else {
-                    copy($src . '/' . $file, $dst . '/' . $file);
+                    copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
                     $copied++;
                 }
         closedir($dir); 

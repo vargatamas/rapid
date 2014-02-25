@@ -14,9 +14,9 @@
             <input type="hidden" name="library[path]" id="upload-path" class="hidden" />
         </form>
         <div id="lib-tree">
-            <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile">New file</a>&nbsp;
-            <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir">New directory</a>&nbsp;
-            <button class="btn btn-xs btn-primary lib-upload">Upload file(s)</button>
+            <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile"><i class="glyphicon glyphicon-file"></i>&nbsp;New file</a>&nbsp;
+            <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir"><i class="glyphicon glyphicon-folder-close"></i>&nbsp;New directory</a>&nbsp;
+            <button class="btn btn-xs btn-primary lib-upload"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Upload file(s)</button>
             {loop="$tree"}
                 <div class="panel-group" id="accordion-{$counter}">
                     <div class="panel panel-default">
@@ -29,9 +29,9 @@
                                     </a>
                                     <div class="lib-controls pull-right hided">
                                         <a href="{$baseURL}administrator/library/rmdir" class="btn btn-xs btn-default lib-rmdir"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
-                                        <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile">New file</a>&nbsp;
-                                        <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir">New directory</a>&nbsp;
-                                        <button class="btn btn-xs btn-primary lib-upload">Upload file(s)</button>
+                                        <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile"><i class="glyphicon glyphicon-file"></i>&nbsp;New file</a>&nbsp;
+                                        <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir"><i class="glyphicon glyphicon-folder-close"></i>&nbsp;New directory</a>&nbsp;
+                                        <button class="btn btn-xs btn-primary lib-upload"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Upload file(s)</button>
                                     </div>
                                 {else}
                                     <i class="glyphicon glyphicon-file"></i>&nbsp;
@@ -139,9 +139,9 @@
                             </a>
                             <div class="lib-controls pull-right hided">
                                 <a href="{$baseURL}administrator/library/rmdir" class="btn btn-xs btn-default lib-rmdir"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
-                                <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile">New file</a>&nbsp;
-                                <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir">New directory</a>&nbsp;
-                                <button class="btn btn-xs btn-primary lib-upload">Upload file(s)</button>
+                                <a data-toggle="modal" href="#lib-mkfile-modal" class="btn btn-xs btn-primary lib-mkfile"><i class="glyphicon glyphicon-file"></i>&nbsp;New file</a>&nbsp;
+                                <a data-toggle="modal" href="#lib-mkdir-modal" class="btn btn-xs btn-primary lib-mkdir"><i class="glyphicon glyphicon-folder-close"></i>&nbsp;New directory</a>&nbsp;
+                                <button class="btn btn-xs btn-primary lib-upload"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Upload file(s)</button>
                             </div>
                         {else}
                             <i class="glyphicon glyphicon-file"></i>&nbsp;

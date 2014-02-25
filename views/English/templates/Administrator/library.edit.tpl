@@ -27,7 +27,7 @@
             {elseif="'css' == substr($file.filename, -3) || 'less' == substr($file.filename, -4)"}
                 <div class="hidden">{$filetype = " css"}</div>
             {/if}
-            <textarea class="form-control auto-codeview summernote{$filetype}" name="file[content]" id="fileContent" rows="12">{$file.content}</textarea>
+            <textarea class="form-control codemirror{$filetype}" name="file[content]" id="fileContent" rows="12">{$file.content}</textarea>
         </div>
     </div>
     <div class="form-group">

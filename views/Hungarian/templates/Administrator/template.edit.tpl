@@ -23,7 +23,7 @@
     <div class="form-group">
         <label for="templateContent" class="col-lg-2 control-label">Sablon tartalma</label>
         <div class="col-lg-10">
-            <textarea class="form-control summernote auto-codeview" name="template[content]" id="templateContent" rows="12">{$template.content}</textarea>
+            <textarea class="form-control codemirror" name="template[content]" id="templateContent" rows="12">{$template.content}</textarea>
         </div>
     </div>
     <div class="form-group">

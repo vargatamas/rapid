@@ -13,12 +13,13 @@
     
     <div class="collapse navbar-collapse" id="navbar-collapse">
         <ul class="nav navbar-nav">
-            <li class="dropdown{$menu.layoutActive || $menu.linkLayoutsActive || $menu.templatesActive?" active":""}">
+            <li class="dropdown{$menu.layoutActive || $menu.linkLayoutsActive || $menu.templatesActive || $menu.mailsActive?" active":""}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Template Engine <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li{$menu.layoutsActive?' class="active"':''}><a href="{$baseURL}administrator/layouts">Manage Layouts</a></li>
                     <li{$menu.linkLayoutsActive?' class="active"':''}><a href="{$baseURL}administrator/linkLayouts">Link Layouts</a></li>
                     <li{$menu.templatesActive?' class="active"':''}><a href="{$baseURL}administrator/templates">Templates</a></li>
+                    <li{$menu.mailsActive?' class="active"':''}><a href="{$baseURL}administrator/mails">Mails</a></li>
                 </ul>
             </li>
             {if="'' != $navBeans"}
@@ -102,9 +103,11 @@
             <li>Database ORM: <a href="http://redbeanphp.com/" target="_blank">RedBean PHP</a></li>
             <li>UI elements: <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a></li>
             <li>Style compressor: <a href="http://lesscss.org/" target="_blank">LessCSS</a></li>
+            <li>Mail library: <a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHPMailer</a></li>
         </ul>
       </div>
       <div class="modal-footer">
+        <a href="{$baseURL}administrator/">Welcome Page</a>&nbsp;&nbsp;
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         {if="isset($currentVersion)"}
             <a href="{$baseURL}administrator/update" class="btn btn-success">Update to {$currentVersion}</a>
