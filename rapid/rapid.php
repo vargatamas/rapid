@@ -334,13 +334,15 @@
          * Load the attached layout for application.
         */
         private function loadLayout($findDefault = false) {
+            $culture = Rapid::$culture;
             if ( !$findDefault ) {
                 $find = R::findOne('layoutlinks', 'application = ?', array($this->task['application']));
                 if ( $find->id )
-                    return str_replace('.' . Rpd::$c['raintpl']['tpl_ext'], '', $find->layout);
+                    if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.' . $find->layout) )
+                        return str_replace('.' . Rpd::$c['raintpl']['tpl_ext'], '', $find->layout);
+                    else return $this->loadLayout(true);
                 else return $this->loadLayout(true);
             } else {
-                $culture = Rapid::$culture;
                 if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.' . strtolower($this->task['application']) . '.' . Rpd::$c['raintpl']['tpl_ext']) )
                     $return = strtolower($this->task['application']);
                 else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.' . ucfirst($this->task['application']) . '.' . Rpd::$c['raintpl']['tpl_ext']) )
