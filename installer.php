@@ -77,14 +77,14 @@
                                 curl_setopt($ch3, CURLOPT_HTTPHEADER, array('Content-Length: ' . strlen($data)));
                                 @curl_exec($ch3);
                                 $installed = true;
-                            } else $installError = true;
-                        } else $installError = true;
-                    } else $installError = true;
+                            } else $installError = 4;
+                        } else $installError = 3;
+                    } else $installError = 2;
                     @unlink($path);
                     $zip->close();
-                } else $installError = true;
+                } else $installError = 1;
             }
-        } else $installError = true;
+        } else $installError = 0;
     }
     
 ?>
@@ -161,7 +161,14 @@
                             <br />
                             <div class="alert alert-danger">
                                 <strong>Installation error</strong><br />
-                                Something went wrong while trying to install Rapid, please <em>Try again</em>.
+                                <?php switch($installError) {
+                                    case 0:  echo 'Permission error for file / directory or wrong database connection information.'; break;
+                                    case 1:  echo 'Error when trying to open the downloaded ZIP file. Do you server has ZipArchive facility?'; break;
+                                    case 2:  echo 'Error when trying to extract the downloaded ZIP file. Permission denied or ZipArchive extension problem.'; break;
+                                    case 3:  echo 'Rapid was unable to extract the downloaded ZIP file. New directory not created, probably ZipArchive extension error.'; break;
+                                    case 4:  echo 'Error when installing Rapid. Rapid was unable to copy new files into your directory. Probably permission denied.'; break;
+                                    default: echo 'Something went wrong while trying to install Rapid. Please, try again.'; break;
+                                } ?>
                             </div>
                             <br />
                             <a href="" class="btn btn-primary btn-lg">Try again</a>

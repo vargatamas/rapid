@@ -61,7 +61,7 @@
                 <button type="submit" class="btn btn-default">Sign out</button>
             </form>
         {/if}
-        <form method="post" action="" class="navbar-form navbar-right">
+        <form method="post" action="{$baseURL}administrator" class="navbar-form navbar-right">
             <select name="culture[name]" class="form-control culture">
                 {loop="$cultures"}
                     <option value="{$value}"{if="$CULTURE == $value"} selected="selected"{/if}>{$value}</option>
