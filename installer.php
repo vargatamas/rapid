@@ -40,18 +40,26 @@
             $zipURL = $content[0]->zipball_url;
             
             // Download
-            $path = 'rapid.zip';
+            $path = getcwd() . DIRECTORY_SEPARATOR . 'rapid.zip';
             if ( is_file($path) ) @unlink($path);
             $fh = fopen($path, 'w');
-            $ch2 = curl_init();
-            curl_setopt($ch2, CURLOPT_USERAGENT, 'vargatamas');
-            curl_setopt($ch2, CURLOPT_URL, $zipURL); 
-            curl_setopt($ch2, CURLOPT_FILE, $fh); 
-            curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
-            curl_exec($ch2);
-            if ( curl_error($ch2) != '' ) $downloadError = curl_error($ch);
-            curl_close($ch2);
+            
+            $opts = array('http' => array('method' => "GET", 'header' => "User-Agent: vargatamas"));
+            $context = stream_context_create($opts);
+            $zip = file_get_contents($zipURL, false, $context);
+            if ( 0 < strlen($zip) ) fwrite($fh, $zip);
+            else {
+                $ch2 = curl_init();
+                curl_setopt($ch2, CURLOPT_USERAGENT, 'vargatamas');
+                curl_setopt($ch2, CURLOPT_URL, $zipURL); 
+                curl_setopt($ch2, CURLOPT_FILE, $fh); 
+                curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, true);
+                curl_exec($ch2);
+                if ( curl_error($ch2) != '' ) $downloadError = curl_error($ch);
+                curl_close($ch2);
+            }
             fclose($fh);
+            if ( ( !is_file($path) || 0 == filesize($path) ) && !isset($downloadError) ) $downloadError = true;
             
             // Install
             if ( !isset($downloadError) ) {
