@@ -9,8 +9,7 @@
     // Step 1: Permissions
     $tmp = time();
     $permsOk = false;
-    if ( @mkdir($tmp) && @rmdir($tmp) && @file_put_contents($tmp, "") && @unlink($tmp) ) $permsOk = true;
-    die(var_dump($permsOk));
+    if ( @mkdir($tmp) && @rmdir($tmp) && 1 === @file_put_contents($tmp . ".html", "a") && @unlink($tmp . ".html") ) $permsOk = true;
     
     // Step 2: Database
     if ( 4 != count($_SESSION['db']) ) {
@@ -118,7 +117,7 @@
                     <br />
                     <h3>To begin the installation, please check these steps</h3>
                     <ul>
-                        <li>Give file system permission (<em>777</em>) to this file and folder (<em>installer.php</em> and <em><?php print getcwd(); ?></em>).</li>
+                        <li>Give file write permission to this file and folder (<em>installer.php - 644</em> and <em><?php print getcwd(); ?> - 755</em>).</li>
                         <li>Create database and an user for Rapid.</li>
                     </ul>
                     <br /><br />
