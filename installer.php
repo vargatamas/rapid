@@ -7,9 +7,10 @@
     session_start();
     
     // Step 1: Permissions
-    $filePermissions = substr(sprintf('%o', fileperms(__FILE__)), -4);
-    $dirPermissions = substr(sprintf('%o', fileperms(getcwd())), -4);
-    if ( "0777" == $filePermissions && "0777" == $dirPermissions ) $permsOk = true;
+    $tmp = time();
+    $permsOk = false;
+    if ( @mkdir($tmp) && @rmdir($tmp) && @file_put_contents($tmp, "") && @unlink($tmp) ) $permsOk = true;
+    die(var_dump($permsOk));
     
     // Step 2: Database
     if ( 4 != count($_SESSION['db']) ) {
