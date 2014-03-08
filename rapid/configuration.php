@@ -53,7 +53,7 @@
                                                 'siteFile' =>               'site.json',
                                                 
                                                 // If it's true, you can manage the Administrator application via itself (not recommended).
-                                                'editAdmin' =>              true,
+                                                'editAdmin' =>              false,
                                                 
                                                 // The extensions of files which are editable in the Library function of Administrator.
                                                 'libEditables' =>           array('js', 'less', 'css', 'txt'),

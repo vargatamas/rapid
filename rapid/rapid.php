@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.1.3";
+                      $version =        "v1.1.4";
         
         public $task =                  array(),
                $errors =                array();
