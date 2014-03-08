@@ -122,7 +122,7 @@
                     </ul>
                     <br /><br />
                     <h4>Step 1: Permission status</h4>
-                    <div class="alert alert-<?php print ( isset($permsOk) ? "success" : "danger" ); ?>">Give file system permission (<em>777</em>) to this file and folder (<em>installer.php</em> and <em><?php print getcwd(); ?></em>).</div>
+                    <div class="alert alert-<?php print ( isset($permsOk) ? "success" : "danger" ); ?>">Give file write permission to this file and folder (<em>installer.php - 644</em> and <em><?php print getcwd(); ?> - 755</em>).</div>
                     <?php if ( isset($permsOk) ) { ?>
                         <br />
                         <h4>Step 2: Database</h4>
