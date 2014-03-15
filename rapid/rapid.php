@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.1.5";
+                      $version =        "v1.1.6";
         
         public $task =                  array(),
                $errors =                array();
@@ -53,6 +53,7 @@
                     $this->assignSources();
                     $this->assignMeta();
                     $this->assignPreferences();
+                    $buildLevel = $this->buildLevel();
                     if ( $application instanceof RapidAuth && !$application->authenticated ) 
                         $authError = true;
 					else if ( $application->authenticated && $_SESSION['user']['depth'] > eval('return ' . get_class($application) . '::' . Rpd::$c['rapid']['controllerAuthVar'] . ';') )
@@ -76,9 +77,9 @@
                         Rapid::$tpl->assign('LAYOUT_CONTENT', $applicationContent);
                         Rapid::$tpl->draw('frame');
                     } else {
-                        if ( 'application' == $this->buildLevel() ) 
+                        if ( 'application' == $buildLevel ) 
                             print $applicationContent;
-                        else if ( 'layout' == $this->buildLevel() ) {
+                        else if ( 'layout' == $buildLevel ) {
                             $layout = $this->loadLayout();
                             Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $applicationContent . '<!-- application content end -->');
                             Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout);
@@ -393,6 +394,7 @@
                     $return = 'application';
                 else if ( '2' == $this->task['args']['build-level'] || '2' == $_POST['build-level'] )
                     $return = 'layout';
+                unset($this->task['args']['build-level']);
             }
             return $return;
         }
@@ -430,7 +432,8 @@
         public static function getApplications() {
             $applicationsArray = array_diff(scandir('applications'), array('.', '..'));
             foreach ( $applicationsArray as $key => $application )
-                if ( !is_dir('applications' . DIRECTORY_SEPARATOR . $application) ) unset($applicationsArray[$key]);
+                if ( !is_dir('applications' . DIRECTORY_SEPARATOR . $application) || ( 'administrator' == strtolower($application) && !Rpd::$c['rapid']['editAdmin'] ) )
+                    unset($applicationsArray[$key]);
             return $applicationsArray;
         }
 

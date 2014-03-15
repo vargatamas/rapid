@@ -765,6 +765,33 @@ class AdministratorController extends RapidAuth {
                 } else Rpd::a('error', "Something went wrong while trying to save this File. File not edited.");
                 $pathArray = explode('/', str_replace('lib/', '', $path));
                 $this->libraryAction(array_merge(array('view'), $pathArray));
+            } else if ( 'use' == $args[0] ) {
+                if ( 'save' != $args[1] ) {
+                    unset($args[0]);
+                    $path = '/lib' . DIRECTORY_SEPARATOR . join(DIRECTORY_SEPARATOR, $args);
+                    return json_encode(array('path' => $path, 'applications' => Rpd::gA(), 'defaultApp' => Rpd::$c['rapid']['defaultApplication']));
+                } else {
+                    if ( Rpd::nE($_POST['usefile']['path']) && Rpd::nE($_POST['usefile']['application']) ) {
+                        $path = $_POST['usefile']['path'];
+                        $info = pathinfo($path);
+                        $app = $_POST['usefile']['application'];
+                        if ( is_file(substr($path, 1)) && in_array($info['extension'] , array('js', 'css', 'less')) ) {
+                            $sourcepath = 'applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'];
+                            $sources = json_decode(@file_get_contents($sourcepath), true);
+                            if ( false === array_search($path, $sources) ) {
+                                switch ($info['extension']) {
+                                    case 'js':  $sources['javascript'][] = $path; break;
+                                    case 'css':  $sources['css'][] = $path; break;
+                                    case 'less':  $sources['less'][] = $path; break;
+                                }
+                                if ( @file_put_contents($sourcepath, json_encode($sources)) )
+                                    Rpd::a('success', "The selected file is used for <strong>#text#</strong> application from now on.", array($app));
+                                else Rpd::a('error', "Something went wrong while trying to use file. Can not save to sources.");
+                            } else Rpd::a('error', "Something went wrong while trying to use file. This file is already used.");
+                        } else Rpd::a('error', "Something went wrong while trying to use file. File not found or wrong extension: <strong>#text#</strong>.", array($ext));
+                    } else Rpd::a('error', "Something went wrong while trying to use file. Try again.");
+                    $this->libraryAction();
+                }
             } else $this->libraryAction();
         } else {
             $tree = array();

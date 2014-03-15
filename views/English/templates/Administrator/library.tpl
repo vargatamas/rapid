@@ -37,6 +37,7 @@
                                     <i class="glyphicon glyphicon-file"></i>&nbsp;
                                     {$value}
                                     <div class="lib-controls pull-right hided">
+                                        <a data-toggle="modal" href="#" class="btn btn-xs btn-default lib-usefile"><i class="glyphicon glyphicon-paperclip"></i></a>&nbsp;
                                         <a href="{$baseURL}administrator/library/rmfile" class="btn btn-xs btn-default lib-rmfile"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
                                         <a href="{$baseURL}administrator/library/view" class="btn btn-xs btn-default lib-vwfile"><i class="glyphicon glyphicon-pencil"></i></a>
                                     </div>
@@ -57,7 +58,7 @@
                 </div>
             {/loop}
         </div>
-        <!-- Modal -->
+        <!-- Modal: New Directory -->
         <div class="modal fade" id="lib-mkdir-modal" tabindex="-1" role="dialog" aria-labelledby="mkdir-modal-title" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -89,7 +90,7 @@
                 </div>
             </div>
         </div>
-        <!-- Modal -->
+        <!-- Modal: New File -->
         <div class="modal fade" id="lib-mkfile-modal" tabindex="-1" role="dialog" aria-labelledby="mkfile-modal-title" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -121,6 +122,38 @@
                 </div>
             </div>
         </div>
+        <!-- Modal: Use file -->
+        <div class="modal fade" id="lib-usefile-modal" tabindex="-1" role="dialog" aria-labelledby="usefile-modal-title" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form-horizontal" role="form" method="post" action="{$baseURL}administrator/library/use/save">
+                  <input type="hidden" name="usefile[path]" id="use-file-path-input" class="hided" />
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="usefile-modal-title">Use this file</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-lg-4 control-label">File</label>
+                        <div class="col-lg-8">
+                            <p class="form-control-static" id="use-file-path"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="use-file-app" class="col-lg-4 control-label">Application</label>
+                        <div class="col-lg-8">
+                            <select id="use-file-app" name="usefile[application]" class="form-control"></select>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+              </form>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     {else}
         <div class="alert alert-info">
             <strong>Can not scan Library</strong>, probably some permission problem happened.
@@ -147,6 +180,7 @@
                             <i class="glyphicon glyphicon-file"></i>&nbsp;
                             {$value}
                             <div class="lib-controls pull-right hided">
+                                <a data-toggle="modal" href="#" class="btn btn-xs btn-default lib-usefile"><i class="glyphicon glyphicon-paperclip"></i></a>&nbsp;
                                 <a href="{$baseURL}administrator/library/rmfile" class="btn btn-xs btn-default lib-rmfile"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
                                 <a href="{$baseURL}administrator/library/view" class="btn btn-xs btn-default lib-vwfile"><i class="glyphicon glyphicon-pencil"></i></a>
                             </div>

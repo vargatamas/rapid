@@ -37,6 +37,7 @@
                                     <i class="glyphicon glyphicon-file"></i>&nbsp;
                                     {$value}
                                     <div class="lib-controls pull-right hided">
+                                        <a data-toggle="modal" href="#" class="btn btn-xs btn-default lib-usefile"><i class="glyphicon glyphicon-paperclip"></i></a>&nbsp;
                                         <a href="{$baseURL}administrator/library/rmfile" class="btn btn-xs btn-default lib-rmfile"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
                                         <a href="{$baseURL}administrator/library/view" class="btn btn-xs btn-default lib-vwfile"><i class="glyphicon glyphicon-pencil"></i></a>
                                     </div>
@@ -57,7 +58,7 @@
                 </div>
             {/loop}
         </div>
-        <!-- Modal -->
+        <!-- Modal: Új könyvtár -->
         <div class="modal fade" id="lib-mkdir-modal" tabindex="-1" role="dialog" aria-labelledby="mkdir-modal-title" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -89,7 +90,7 @@
                 </div>
             </div>
         </div>
-        <!-- Modal -->
+        <!-- Modal: Új fájl -->
         <div class="modal fade" id="lib-mkfile-modal" tabindex="-1" role="dialog" aria-labelledby="mkfile-modal-title" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -121,6 +122,38 @@
                 </div>
             </div>
         </div>
+        <!-- Modal: Fájl használata -->
+        <div class="modal fade" id="lib-usefile-modal" tabindex="-1" role="dialog" aria-labelledby="usefile-modal-title" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form-horizontal" role="form" method="post" action="{$baseURL}administrator/library/use/save">
+                  <input type="hidden" name="usefile[path]" id="use-file-path-input" class="hided" />
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="usefile-modal-title">Fájl használata</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-lg-4 control-label">Fájl</label>
+                        <div class="col-lg-8">
+                            <p class="form-control-static" id="use-file-path"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="use-file-app" class="col-lg-4 control-label">Alkalmazás</label>
+                        <div class="col-lg-8">
+                            <select id="use-file-app" name="usefile[application]" class="form-control"></select>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
+                    <button type="submit" class="btn btn-primary">Mentés</button>
+                  </div>
+              </form>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     {else}
         <div class="alert alert-info">
             <strong>Nem lehet átnézni a könyvtárat</strong>, feltehetőleg jogosultsági probléma lépett fel.
@@ -147,6 +180,7 @@
                             <i class="glyphicon glyphicon-file"></i>&nbsp;
                             {$value}
                             <div class="lib-controls pull-right hided">
+                                <a data-toggle="modal" href="#" class="btn btn-xs btn-default lib-usefile"><i class="glyphicon glyphicon-paperclip"></i></a>&nbsp;
                                 <a href="{$baseURL}administrator/library/rmfile" class="btn btn-xs btn-default lib-rmfile"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;
                                 <a href="{$baseURL}administrator/library/view" class="btn btn-xs btn-default lib-vwfile"><i class="glyphicon glyphicon-pencil"></i></a>
                             </div>
