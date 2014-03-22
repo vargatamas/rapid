@@ -72,7 +72,9 @@
 </nav>
 
 <div class="container">
-    {$APPLICATION_CONTENT}
+    <div class="well">
+        {$APPLICATION_CONTENT}
+    </div>
 </div>
 
 <!-- Modal -->

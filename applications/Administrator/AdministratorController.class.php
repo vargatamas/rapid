@@ -778,17 +778,26 @@ class AdministratorController extends RapidAuth {
                         if ( is_file(substr($path, 1)) && in_array($info['extension'] , array('js', 'css', 'less')) ) {
                             $sourcepath = 'applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'];
                             $sources = json_decode(@file_get_contents($sourcepath), true);
-                            if ( false === array_search($path, $sources) ) {
-                                switch ($info['extension']) {
-                                    case 'js':  $sources['javascript'][] = $path; break;
-                                    case 'css':  $sources['css'][] = $path; break;
-                                    case 'less':  $sources['less'][] = $path; break;
-                                }
+                            switch ($info['extension']) {
+                                case 'js':  
+                                    if ( false === in_array($path, $sources['javascripts']) ) $sources['javascripts'][] = $path;
+                                    else $alreadyUsed = tre;
+                                    break;
+                                case 'css':
+                                    if ( false === in_array($path, $sources['stylesheets']) ) $sources['stylesheets'][] = $path;
+                                    else $alreadyUsed = tre;
+                                    break;
+                                case 'less':
+                                    if ( false === in_array($path, $sources['less']) ) $sources['less'][] = $path;
+                                    else $alreadyUsed = tre;
+                                    break;
+                            }
+                            if ( !isset($alreadyUsed) ) {
                                 if ( @file_put_contents($sourcepath, json_encode($sources)) )
                                     Rpd::a('success', "The selected file is used for <strong>#text#</strong> application from now on.", array($app));
                                 else Rpd::a('error', "Something went wrong while trying to use file. Can not save to sources.");
-                            } else Rpd::a('error', "Something went wrong while trying to use file. This file is already used.");
-                        } else Rpd::a('error', "Something went wrong while trying to use file. File not found or wrong extension: <strong>#text#</strong>.", array($ext));
+                            } else Rpd::a('error', "Something went wrong while trying to use file. This file is already in use.");
+                        } else Rpd::a('error', "Something went wrong while trying to use file. File not found or wrong extension: <strong>#text#</strong>.", array($info['extension']));
                     } else Rpd::a('error', "Something went wrong while trying to use file. Try again.");
                     $this->libraryAction();
                 }
@@ -1266,7 +1275,7 @@ class AdministratorController extends RapidAuth {
                 fclose($fh);
             }
             if ( !is_file($path) )
-                Rpd::a('error', "Something went wrong while trying to download Update.#text#", array(( isset($downloadError) ? "Message: <em>" . $downloadError . "</em>." : "" )));
+                Rpd::a('error', "Something went wrong while trying to download Update. #text#", array(( isset($downloadError) ? "Message: <em>" . $downloadError . "</em>." : "" )));
             else Rpd::a('success', "The new version of Rapid is downloaded (at #text#) successful, the filesize is #text# MB. This version is not installed yet, click on <em>Install Update</em> to confirm update.", array(date("Y. m. d. - H:i:s", filemtime($path)), number_format(filesize($path) / 1048576, 2)));
         } else {
             $updater = Rpd::$c['rapid']['updaterFile'];
