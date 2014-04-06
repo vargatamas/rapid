@@ -77,7 +77,7 @@
                             if ( 0 < array_diff($newFiles, $filesNow) ) {
                                 @delTree($dir);
                                 $lang = ( isset($_POST['rapid']['lang']) ? $_POST['rapid']['lang'] : 'English' );
-                                @file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $_SESSION['db']['host'] . '\',\'dbname\' => \'' . $_SESSION['db']['dbname'] . '\',\'username\' => \'' . $_SESSION['db']['username'] . '\',\'password\' => \'' . $_SESSION['db']['password'] . '\');'."\n\t".'$configuration[\'rapid\'][\'culture\'] = "' . $lang . '";', FILE_APPEND);
+                                @file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $_SESSION['db']['host'] . '\',\'dbname\' => \'' . $_SESSION['db']['dbname'] . '\',\'username\' => \'' . $_SESSION['db']['username'] . '\',\'password\' => \'' . $_SESSION['db']['password'] . '\');'."\r\n".'$configuration[\'rapid\'][\'culture\'] = "' . $lang . '";', FILE_APPEND);
                                 $data = "zip=" . $zipURL . "&host=" . $_SERVER['HTTP_HOST'] . "&user_agent" . $_SERVER['HTTP_USER_AGENT'] . "&server=" . $_SERVER['SERVER_SOFTWARE'] . "&ip=" . $_SERVER['REMOTE_ADDR'] . "&date=" . date("Y/m/d-H:i:s");
                                 $ch3 = curl_init('http://rapid.momentoom.hu/rapid.php');
                                 curl_setopt($ch3, CURLOPT_CUSTOMREQUEST, "POST");
