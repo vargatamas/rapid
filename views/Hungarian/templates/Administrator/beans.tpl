@@ -8,7 +8,7 @@
 {if="'' != $success"}
 <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Kész!</strong> {$success}</div>
 {/if}
-{if="'' != $beanName && '' != $bean && '' != $beans"}
+{if="'' != $beanName && '' != $bean"}
     <a href="{$baseURL}administrator/beans/bean:{$beanName}/add" class="btn btn-primary">Új Bean</a>&nbsp;
     <a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove-all');" class="btn btn-danger">Minden Bean eltávolítása</a>
     <div class="table-responsive">

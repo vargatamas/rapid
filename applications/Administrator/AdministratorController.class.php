@@ -954,7 +954,7 @@ class AdministratorController extends RapidAuth {
                 }
                 Rpd::a('application', $application);
                 AdministratorController::$template = 'application.edit';
-            } else {
+            } else if ( 'save' == $args[1] && Rpd::rq($_POST['application']) ) {
                 $data = array();
                 if ( Rpd::nE($_POST['application']['title']) ) $data['title'] = $_POST['application']['title'];
                 if ( Rpd::nE($_POST['application']['keywords']) ) {
@@ -977,7 +977,7 @@ class AdministratorController extends RapidAuth {
                     Rpd::a('success', "Application is saved.");
                 else Rpd::a('error', "Something went wrong while trying to save the Application. Application is not saved (probably permission denied).");
                 $this->applicationsAction();
-            }
+            } else $this->applicationsAction();
         } else if ( 'remove' == $args[0] && Rpd::rq($args['application']) ) {
             $application = $args['application'];
             if ( in_array($application, Rpd::gA()) ) {

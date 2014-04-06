@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.1.7";
+                      $version =        "v1.1.8";
         
         public $task =                  array(),
                $errors =                array();
@@ -27,8 +27,8 @@
             spl_autoload_register('Rapid::autoload');
 
             // RedBean
-            if ( is_file(Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.php') ) {
-                require_once Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.php';
+            if ( is_file(Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.phar') ) {
+                require_once Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.phar';
                 if ( Rpd::rq(Rpd::$c['db']) && 0 < count(Rpd::$c['db']) )
                     R::setup('mysql:host=' . Rpd::$c['db']['host'] . ';dbname=' . Rpd::$c['db']['dbname'], Rpd::$c['db']['username'], Rpd::$c['db']['password']);
                 else {
@@ -293,7 +293,7 @@
                     $application = new $this->task['controller']();
                 } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . "</em>.";
             } else {
-                if ( isset(Rpd::$c['rapid']) && isset(Rpd::$c['rapid']['defaultApplication']) && $action = Rpd::$c['rapid']['defaultApplication'] ) {
+                if ( isset(Rpd::$c['rapid']['defaultApplication']) && $action = Rpd::$c['rapid']['defaultApplication'] ) {
                     if ( is_file('applications' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $action . 'Controller.class.php') ) {
                         require_once 'applications' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $action . 'Controller.class.php';
                         $this->task['controller'] = $action . 'Controller';
@@ -580,14 +580,26 @@
         
         // Checks if $field is empty.
         public static function nonEmpty($field) {
-            if ( empty($field) ) return false;
-            return true;
+            if ( is_array($field) ) {
+                $return = true;
+                foreach ( $field as $item ) if ( empty($item) ) $return = false;
+                return $return;
+            } else {
+                if ( empty($field) ) return false;
+                return true;
+            }
         }
         
         // Checks if $field is set.
         public static function required($field) {
-            if ( null === $field ) return false;
-            return true;
+            if ( is_array($field) ) {
+                $return = true;
+                foreach ( $field as $item ) if ( null == $item ) $return = false;
+                return $return;
+            } else {
+                if ( null === $field ) return false;
+                return true;
+            }
         }
         
         // Checks the minimum $lenght of $field.
