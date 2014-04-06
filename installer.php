@@ -76,7 +76,8 @@
                             $newFiles = array_diff(scandir(getcwd()), array('.', '..'));
                             if ( 0 < array_diff($newFiles, $filesNow) ) {
                                 @delTree($dir);
-                                @file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $_SESSION['db']['host'] . '\',\'dbname\' => \'' . $_SESSION['db']['dbname'] . '\',\'username\' => \'' . $_SESSION['db']['username'] . '\',\'password\' => \'' . $_SESSION['db']['password'] . '\');', FILE_APPEND);
+                                $lang = ( isset($_POST['rapid']['lang']) ? $_POST['rapid']['lang'] : 'English' );
+                                @file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $_SESSION['db']['host'] . '\',\'dbname\' => \'' . $_SESSION['db']['dbname'] . '\',\'username\' => \'' . $_SESSION['db']['username'] . '\',\'password\' => \'' . $_SESSION['db']['password'] . '\');\n\t$configuration[\'rapid\'][\'culture\'] = "' . $lang . '";', FILE_APPEND);
                                 $data = "zip=" . $zipURL . "&host=" . $_SERVER['HTTP_HOST'] . "&user_agent" . $_SERVER['HTTP_USER_AGENT'] . "&server=" . $_SERVER['SERVER_SOFTWARE'] . "&ip=" . $_SERVER['REMOTE_ADDR'] . "&date=" . date("Y/m/d-H:i:s");
                                 $ch3 = curl_init('http://rapid.momentoom.hu/rapid.php');
                                 curl_setopt($ch3, CURLOPT_CUSTOMREQUEST, "POST");
@@ -192,6 +193,15 @@
                             <form action="" method="post" id="form-install">
                                 <input type="hidden" class="hided" name="install">
                                 <br />
+                                <div class="row">
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                                        <label for="language">Language</label>
+                                        <select class="form-control" id="language" name="rapid[lang]">
+                                            <option value="English" selected="selected">English</option>
+                                            <option value="Hungarian">Hungarian</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="text-center">
                                     <button type="button" onclick="this.innerHTML = 'Downloading and Installing ..';this.disabled = true;document.getElementById('form-install').submit();" class="btn btn-primary btn-lg">Download &amp; Install</button>
                                 </div>
