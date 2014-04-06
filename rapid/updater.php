@@ -96,7 +96,7 @@
 					</div>
 				<?php } ?>
 				<?php if ( !isset($_GET['start']) || isset($noItem) ) { ?>
-					<form class="form-horizontal" method="post" action="?start" id="update" role="form">
+					<form class="form-horizontal" method="post" action="?start" id="form-update" role="form">
 						<div class="form-group">
 							<label for="admin-app" class="col-lg-3 control-label">Administrator application</label>
 							<div class="col-lg-9">
