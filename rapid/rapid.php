@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.2.2";
+                      $version =        "v1.2.3";
         
         public $task =                  array(),
                $errors =                array();
@@ -575,26 +575,14 @@
         
         // Checks if $field is empty.
         public static function nonEmpty($field) {
-            if ( is_array($field) ) {
-                $return = true;
-                foreach ( $field as $item ) if ( empty($item) ) $return = false;
-                return $return;
-            } else {
-                if ( empty($field) ) return false;
-                return true;
-            }
+            if ( empty($field) ) return false;
+            return true;
         }
         
         // Checks if $field is set.
         public static function required($field) {
-            if ( is_array($field) ) {
-                $return = true;
-                foreach ( $field as $item ) if ( null == $item ) $return = false;
-                return $return;
-            } else {
-                if ( null === $field ) return false;
-                return true;
-            }
+            if ( null === $field ) return false;
+            return true;
         }
         
         // Checks the minimum $lenght of $field.
