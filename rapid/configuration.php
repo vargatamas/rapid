@@ -29,7 +29,7 @@
                                                 'controllerTemplateVar' =>  '$template',
                                                 
                                                 // The default layout of applications when not set.
-                                                'defaultLayout' =>          'default',
+                                                'defaultLayout' =>          'home',
                                                 
                                                 // The filename of the sources for applications.
                                                 'sourcesFile' =>            'sources.json',

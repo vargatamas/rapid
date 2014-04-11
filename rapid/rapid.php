@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.2.1";
+                      $version =        "v1.2.2";
         
         public $task =                  array(),
                $errors =                array();
@@ -210,11 +210,7 @@
             if ( !Rpd::rq($routing) ) {
                 $this->task['controller'] = ( !empty($pathArray[0]) ? $pathArray[0] : Rpd::$c['rapid']['defaultApplication'] );
                 if ( !empty($pathArray[1]) ) $this->task['action'] = $pathArray[1];
-                else {
-                    if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['defaultApplication'] . DIRECTORY_SEPARATOR . $pathArray[0] . '.' . Rpd::$c['raintpl']['tpl_ext']) )
-                        $this->task['action'] = $pathArray[0];
-                    else $this->task['action'] = Rpd::$c['rapid']['defaultAction'];
-                }
+                else $this->task['action'] = $pathArray[0];
                 $this->createArgs($pathArray);
             } else {
                 $this->task['controller'] = $routing[0];
@@ -293,13 +289,12 @@
                     $application = new $this->task['controller']();
                 } else $this->errors[] = "Error in Rapid class loadApplication function: the <em>" . $this->task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . strtolower($this->task['controller']) . "</em>.";
             } else {
-                if ( isset(Rpd::$c['rapid']['defaultApplication']) && $action = Rpd::$c['rapid']['defaultApplication'] ) {
-                    if ( is_file('applications' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $action . 'Controller.class.php') ) {
-                        require_once 'applications' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $action . 'Controller.class.php';
-                        $this->task['controller'] = $action . 'Controller';
-                        $application = new $this->task['controller']();
-                    } else $this->errors[] = "Error in Rapid class loadApplication function: defaultApplication is defined (<em>" . Rpd::$c['rapid']['defaultApplication'] . "</em>), but does not exists in applications dir.";
-                } else $this->errors[] = "Error in Rapid class loadApplication function: defaultApplication not defined in configuration file.";
+                $defAction = Rpd::$c['rapid']['defaultApplication'];
+                if ( is_file('applications' . DIRECTORY_SEPARATOR . $defAction . DIRECTORY_SEPARATOR . $defAction . 'Controller.class.php') ) {
+                    require_once 'applications' . DIRECTORY_SEPARATOR . $defAction . DIRECTORY_SEPARATOR . $defAction . 'Controller.class.php';
+                    $this->task['controller'] = $defAction . 'Controller';
+                    $application = new $this->task['controller']();
+                } else $this->errors[] = "Error in Rapid class loadApplication function: defaultApplication is defined (<em>" . Rpd::$c['rapid']['defaultApplication'] . "</em>), but does not exists in applications dir.";
             }
             $this->task['application'] = str_replace('Controller', '', $this->task['controller']);
             return $application;

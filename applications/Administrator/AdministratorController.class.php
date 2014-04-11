@@ -1114,6 +1114,8 @@ class AdministratorController extends RapidAuth {
                     Rpd::a('preferences', $siteArray);
             } else @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile'], json_encode(array('titlePrefix'=>"",'author'=>"",'favicon'=>"")));
         } else if ( 'save' == $args[0] ) {
+            if ( Rpd::rq($_POST['preferences']['indexing']) ) @file_put_contents('robots.txt', "User-agent: *\r\nDisallow: /\r\nDisallow: /cgi-bin/");
+            else if ( is_file('robots.txt') ) @unlink('robots.txt');
             if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile']) ) {
                 if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile'], json_encode($_POST['preferences'])) )
                     Rpd::a('success', "The Preferences are saved.");

@@ -28,6 +28,15 @@
         </div>
     </div>
     <div class="form-group">
+		<label for="indexing" class="col-lg-2 control-label">Indexing</label>
+		<div class="col-lg-10">
+			<div class="checkbox">
+				<input type="checkbox" name="preferences[indexing]" id="indexing"{if="isset($preferences.indexing)"} checked="checked"{/if} />
+			</div>
+            <p class="help-block">Allow search engines to index this Site.</p>
+		</div>
+    </div>
+    <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
             <button type="submit" class="btn btn-primary">Save</button>&nbsp;
         </div>
