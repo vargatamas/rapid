@@ -40,7 +40,7 @@
             <li class="dropdown{$menu.sourcesActive || $menu.libraryActive?" active":""}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Fájlok <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li{$menu.sourcesActive?' class="active"':''}><a href="{$baseURL}administrator/sources">Források</a></li>
+                    <li{$menu.appSourcesActive?' class="active"':''}><a href="{$baseURL}administrator/sources">Alkalmazás Források</a></li>
                     <li{$menu.libraryActive?' class="active"':''}><a href="{$baseURL}administrator/library">Könyvtár</a></li>
                 </ul>
             </li>
@@ -52,6 +52,7 @@
                     <li{$menu.translationsActive?' class="active"':''}><a href="{$baseURL}administrator/translations">Fordítások</a></li>
                     <li{$menu.languagesActive?' class="active"':''}><a href="{$baseURL}administrator/languages">Nyelvek</a></li>
                     <li{$menu.preferencesActive?' class="active"':''}><a href="{$baseURL}administrator/preferences">Beállítások</a></li>
+                    <li{$menu.globalSourcesActive?' class="active"':''}><a href="{$baseURL}administrator/globalsources">Globális Források</a></li>
                 </ul>
             </li>
         </ul>

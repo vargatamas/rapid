@@ -40,7 +40,7 @@
             <li class="dropdown{$menu.sourcesActive || $menu.libraryActive?" active":""}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Files <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li{$menu.sourcesActive?' class="active"':''}><a href="{$baseURL}administrator/sources">Sources</a></li>
+                    <li{$menu.appSourcesActive?' class="active"':''}><a href="{$baseURL}administrator/sources">Application Sources</a></li>
                     <li{$menu.libraryActive?' class="active"':''}><a href="{$baseURL}administrator/library">Library</a></li>
                 </ul>
             </li>
@@ -52,6 +52,7 @@
                     <li{$menu.translationsActive?' class="active"':''}><a href="{$baseURL}administrator/translations">Translations</a></li>
                     <li{$menu.languagesActive?' class="active"':''}><a href="{$baseURL}administrator/languages">Languages</a></li>
                     <li{$menu.preferencesActive?' class="active"':''}><a href="{$baseURL}administrator/preferences">Preferences</a></li>
+                    <li{$menu.globalSourcesActive?' class="active"':''}><a href="{$baseURL}administrator/globalsources">Global Sources</a></li>
                 </ul>
             </li>
         </ul>

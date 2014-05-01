@@ -1,5 +1,11 @@
-<h1>Edit Application Sources</h1>
-<form method="post" action="{$baseURL}administrator/sources/edit/application:{$application}/save" class="form-horizontal" role="form">
+<h1>Edit Global Sources</h1>
+{if="'' != $error"}
+<div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
+{/if}
+{if="'' != $success"}
+<div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Success!</strong> {$success}</div>
+{/if}
+<form method="post" action="{$baseURL}administrator/globalsources/save" class="form-horizontal" role="form">
     <div class="form-group">
         <label for="javascripts" class="col-lg-2 control-label">Javascripts</label>
         <div class="col-lg-10">
@@ -82,9 +88,9 @@
             {if="$writable"}
                 <button type="submit" class="btn btn-primary">Save</button>&nbsp;
             {else}
-                <div class="alert alert-warning"><strong>Warning!</strong> You can not Save this Source because it is non-writable.</div>
+                <div class="alert alert-warning"><strong>Warning!</strong> You can not Save this Global Source because it is non-writable.</div>
             {/if}
-            <a href="{$baseURL}administrator/sources">Cancel and back to list</a>
+            <a href="{$baseURL}administrator/globalsources">Cancel and back to list</a>
         </div>
     </div>
 </form>

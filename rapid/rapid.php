@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.2.3";
+                      $version =        "v1.2.4";
         
         public $task =                  array(),
                $errors =                array();
@@ -56,9 +56,10 @@
                     $buildLevel = $this->buildLevel();
                     if ( $application instanceof RapidAuth && !$application->authenticated ) 
                         $authError = true;
-					else if ( $application->authenticated && $_SESSION['user']['depth'] > eval('return ' . get_class($application) . '::' . Rpd::$c['rapid']['controllerAuthVar'] . ';') )
+					else if ( $application->authenticated && $_SESSION['user']['depth'] > eval('return ' . get_class($application) . '::' . Rpd::$c['rapid']['controllerAuthVar'] . ';') ) {
 						$applicationContent = "Permission denied. Your account level is not acceptable here.";
-                    else {
+                        //$authError = true;
+                    } else {
                         if ( null !== $action && !isset($this->task['static']) ) {
                             $return = $application->$action($this->task['args']);
                             $template = eval('return (isset(' . $this->task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ')?' . $this->task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ':"' . strtolower(str_replace('Action', '', $this->task['action'])) . '");');
@@ -133,7 +134,8 @@
                                                 'libEditables' => array('js', 'less', 'css', 'txt'),
 												'updaterFile' => 'updater.php',
 												'installerFile' => 'creator.php',
-                                                'mailsDir' => 'mails' . DIRECTORY_SEPARATOR
+                                                'mailsDir' => 'mails' . DIRECTORY_SEPARATOR,
+                                                'globalSourcesFile' => 'global-sources.json'
                                             );
                 Rpd::$c['db'] = array();
             }
@@ -353,10 +355,20 @@
          *  Check if the application own sources and load them.
         */ 
         private function assignSources() {
-            if ( is_file('applications' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile']) ) {
-                $sources = json_decode(file_get_contents('applications' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile']), true);
-                Rapid::assign('SOURCES', $sources);
-            }
+            if ( is_file('applications' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['globalSourcesFile']) )
+                $globalSources = json_decode(file_get_contents('applications' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['globalSourcesFile']), true);
+            else $globalSources = array('javascripts' => array(), 'stylesheets' => array(), 'less' => array());
+            if ( is_file('applications' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile']) )
+                $appSources = json_decode(file_get_contents('applications' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile']), true);
+            else $appSources = array('javascripts' => array(), 'stylesheets' => array(), 'less' => array());
+            $sources = array('javascripts' => array(), 'stylesheets' => array(), 'less' => array());
+            foreach ( $globalSources as $sourceType => $item )
+                foreach ( $item as $source )
+                    if ( !empty($source) && !in_array($source, $sources[$sourceType]) ) $sources[$sourceType][] = $source;
+            foreach ( $appSources as $sourceType => $item )
+                foreach ( $item as $source )
+                    if ( !empty($source) && !in_array($source, $sources[$sourceType]) ) $sources[$sourceType][] = $source;
+            Rapid::assign('SOURCES', $sources);
         }
 
         /**
@@ -416,6 +428,15 @@
             if ( is_file($calldir . $class . '.class.php') ) $require = $class;
             else if ( is_file($calldir . strtolower($class) . '.class.php') ) $require = strtolower($class);
             else if ( is_file($calldir . ucfirst($class) . '.class.php') ) $require = ucfirst($class);
+            else if ( -1 < strpos($class, 'Controller') ) {
+                $app = substr($class, 0, strpos($class, 'Controller'));
+                if ( is_file('applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . $class . '.class.php') )
+                    require_once 'applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . $class . '.class.php';
+            } else if ( -1 < strpos($class, 'Modell') ) {
+                $app = substr($class, 0, strpos($class, 'Modell'));
+                if ( is_file('applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . $class . '.class.php') )
+                    require_once 'applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . $class . '.class.php';
+            }
             if ( isset($require) ) require_once $calldir . $require . '.class.php';
             else return false;
         }

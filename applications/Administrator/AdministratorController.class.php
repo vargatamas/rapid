@@ -513,7 +513,7 @@ class AdministratorController extends RapidAuth {
                     $beansArray[] = $cBeans;
                 }
                 
-                $items = 1;
+                $items = 30;
                 $start = ( 0 <= intval($args['start']) && count($beansArray) > intval($args['start']) ? intval($args['start']) : 0 );
                 if ( ($start + $items) < count($beansArray) ) Rpd::a('nextStart', ($start + $items));
                 foreach ( $beansArray as $key => $item ) if ( $start > $key || ($start + $items) <= $key ) unset($beansArray[$key]);
@@ -600,7 +600,7 @@ class AdministratorController extends RapidAuth {
      * Edit the Applications' sources.
     */ 
     public function sourcesAction($args = array()) {
-        Rpd::a('menu', array('sourcesActive' => true));
+        Rpd::a('menu', array('appSourcesActive' => true));
         
         if ( '' == $args[0] ) {
             // List
@@ -629,7 +629,7 @@ class AdministratorController extends RapidAuth {
                 Rpd::a('writable', is_writable($sourcePath));
                 Rpd::a('sourceContent', $sourceContent);                
                 AdministratorController::$template = 'source.edit';                
-            } else {
+            } else if ( 'save' == $args[1] && Rpd::nE($_POST['source']) ) {
                 $content = array('javascripts' => array(), 'stylesheets' => array(), 'less' => array());
                 if ( Rpd::rq($_POST['source']) ) {
                     if ( Rpd::rq($_POST['source']['javascripts']) )
@@ -646,7 +646,7 @@ class AdministratorController extends RapidAuth {
                     Rpd::a('success', "The Sources are saved.");
                 else Rpd::a('error', "Something went wrong whily trying to save Sources. Sources does not changed.");
                 $this->sourcesAction();
-            }
+            } else $this->sourcesAction();
         } else if ( 'clear' == $args[0] && Rpd::rq($args['application']) ) {
             $application = $args['application'];
             if ( @file_put_contents('applications' . DIRECTORY_SEPARATOR . $application . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'], "{\"javascripts\":[],\"stylesheets\":[],\"less\":[]}") )
@@ -1233,6 +1233,38 @@ class AdministratorController extends RapidAuth {
                 $this->languagesAction();
             }
         } else $this->languagesAction();
+    }
+
+    public function globalsourcesAction($args = array()) {
+        Rpd::a('menu', array('globalSourcesActive' => true));
+        
+        $sourcePath = 'applications' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['globalSourcesFile'];
+        if ( !@is_file($sourcePath) ) @file_put_contents($sourcePath, json_encode(array('javascripts' => array(), 'stylesheets' => array(), 'less' => array())));
+        if ( 'save' != $args[0] ) {
+            if ( @file_get_contents($sourcePath) )
+                $sourceContent = json_decode(file_get_contents($sourcePath), true);
+            else $sourceContent = array('javascripts' => array(), 'stylesheets' => array(), 'less' => array());
+            if ( @is_file($sourcePath) ) Rpd::a('last_modified', date('Y-m-d H:i:s', filemtime($sourcePath)));
+            Rpd::a('writable', is_writable($sourcePath));
+            Rpd::a('sourceContent', $sourceContent);
+        } else {
+            $content = array('javascripts' => array(), 'stylesheets' => array(), 'less' => array());
+            if ( Rpd::rq($_POST['source']) ) {
+                if ( Rpd::rq($_POST['source']['javascripts']) )
+                    foreach ( $_POST['source']['javascripts'] as $source )
+                        if ( !empty($source) ) $content['javascripts'][] = $source;
+                if ( Rpd::rq($_POST['source']['stylesheets']) )
+                    foreach ( $_POST['source']['stylesheets'] as $source )
+                        if ( !empty($source) ) $content['stylesheets'][] = $source;
+                if ( Rpd::rq($_POST['source']['less']) )
+                    foreach ( $_POST['source']['less'] as $source )
+                        if ( !empty($source) ) $content['less'][] = $source;
+            }
+            if ( @file_put_contents($sourcePath, json_encode($content)) )
+                Rpd::a('success', "The Global Sources are saved.");
+            else Rpd::a('error', "Something went wrong whily trying to save Global Sources. Global Sources does not changed.");
+            $this->globalsourcesAction();
+        }
     }
 
     /**

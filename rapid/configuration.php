@@ -65,7 +65,10 @@
 												'installerFile' =>			'installer.php',
                                                 
                                                 // The path of the mail templates directory relative from tpl_dir DIRECTORY_SEPARATOR language.
-                                                'mailsDir' =>                'mails' . DIRECTORY_SEPARATOR
+                                                'mailsDir' =>                'mails' . DIRECTORY_SEPARATOR,
+                                                
+                                                // The filename of the global sources file for site.
+                                                'globalSourcesFile' =>       'global-sources.json'
                                             )
                     );
 	

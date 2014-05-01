@@ -1,4 +1,4 @@
-<h1>Források szerkesztése</h1>
+<h1>Alkalmazás Források szerkesztése</h1>
 <form method="post" action="{$baseURL}administrator/sources/edit/application:{$application}/save" class="form-horizontal" role="form">
     <div class="form-group">
         <label for="javascripts" class="col-lg-2 control-label">Javascript fájlok</label>

@@ -1,4 +1,4 @@
-<h1>Források menedzselése</h1>
+<h1>Alkalmazás Források menedzselése</h1>
 <h5>Szeretnél néhány egyedülálló javascript plugint vagy stílusfájlt az alkalmazásodnak? Rögzítsd ezeket a Forrásokat.</h5>
 <br /><br />
 {if="'' != $error"}
@@ -41,6 +41,6 @@
     </div>
 {else}
     <div class="alert alert-info">
-        <strong>Nincsenek Források</strong> hozzáadva.
+        <strong>Nincsenek Alkalmazás Források</strong> hozzáadva.
     </div>
 {/if}

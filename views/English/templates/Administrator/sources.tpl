@@ -1,4 +1,4 @@
-<h1>Manage Sources</h1>
+<h1>Manage Application Sources</h1>
 <h5>Do you want some unique javascript plugin or an out-standing css for your application? Attach these Sources.</h5>
 <br /><br />
 {if="'' != $error"}
@@ -41,6 +41,6 @@
     </div>
 {else}
     <div class="alert alert-info">
-        <strong>No Sources</strong> found.
+        <strong>No Application Sources</strong> found.
     </div>
 {/if}
