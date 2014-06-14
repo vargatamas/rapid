@@ -1,11 +1,12 @@
-<br /><br />
-<div class="container">
+<div id="background-image"></div>
+
+<div class="container content-area">
     <div class="well text-center">
         <h1>Please sign in&nbsp;<small>to run application</small></h1>
         <form method="post" action="" class="form-inline" role="form">
             <div class="form-group">
                 <label class="sr-only" for="username">Username</label>
-                <input type="text" name="auth[username]" class="form-control" id="username" placeholder="username" />
+                <input type="text" name="auth[username]" class="form-control" id="username" autofocus placeholder="username" />
             </div>
             <div class="form-group">
                 <label class="sr-only" for="password">Password</label>

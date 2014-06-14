@@ -33,7 +33,7 @@
         </table>
     </div>
     {if="isset($prevStart) || isset($nextStart) || isset($page)"}
-        <div class="container text-center">
+        <div class="text-center">
             <strong>{$page}. page</strong><br /><br />
             <div class="btn-group">
                 {if="isset($prevStart)"}

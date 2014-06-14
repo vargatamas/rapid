@@ -49,8 +49,8 @@ html, body {
 #background-image {
     z-index: -999;
     min-height: 100%;
-    background: url('/lib/images/background.png') center center repeat;
-    background-size: 800px 250px;
+    background: url('/lib/images/background.jpg') center center no-repeat;
+    background-size: cover;
     width: 100%;
     height: auto;
     position: fixed;
@@ -58,8 +58,81 @@ html, body {
     left: 0;
 }
 
-.panel-group {
-    margin: 10px 0px;
+.well, .navbar-default, .navbar-default .dropdown-menu {
+    background-color: transparent;
+    background: rgba(245, 245, 245, .9);
+}
+
+.content-area {
+    padding-top: 80px;
+}
+
+.admin-files {
+    .item {
+        a {
+            text-decoration: none;
+            color: #000;
+            display: block;
+            min-height: 100px;
+            
+            .icon {
+                font-size: 48px;
+            }
+            
+            .title {
+                font-size: 14px;
+            }
+            
+            .description {
+                font-size: 12px;
+                color: #888;
+            }
+            
+            &:hover .icon .glyphicon-folder-close:before {
+                content: "\e118";
+            }
+            
+            &:hover .icon .glyphicon-file {
+                color: #666;
+            }
+            
+            &.selected {
+                background-color: red;
+            }
+        }
+        
+        &:hover {
+            background-color: #efefef;
+            
+            .actions {
+                border-width: 1px 0px 0px 0px;
+            }
+        }
+        
+        .actions {
+            height: 30px;
+            border: 1px solid #dfdfdf;
+            border-width: 0px 0px 0px 0px;
+            background-color: transparent;
+            
+            a {
+                display: none;
+                height: 30px;
+                font-size: 12px;
+                line-height: 30px;
+            }
+        }
+        
+        &:hover .actions {
+            background-color: #efefef;
+            
+            a {
+                display: inline;
+            }
+        }
+        
+        margin-bottom: 9px;
+    }
 }
 
 .hided {

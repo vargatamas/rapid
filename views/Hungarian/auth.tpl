@@ -1,11 +1,12 @@
-<br /><br />
-<div class="container">
+<div id="background-image"></div>
+
+<div class="container content-area">
     <div class="well text-center">
         <h1>Jelentkezz be&nbsp;<small>az alkalmazás futtatásához</small></h1>
         <form method="post" action="" class="form-inline" role="form">
             <div class="form-group">
                 <label class="sr-only" for="username">Felhasználónév</label>
-                <input type="text" name="auth[username]" class="form-control" id="username" placeholder="felhasználónév" />
+                <input type="text" name="auth[username]" class="form-control" id="username" autofocus placeholder="felhasználónév" />
             </div>
             <div class="form-group">
                 <label class="sr-only" for="password">Jelszó</label>

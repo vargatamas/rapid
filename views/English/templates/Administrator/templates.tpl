@@ -9,39 +9,44 @@
 <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Success!</strong> {$success}</div>
 {/if}
 {if="'' != $templates"}
-    <div class="table-responsive">
-        <table class="table table-striped table-condensed">
-            <thead>
-                <tr>
-                    <th>Application</th>
-                    <th>Template</th>
-                    <th>Writable</th>
-                    <th>Last modified</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {loop="templates"}
-                    <tr>
-                        <td>{$value.application}</td>
-                        <td>{$value.template}</td>
-                        <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
-                        <td>{$value.last_modified}</td>
-                        <td>
-                            {if="$value.writable"}
-                                <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.template}');" title="Remove Template"><span class="glyphicon glyphicon-trash"></span></a>
-                            {else}
-                                <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}" title="View Template"><span class="glyphicon glyphicon-eye-open"></span></a>
-                            {/if}
-                        </td>
-                    </tr>
-                {/loop}
-            </tbody>
-        </table>
+    <div class="panel-group" id="accordion">
+        {loop="templates"}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#app-{$key}">
+                            {$key}
+                        </a>
+                    </h4>
+                </div>
+                <div id="app-{$key}" class="panel-collapse collapse in">
+                    <div class="panel-body admin-files">
+                        <div class="row">
+                            {loop="value"}
+                            	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">
+                                    <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}">
+                                        <div class="icon"><span class="glyphicon glyphicon-file"></span></div>
+                                        <div class="title">{$value.template}</div>
+                                        <div class="description">{$value.last_modified}</div>
+                                    </a>
+                                    <div class="actions">
+                                        {if="$value.writable"}
+                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
+                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.template}');" title="Remove Permanently"><span class="glyphicon glyphicon-trash"></span></a>
+                                        {else}
+                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}" title="View Template"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                        {/if}
+                                    </div>
+                                </div>
+                            {/loop}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {/loop}
     </div>
     {if="isset($prevStart) || isset($nextStart) || isset($page)"}
-        <div class="container text-center">
+        <div class="text-center">
             <strong>{$page}. page</strong><br /><br />
             <div class="btn-group">
                 {if="isset($prevStart)"}
