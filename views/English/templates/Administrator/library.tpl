@@ -58,7 +58,7 @@
                     <div class="actions">
                         <a href="#" class="rmfile" title="Delete Permanently" onclick="libraryRemoveFile('{$value.basename}');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
                         <a href="#" class="vwfile" title="View / Edit file" onclick="libraryViewFile('{$value.basename}');"><span class="glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;
-                        <a href="#" class="usefile" title="Use fila as Source" onclick="libraryUseFile('{$value.basename}');"><span class="glyphicon glyphicon-paperclip"></span></a>
+                        <a href="#" class="usefile" title="Use file as Source" onclick="libraryUseFile('{$value.basename}');"><span class="glyphicon glyphicon-paperclip"></span></a>
                     </div>
                 </div>
             {/loop}
