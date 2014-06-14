@@ -114,7 +114,7 @@
                     <h1>Rapid <small>installation</small></h1>
                     <h4>Hello there, this is the Rapid mini FrameWork. We are gonna install the newest version of Rapid, are you ready?</h4>
                     <br />
-                    <img src="http://rapid.momentoom.hu/lib/images/simplicity.jpg" class="simplicity" alt="Rapid" />
+                    <img src="http://rapid.momentoom.hu/lib/images/simplicity.jpg" class="img-responsive" alt="Rapid" />
                     <br />
                     <h3>To begin the installation, please check these steps</h3>
                     <ul>

@@ -241,14 +241,15 @@ class AdministratorController extends RapidAuth {
                 if ( Rpd::$c['rapid']['editAdmin'] || ( !Rpd::$c['rapid']['editAdmin'] && strtolower($application) != 'administrator' ) ) {
                     if ( is_dir($templateDir . $application) ) {
                         $templates = array_diff(scandir($templateDir . $application), array('.', '..'));
+                        $templatesArray[$application] = array();
                         foreach ( $templates as $template ) {
                             if ( '.' . Rpd::$c['raintpl']['tpl_ext'] == substr($template, -4) )
-                                $templatesArray[] = array(
-                                                            'application' => $application,
-                                                            'writable' => is_writable(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $application . DIRECTORY_SEPARATOR . $template),
-                                                            'template' => $template,
-                                                            'last_modified' => date('Y-m-d H:i:s', filemtime($templateDir . $application . DIRECTORY_SEPARATOR . $template))
-                                                        );
+                                $templatesArray[$application][] = array(
+                                                                    'application' => $application,
+                                                                    'writable' => is_writable(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $application . DIRECTORY_SEPARATOR . $template),
+                                                                    'template' => $template,
+                                                                    'last_modified' => date('Y-m-d H:i:s', filemtime($templateDir . $application . DIRECTORY_SEPARATOR . $template))
+                                                                );
                         }
                     }
                 }
@@ -326,6 +327,7 @@ class AdministratorController extends RapidAuth {
                     $this->templatesAction();
                 }
             } else {
+                // AJaX call
                 if ( Rpd::nE($_POST['template']['application']) && Rpd::nE($_POST['template']['filename']) && Rpd::nE($_POST['template']['content']) ) {
                     $application = str_replace(array('/', '\\'), '', $_POST['template']['application']) . DIRECTORY_SEPARATOR;
                     $filename = $_POST['template']['filename'];
@@ -333,15 +335,10 @@ class AdministratorController extends RapidAuth {
                     $content = $_POST['template']['content'];
                     if ( is_file($path) ) {
                         if ( @file_put_contents($path, $content) ) {
-                            Rpd::a('success', "The Template is saved.");
-                        } else Rpd::a('error', "Something went wrong (probably Permission Denied) while trying to save Template.");
-                    } else Rpd::a('error', "Something went wrong while trying to save Template, the Template not found in <em>#text#</em>.", array($path));
-                    $this->templatesAction(array('edit', 'application' => $application, 'template' => $filename));
-                } else {
-                    Rpd::a('error', "You not filled one or more field.");
-                    Rpd::a('template', $_POST);
-                    AdministratorController::$template = 'template.edit';
-                }
+                            return json_encode(array('success' => "The Template is saved."));
+                        } else return json_encode(array('error' => "Something went wrong (probably Permission Denied) while trying to save Template."));
+                    } else return json_encode(array('error' => "Something went wrong while trying to save Template, the Template not found in <em>" . $path . "</em>."));
+                } else return json_encode(array('error' => "You not filled one or more field."));
             }
         } else if ( 'remove' == $args[0] && Rpd::rq($args['application']) && Rpd::rq($args['template']) ) {
             if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $args['application'] . DIRECTORY_SEPARATOR . $args['template']) ) {
@@ -659,158 +656,187 @@ class AdministratorController extends RapidAuth {
     /**
      * Manage Library
     */ 
-    public function libraryAction($args = array(), $recursive = '') {
-        if ( '' == $recursive ) {
-            Rpd::a('menu', array('libraryActive' => true));
+    private function human_filesize($bytes, $decimals = 2) {
+        $sz = 'BKMGTP';
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+    }
+    public function libraryAction($args = array()) {
+        Rpd::a('menu', array('libraryActive' => true));
 
-            if ( !Rpd::rq($args[0]) || '' == $args[0] )
-                Rpd::a('tree', $this->libraryAction(array(), 'lib'));
-            else if ( 'upload' == $args[0] ) {
-                $path = "";
-                if ( Rpd::rq($_POST['library']['path']) ) $path = str_replace('../', '', $_POST['library']['path']);
-                while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
-                if ( @is_dir('lib' . DIRECTORY_SEPARATOR . $path) ) {
-                    if ( Rpd::rq($_FILES) && Rpd::nE($_FILES['library']['name'][0]) ) {
-                        $uploaded = 0;
-                        foreach ( $_FILES['library']['tmp_name'] as $key => $tmp_name ) {
-                            if ( @move_uploaded_file($tmp_name, 'lib' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . basename($_FILES['library']['name'][$key])) )
-                                $uploaded++;
-                        }
-                        if ( 0 < $uploaded )
-                            Rpd::a('success', "The selected #text# file(s) uploaded to <em>lib/#text#</em>.", array($uploaded, $path));
-                        else Rpd::a('error', "Something went wrong (probably permission denied) while trying to upload the selected file(s). No file(s) uploaded.");
-                    } else Rpd::a('error', "Something went wrong while trying to upload file. No file(s) selected.");
-                } else Rpd::a('error', "Something went wrong while trying to upload file. The selected path is wrong.");
-                $this->libraryAction();
-            } else if ( 'mkdir' == $args[0] ) {
-                $path = "";
-                if ( Rpd::rq($_POST['lib-mkdir']['path']) ) $path = str_replace('../', '', $_POST['lib-mkdir']['path']);
-                while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
-                if ( Rpd::rq($_POST['lib-mkdir']['name']) && !empty($_POST['lib-mkdir']['name']) ) {
-                    $dirname = $_POST['lib-mkdir']['name'];
-                    if ( @is_dir('lib' . DIRECTORY_SEPARATOR . $path) ) {
-                        if ( @mkdir('lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname) )
-                            Rpd::a('success', "The new directory (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname));
-                        else Rpd::a('error', "Something went wrong while trying to create directory. Permission denied.");
-                    } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong path.");
-                } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
-                $this->libraryAction();
-            } else if ( 'mkfile' == $args[0] ) {
-                $path = "";
-                if ( Rpd::rq($_POST['lib-mkfile']['path']) ) $path = str_replace('../', '', $_POST['lib-mkfile']['path']);
-                while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
-                if ( Rpd::rq($_POST['lib-mkfile']['name']) && !empty($_POST['lib-mkfile']['name']) ) {
-                    $filename = $_POST['lib-mkfile']['name'];
-                    if ( !@is_file('lib' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . $filename ) ) {
-                        if ( false !== file_put_contents('lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename, 'This is an automatic generated file.') )
-                            Rpd::a('success', "The new file (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename));
-                        else Rpd::a('error', "Something went wrong while trying to create file. Permission denied.");
-                    } else Rpd::a('error', "Something went wrong while trying to create file. This file is already exists.");
-                } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
-                $this->libraryAction();
-            } else if ( 'rmdir' == $args[0] ) {
-                $path = "lib" . DIRECTORY_SEPARATOR;
-                for ( $x = 1; $x < count($args); $x++ ) $path .= $args[$x] . DIRECTORY_SEPARATOR;
-                $path = substr(str_replace('../', '', $path), 0, -1);
-                if ( @is_dir($path) ) {
-                    if ( 0 < array_diff(scandir($path), array('.', '..')) )
-                        if ( Rpd::dT($path) )
-                            Rpd::a('success', "The selected directory (<em>#text#</em>) is removed recursively.", array($args[$x-1]));
-                        else Rpd::a('error', "Something went wrong while trying to remove directory. Recursive remove did not work.");
-                    else 
-                        if ( @rmdir($path) )
-                            Rpd::a('success', "The selected directory (<em>#text#</em>) is removed.", array($args[$x-1]));
-                        else Rpd::a('error', "Something went wrong while trying to remove directory. Permission denied or non-empty directory.");
-                } else Rpd::a('error', "Something went wrong while trying to remove directory. Wrong path.");
-                $this->libraryAction();
-            } else if ( 'rmfile' == $args[0] ) {
-                $path = "lib" . DIRECTORY_SEPARATOR;
-                if ( "lib" == $args[1] ) $args[1] = "";
-                for ( $x = 1; $x < count($args); $x++ ) $path .= $args[$x] . ( $x+1 == count($args) ? '' : DIRECTORY_SEPARATOR );
-                if ( @is_file($path) ) {
-                    if ( @unlink($path) )
-                        Rpd::a('success', "The selected file (<em>#text#</em>) is removed.", array($args[$x-1]));
-                    else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Permission denied.", array($args[$x-1]));
-                } else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Wrong path.", array($args[$x-1]));
-                $this->libraryAction();
-            } else if ( 'view' == $args[0] ) {
-                unset($args[0]);
-                $path = 'lib' . DIRECTORY_SEPARATOR . join(DIRECTORY_SEPARATOR, $args);
-                
-                if ( is_file($path) ) {
-                    $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    if ( in_array($ext, Rpd::$c['rapid']['libEditables']) ) {
-                        $filename = $args[count($args)];
-                        $content = htmlentities(@file_get_contents($path), ENT_QUOTES, "UTF-8");
-                        Rpd::a('file', array(
-                                                    'path' => $path,
-                                                    'filename' => $filename,
-                                                    'content' => $content,
-                                                    'writable' => is_writable($path),
-                                                    'last_modified' => date('Y-m-d H:i:s', filemtime($path))
-                                                ));
-                    } else header("Location: /" . $path);
-                } else Rpd::a('error', "Something went wrong while trying to locate file. File not found.");
-                AdministratorController::$template = 'library.edit';
-            } else if ( 'file-save' == $args[0] ) {
-                if ( Rpd::rq($_POST['file']['path']) && Rpd::rq($_POST['file']['content']) ) {
-                    $path = $_POST['file']['path'];
-                    $content = $_POST['file']['content'];
-                    
-                    if ( is_file($path) && is_writable($path) ) {
-                        if ( @file_put_contents($path, $content) )
-                            Rpd::a('success', "The file is saved.");
-                        else Rpd::a('error', "Something went wrong while trying to save this File.");
-                    } else Rpd::a('error', "Something went wrong while trying to open this File. File not found or non-writable.");
-                } else Rpd::a('error', "Something went wrong while trying to save this File. File not edited.");
-                $pathArray = explode('/', str_replace('lib/', '', $path));
-                $this->libraryAction(array_merge(array('view'), $pathArray));
-            } else if ( 'use' == $args[0] ) {
-                if ( 'save' != $args[1] ) {
-                    unset($args[0]);
-                    $path = '/lib' . DIRECTORY_SEPARATOR . join(DIRECTORY_SEPARATOR, $args);
-                    return json_encode(array('path' => $path, 'applications' => Rpd::gA(), 'defaultApp' => Rpd::$c['rapid']['defaultApplication']));
+        if ( !Rpd::rq($args[0]) || '' == $args[0] ) {
+            // AJaX call
+            $return = array();
+            $path = ( Rpd::nE($_POST['path']) && is_dir(str_replace('../', '', $_POST['path'])) ? str_replace('../', '', $_POST['path']) : 'lib' );
+            $pathArray = array();
+            foreach ( explode('/', $path) as $dir ) $pathArray[] = $dir;
+            if ( empty($pathArray[count($pathArray)-1]) ) unset($pathArray[count($pathArray)-1]);
+            if ( 1 < count($pathArray) ) $return['path'] = $pathArray;
+            $return['current'] = end($pathArray);
+            $scan = array_diff(@scandir($path), array('.', '..'));
+            $queue = array('directories' => array(), 'files' => array());
+            foreach ( $scan as $item ) {
+                if ( !is_dir($path . DIRECTORY_SEPARATOR . $item) ) {
+                    $absPath = getcwd() . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . $item;
+                    $filesize = $this->human_filesize(filesize($absPath), 2);
+                    $queue['files'][] = array_merge(
+                                                    pathinfo($absPath),
+                                                    array('filesize' => $filesize),
+                                                    array('path' => $path . DIRECTORY_SEPARATOR . $item)
+                                                );
                 } else {
-                    if ( Rpd::nE($_POST['usefile']['path']) && Rpd::nE($_POST['usefile']['application']) ) {
-                        $path = $_POST['usefile']['path'];
-                        $info = pathinfo($path);
-                        $app = $_POST['usefile']['application'];
-                        if ( is_file(substr($path, 1)) && in_array($info['extension'] , array('js', 'css', 'less')) ) {
-                            $sourcepath = 'applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'];
-                            $sources = json_decode(@file_get_contents($sourcepath), true);
-                            switch ($info['extension']) {
-                                case 'js':  
-                                    if ( false === in_array($path, $sources['javascripts']) ) $sources['javascripts'][] = $path;
-                                    else $alreadyUsed = tre;
-                                    break;
-                                case 'css':
-                                    if ( false === in_array($path, $sources['stylesheets']) ) $sources['stylesheets'][] = $path;
-                                    else $alreadyUsed = tre;
-                                    break;
-                                case 'less':
-                                    if ( false === in_array($path, $sources['less']) ) $sources['less'][] = $path;
-                                    else $alreadyUsed = tre;
-                                    break;
-                            }
-                            if ( !isset($alreadyUsed) ) {
-                                if ( @file_put_contents($sourcepath, json_encode($sources)) )
-                                    Rpd::a('success', "The selected file is used for <strong>#text#</strong> application from now on.", array($app));
-                                else Rpd::a('error', "Something went wrong while trying to use file. Can not save to sources.");
-                            } else Rpd::a('error', "Something went wrong while trying to use file. This file is already in use.");
-                        } else Rpd::a('error', "Something went wrong while trying to use file. File not found or wrong extension: <strong>#text#</strong>.", array($info['extension']));
-                    } else Rpd::a('error', "Something went wrong while trying to use file. Try again.");
-                    $this->libraryAction();
+                    $absPath = getcwd() . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . $item;
+                    $queue['directories'][] = array_merge(
+                                                    pathinfo($absPath),
+                                                    array('last_modified' => date("Y-m-d H:i:s", filemtime($absPath))),
+                                                    array('path' => $path . DIRECTORY_SEPARATOR . $item)
+                                                );
                 }
-            } else $this->libraryAction();
-        } else {
-            $tree = array();
-            $scan = array_diff(@scandir($recursive), array('.', '..'));
-            $queue = array();
-            foreach ( $scan as $item )
-                if ( !is_dir($recursive . DIRECTORY_SEPARATOR . $item) ) $queue[] = $item;
-                else $tree[$item] = $this->libraryAction(array(), $recursive . DIRECTORY_SEPARATOR . $item);
-            return array_merge($tree, $queue);
-        }
+            }
+            if ( 0 < count($queue['directories']) || 0 < count($queue['files']) ) $return['tree'] = $queue;
+            
+            if ( Rpd::nE($_POST['dir-list']) ) return json_encode($return);
+            else Rpd::a('library', $return);
+        } else if ( 'upload' == $args[0] ) {
+            $path = "";
+            if ( Rpd::rq($_POST['library']['path']) ) $path = str_replace('../', '', $_POST['library']['path']);
+            while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
+            if ( @is_dir('lib' . DIRECTORY_SEPARATOR . $path) ) {
+                if ( Rpd::rq($_FILES) && Rpd::nE($_FILES['library']['name'][0]) ) {
+                    $uploaded = 0;
+                    foreach ( $_FILES['library']['tmp_name'] as $key => $tmp_name ) {
+                        if ( @move_uploaded_file($tmp_name, 'lib' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . basename($_FILES['library']['name'][$key])) )
+                            $uploaded++;
+                    }
+                    if ( 0 < $uploaded )
+                        Rpd::a('success', "The selected #text# file(s) uploaded to <em>lib/#text#</em>.", array($uploaded, $path));
+                    else Rpd::a('error', "Something went wrong (probably permission denied) while trying to upload the selected file(s). No file(s) uploaded.");
+                } else Rpd::a('error', "Something went wrong while trying to upload file. No file(s) selected.");
+            } else Rpd::a('error', "Something went wrong while trying to upload file. The selected path is wrong.");
+            $this->libraryAction();
+        } else if ( 'mkdir' == $args[0] ) {
+            $path = "";
+            if ( Rpd::rq($_POST['lib-mkdir']['path']) ) $path = str_replace('../', '', $_POST['lib-mkdir']['path']);
+            while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
+            if ( Rpd::rq($_POST['lib-mkdir']['name']) && !empty($_POST['lib-mkdir']['name']) ) {
+                $dirname = $_POST['lib-mkdir']['name'];
+                if ( @is_dir('lib' . DIRECTORY_SEPARATOR . $path) ) {
+                    if ( @mkdir('lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname) ) {
+                        Rpd::a('success', "The new directory (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname));
+                        Rpd::a('path', 'lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname);
+                    } else Rpd::a('error', "Something went wrong while trying to create directory. Permission denied.");
+                } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong path.");
+            } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
+            $this->libraryAction();
+        } else if ( 'mkfile' == $args[0] ) {
+            $path = "";
+            if ( Rpd::rq($_POST['lib-mkfile']['path']) ) $path = str_replace('../', '', $_POST['lib-mkfile']['path']);
+            while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
+            if ( Rpd::rq($_POST['lib-mkfile']['name']) && !empty($_POST['lib-mkfile']['name']) ) {
+                $filename = $_POST['lib-mkfile']['name'];
+                if ( !@is_file('lib' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . $filename ) ) {
+                    if ( false !== file_put_contents('lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename, 'This is an automatic generated file.') ) {
+                        Rpd::a('success', "The new file (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename));
+                        Rpd::a('path', 'lib' . DIRECTORY_SEPARATOR . $path);
+                    } else Rpd::a('error', "Something went wrong while trying to create file. Permission denied.");
+                } else Rpd::a('error', "Something went wrong while trying to create file. This file is already exists.");
+            } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
+            $this->libraryAction();
+        } else if ( 'rmdir' == $args[0] ) {
+            $path = "lib" . DIRECTORY_SEPARATOR;
+            for ( $x = 1; $x < count($args); $x++ )
+                if ( 'lib' != $args[$x] ) $path .= $args[$x] . DIRECTORY_SEPARATOR;
+            $path = substr(str_replace('../', '', $path), 0, -1);
+            if ( @is_dir($path) ) {
+                if ( 0 < array_diff(scandir($path), array('.', '..')) )
+                    if ( Rpd::dT($path) )
+                        Rpd::a('success', "The selected directory (<em>#text#</em>) is removed recursively.", array($args[$x-1]));
+                    else Rpd::a('error', "Something went wrong while trying to remove directory. Recursive remove did not work.");
+                else 
+                    if ( @rmdir($path) )
+                        Rpd::a('success', "The selected directory (<em>#text#</em>) is removed.", array($args[$x-1]));
+                    else Rpd::a('error', "Something went wrong while trying to remove directory. Permission denied or non-empty directory.");
+            } else Rpd::a('error', "Something went wrong while trying to remove directory. Wrong path.");
+            $this->libraryAction();
+        } else if ( 'rmfile' == $args[0] ) {
+            $path = "lib" . DIRECTORY_SEPARATOR;
+            if ( "lib" == $args[1] ) $args[1] = "";
+            for ( $x = 1; $x < count($args); $x++ )
+                if ( !empty($args[$x]) ) $path .= $args[$x] . ( $x+1 == count($args) ? '' : DIRECTORY_SEPARATOR );
+            if ( @is_file($path) ) {
+                if ( @unlink($path) )
+                    Rpd::a('success', "The selected file (<em>#text#</em>) is removed.", array($path));
+                else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Permission denied.", array($args[$x-1]));
+            } else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Wrong path.", array($args[$x-1]));
+            $this->libraryAction();
+        } else if ( 'view' == $args[0] ) {
+            unset($args[0]);
+            $path = join(DIRECTORY_SEPARATOR, $args);
+            if ( is_file(str_replace('../', '', $path)) ) {
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                if ( in_array($ext, Rpd::$c['rapid']['libEditables']) ) {
+                    $filename = $args[count($args)];
+                    $content = htmlentities(@file_get_contents($path), ENT_QUOTES, "UTF-8");
+                    Rpd::a('file', array(
+                                                'path' => $path,
+                                                'filename' => $filename,
+                                                'content' => $content,
+                                                'writable' => is_writable($path),
+                                                'last_modified' => date('Y-m-d H:i:s', filemtime($path))
+                                            ));
+                } else header("Location: /" . $path);
+            } else Rpd::a('error', "Something went wrong while trying to locate file. File not found.");
+            AdministratorController::$template = 'library.edit';
+        } else if ( 'file-save' == $args[0] ) {
+            if ( Rpd::rq($_POST['file']['path']) && Rpd::rq($_POST['file']['content']) ) {
+                $path = $_POST['file']['path'];
+                $content = $_POST['file']['content'];
+                
+                if ( is_file($path) && is_writable($path) ) {
+                    if ( @file_put_contents($path, $content) )
+                        Rpd::a('success', "The file is saved.");
+                    else Rpd::a('error', "Something went wrong while trying to save this File.");
+                } else Rpd::a('error', "Something went wrong while trying to open this File. File not found or non-writable.");
+            } else Rpd::a('error', "Something went wrong while trying to save this File. File not edited.");
+            $pathArray = explode('/', str_replace('lib/', '', $path));
+            $this->libraryAction(array_merge(array('view'), $pathArray));
+        } else if ( 'use' == $args[0] ) {
+            if ( 'save' != $args[1] ) {
+                unset($args[0]);
+                $path = join(DIRECTORY_SEPARATOR, $args);
+                return json_encode(array('path' => $path, 'applications' => Rpd::gA(), 'defaultApp' => Rpd::$c['rapid']['defaultApplication']));
+            } else {
+                if ( Rpd::nE($_POST['usefile']['path']) && Rpd::nE($_POST['usefile']['application']) ) {
+                    $path = $_POST['usefile']['path'];
+                    $info = pathinfo($path);
+                    $app = $_POST['usefile']['application'];
+                    if ( is_file($path) && in_array($info['extension'] , array('js', 'css', 'less')) ) {
+                        $sourcepath = 'applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'];
+                        $sources = json_decode(@file_get_contents($sourcepath), true);
+                        switch ($info['extension']) {
+                            case 'js':  
+                                if ( false === in_array($path, $sources['javascripts']) ) $sources['javascripts'][] = $path;
+                                else $alreadyUsed = true;
+                                break;
+                            case 'css':
+                                if ( false === in_array($path, $sources['stylesheets']) ) $sources['stylesheets'][] = $path;
+                                else $alreadyUsed = true;
+                                break;
+                            case 'less':
+                                if ( false === in_array($path, $sources['less']) ) $sources['less'][] = $path;
+                                else $alreadyUsed = true;
+                                break;
+                        }
+                        if ( !isset($alreadyUsed) ) {
+                            if ( @file_put_contents($sourcepath, json_encode($sources)) )
+                                Rpd::a('success', "The selected file is used for <strong>#text#</strong> application from now on.", array($app));
+                            else Rpd::a('error', "Something went wrong while trying to use file. Can not save to sources.");
+                        } else Rpd::a('error', "Something went wrong while trying to use file. This file is already in use.");
+                    } else Rpd::a('error', "Something went wrong while trying to use file. File not found or wrong extension: <strong>#text#</strong>.", array($info['extension']));
+                } else Rpd::a('error', "Something went wrong while trying to use file. Try again.");
+                $this->libraryAction();
+            }
+        } else $this->libraryAction();
     }
 
     /**
