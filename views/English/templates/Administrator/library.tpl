@@ -1,5 +1,5 @@
 <h1>Library</h1>
-<h5>Upload or remove files from your lib directory.</h5>
+<h5>Upload or remove files from your <em>assets</em> directory.</h5>
 <br /><br />
 {if="'' != $error"}
     <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
@@ -50,7 +50,7 @@
             {/loop}
             {loop="library.tree.files"}
                 <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">
-                    <a href="#">
+                    <a href="javascript:libraryViewFile('{$value.basename}');">
                         <div class="icon"><span class="glyphicon glyphicon-file"></span></div>
                         <div class="title">{$value.basename}</div>
                         <div class="description">{$value.filesize}</div>
@@ -74,6 +74,10 @@
 <script> window.onload = function() { changeDir('{$path}'); } </script>
 {/if}
 
+{if="isset($filesDir)"}
+<script> var filesDir = "{$filesDir}"; </script>
+{/if}
+
 <!-- Modal: New Directory -->
 <div class="modal fade" id="lib-mkdir-modal" tabindex="-1" role="dialog" aria-labelledby="mkdir-modal-title" aria-hidden="true">
     <div class="modal-dialog">
@@ -88,7 +92,7 @@
                     <div class="form-group">
                         <label class="col-lg-4 control-label">Parent directory</label>
                         <div class="col-lg-8">
-                            <p class="form-control-static" id="lib-mkdir-path">lib/</p>
+                            <p class="form-control-static" id="lib-mkdir-path">/assets/</p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -120,7 +124,7 @@
                     <div class="form-group">
                         <label class="col-lg-4 control-label">Parent directory</label>
                         <div class="col-lg-8">
-                            <p class="form-control-static" id="lib-mkfile-path">lib/</p>
+                            <p class="form-control-static" id="lib-mkfile-path">/assets/</p>
                         </div>
                     </div>
                     <div class="form-group">

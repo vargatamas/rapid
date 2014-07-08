@@ -98,21 +98,13 @@ class AdministratorController extends RapidAuth {
                                         ));
                 AdministratorController::$template = 'layout.edit';
             } else {
+                // AJaX call
                 if ( Rpd::nE($_POST['layout']['content']) && -1 < strpos($_POST['layout']['content'], '{$APPLICATION_CONTENT}') ) {
                     $content = $_POST['layout']['content'];
                     if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $filename, $content) )
-                        Rpd::a('success', "The Layout is updated correctly.");
-                    else Rpd::a('error', "Something went wrong while saving the Layout. Probably permission denied on templates directory (#text#) or the file already exists (#text#). Layout does not saved.", array(Rpd::$c['raintpl']['tpl_dir'], $filename));
-                    $this->layoutsAction(array('edit', 'filename' => $filename));
-                } else {
-                    Rpd::a('error', "You not filled the name or content field or the content does not contain the {\$APPLICATION_CONTENT} variable.");
-                    Rpd::a('layout', array(
-                                                    'content' => $_POST['layout']['content'],
-                                                    'writable' => is_writable(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $filename),
-                                                    'last_modified' => date('Y-m-d H:i:s', filemtime(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $filename))
-                                                ));
-                    AdministratorController::$template = 'layout.edit';
-                }
+                        return json_encode(array('success' => "The Layout is updated correctly."));
+                    else return json_encode(array('error' => Rpd::t("Something went wrong while saving the Layout. Probably permission denied on templates directory (#text#) or the file already exists (#text#). Layout does not saved.", array(Rpd::$c['raintpl']['tpl_dir'], $filename))));
+                } else return json_encode(array('error' => "You not filled the name or content field or the content does not contain the {\$APPLICATION_CONTENT} variable."));
             }
         } else if ( 'remove' == $args[0] && Rpd::rq($args['filename']) ) {
             $filename = $args['filename'];
@@ -247,7 +239,8 @@ class AdministratorController extends RapidAuth {
                                 $templatesArray[$application][] = array(
                                                                     'application' => $application,
                                                                     'writable' => is_writable(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $application . DIRECTORY_SEPARATOR . $template),
-                                                                    'template' => $template,
+                                                                    'filename' => $template,
+                                                                    'template' => ( 60 < strlen($template) ? substr($template, 0, 28) . '...' . substr($template, -28) : $template ),
                                                                     'last_modified' => date('Y-m-d H:i:s', filemtime($templateDir . $application . DIRECTORY_SEPARATOR . $template))
                                                                 );
                         }
@@ -430,21 +423,17 @@ class AdministratorController extends RapidAuth {
                     $this->mailsAction();
                 }
             } else {
+                // AJaX call
                 if ( Rpd::nE($_POST['mail']['filename']) && Rpd::nE($_POST['mail']['content']) ) {
                     $filename = $_POST['mail']['filename'];
                     $path = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['mailsDir'] . $filename;
                     $content = $_POST['mail']['content'];
                     if ( is_file($path) ) {
                         if ( @file_put_contents($path, $content) ) {
-                            Rpd::a('success', "The Mail Template is saved.");
-                        } else Rpd::a('error', "Something went wrong (probably Permission Denied) while trying to save Mail Template.");
-                    } else Rpd::a('error', "Something went wrong while trying to save Mail Template, the Mail Template not found in <em>#text#</em>.", array($path));
-                    $this->mailsAction(array('edit', 'mail' => $filename));
-                } else {
-                    Rpd::a('error', "You not filled one or more field.");
-                    Rpd::a('mail', $_POST);
-                    AdministratorController::$template = 'mail.edit';
-                }
+                            return json_encode(array('success' => "The Mail Template is saved."));
+                        } else return json_encode(array('error' => "Something went wrong (probably Permission Denied) while trying to save Mail Template."));
+                    } else return json_encode(array('error' => Rpd::t("Something went wrong while trying to save Mail Template, the Mail Template not found in <em>#text#</em>.", array($path))));
+                } else return json_encode(array('error' => "You not filled one or more field."));
             }
         } else if ( 'remove' == $args[0] && Rpd::rq($args['mail']) ) {
             if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['mailsDir'] . $args['mail']) ) {
@@ -665,9 +654,9 @@ class AdministratorController extends RapidAuth {
         Rpd::a('menu', array('libraryActive' => true));
 
         if ( !Rpd::rq($args[0]) || '' == $args[0] ) {
-            // AJaX call
+            Rpd::a('filesDir', Rpd::$c['rapid']['filesDir']);
             $return = array();
-            $path = ( Rpd::nE($_POST['path']) && is_dir(str_replace('../', '', $_POST['path'])) ? str_replace('../', '', $_POST['path']) : 'lib' );
+            $path = ( Rpd::nE($_POST['path']) && is_dir(str_replace('../', '', $_POST['path'])) ? str_replace('../', '', $_POST['path']) : str_replace(DIRECTORY_SEPARATOR, '', Rpd::$c['rapid']['filesDir']) );
             $pathArray = array();
             foreach ( explode('/', $path) as $dir ) $pathArray[] = $dir;
             if ( empty($pathArray[count($pathArray)-1]) ) unset($pathArray[count($pathArray)-1]);
@@ -701,15 +690,15 @@ class AdministratorController extends RapidAuth {
             $path = "";
             if ( Rpd::rq($_POST['library']['path']) ) $path = str_replace('../', '', $_POST['library']['path']);
             while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
-            if ( @is_dir('lib' . DIRECTORY_SEPARATOR . $path) ) {
+            if ( @is_dir(Rpd::$c['rapid']['filesDir'] . $path) ) {
                 if ( Rpd::rq($_FILES) && Rpd::nE($_FILES['library']['name'][0]) ) {
                     $uploaded = 0;
                     foreach ( $_FILES['library']['tmp_name'] as $key => $tmp_name ) {
-                        if ( @move_uploaded_file($tmp_name, 'lib' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . basename($_FILES['library']['name'][$key])) )
+                        if ( @move_uploaded_file($tmp_name, Rpd::$c['rapid']['filesDir'] . $path . DIRECTORY_SEPARATOR . basename($_FILES['library']['name'][$key])) )
                             $uploaded++;
                     }
                     if ( 0 < $uploaded )
-                        Rpd::a('success', "The selected #text# file(s) uploaded to <em>lib/#text#</em>.", array($uploaded, $path));
+                        Rpd::a('success', "The selected #text# file(s) uploaded to <em>#text#</em>.", array($uploaded, Rpd::$c['rapid']['filesDir'] . $path));
                     else Rpd::a('error', "Something went wrong (probably permission denied) while trying to upload the selected file(s). No file(s) uploaded.");
                 } else Rpd::a('error', "Something went wrong while trying to upload file. No file(s) selected.");
             } else Rpd::a('error', "Something went wrong while trying to upload file. The selected path is wrong.");
@@ -720,10 +709,10 @@ class AdministratorController extends RapidAuth {
             while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
             if ( Rpd::rq($_POST['lib-mkdir']['name']) && !empty($_POST['lib-mkdir']['name']) ) {
                 $dirname = $_POST['lib-mkdir']['name'];
-                if ( @is_dir('lib' . DIRECTORY_SEPARATOR . $path) ) {
-                    if ( @mkdir('lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname) ) {
+                if ( @is_dir(Rpd::$c['rapid']['filesDir'] . $path) ) {
+                    if ( @mkdir(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname) ) {
                         Rpd::a('success', "The new directory (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname));
-                        Rpd::a('path', 'lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname);
+                        Rpd::a('path', Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname);
                     } else Rpd::a('error', "Something went wrong while trying to create directory. Permission denied.");
                 } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong path.");
             } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
@@ -734,18 +723,18 @@ class AdministratorController extends RapidAuth {
             while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
             if ( Rpd::rq($_POST['lib-mkfile']['name']) && !empty($_POST['lib-mkfile']['name']) ) {
                 $filename = $_POST['lib-mkfile']['name'];
-                if ( !@is_file('lib' . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . $filename ) ) {
-                    if ( false !== file_put_contents('lib' . DIRECTORY_SEPARATOR . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename, 'This is an automatic generated file.') ) {
+                if ( !@is_file(Rpd::$c['rapid']['filesDir'] . $path . DIRECTORY_SEPARATOR . $filename ) ) {
+                    if ( false !== file_put_contents(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename, 'This is an automatic generated file.') ) {
                         Rpd::a('success', "The new file (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename));
-                        Rpd::a('path', 'lib' . DIRECTORY_SEPARATOR . $path);
+                        Rpd::a('path', Rpd::$c['rapid']['filesDir'] . $path);
                     } else Rpd::a('error', "Something went wrong while trying to create file. Permission denied.");
                 } else Rpd::a('error', "Something went wrong while trying to create file. This file is already exists.");
             } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
             $this->libraryAction();
         } else if ( 'rmdir' == $args[0] ) {
-            $path = "lib" . DIRECTORY_SEPARATOR;
+            $path = Rpd::$c['rapid']['filesDir'];
             for ( $x = 1; $x < count($args); $x++ )
-                if ( 'lib' != $args[$x] ) $path .= $args[$x] . DIRECTORY_SEPARATOR;
+                if ( str_replace(DIRECTORY_SEPARATOR, '', Rpd::$c['rapid']['filesDir']) != $args[$x] ) $path .= $args[$x] . DIRECTORY_SEPARATOR;
             $path = substr(str_replace('../', '', $path), 0, -1);
             if ( @is_dir($path) ) {
                 if ( 0 < array_diff(scandir($path), array('.', '..')) )
@@ -759,8 +748,8 @@ class AdministratorController extends RapidAuth {
             } else Rpd::a('error', "Something went wrong while trying to remove directory. Wrong path.");
             $this->libraryAction();
         } else if ( 'rmfile' == $args[0] ) {
-            $path = "lib" . DIRECTORY_SEPARATOR;
-            if ( "lib" == $args[1] ) $args[1] = "";
+            $path = Rpd::$c['rapid']['filesDir'];
+            if ( str_replace(DIRECTORY_SEPARATOR, '', Rpd::$c['rapid']['filesDir']) == $args[1] ) $args[1] = "";
             for ( $x = 1; $x < count($args); $x++ )
                 if ( !empty($args[$x]) ) $path .= $args[$x] . ( $x+1 == count($args) ? '' : DIRECTORY_SEPARATOR );
             if ( @is_file($path) ) {
@@ -788,18 +777,16 @@ class AdministratorController extends RapidAuth {
             } else Rpd::a('error', "Something went wrong while trying to locate file. File not found.");
             AdministratorController::$template = 'library.edit';
         } else if ( 'file-save' == $args[0] ) {
+            // AJaX call
             if ( Rpd::rq($_POST['file']['path']) && Rpd::rq($_POST['file']['content']) ) {
                 $path = $_POST['file']['path'];
                 $content = $_POST['file']['content'];
-                
                 if ( is_file($path) && is_writable($path) ) {
-                    if ( @file_put_contents($path, $content) )
-                        Rpd::a('success', "The file is saved.");
-                    else Rpd::a('error', "Something went wrong while trying to save this File.");
-                } else Rpd::a('error', "Something went wrong while trying to open this File. File not found or non-writable.");
-            } else Rpd::a('error', "Something went wrong while trying to save this File. File not edited.");
-            $pathArray = explode('/', str_replace('lib/', '', $path));
-            $this->libraryAction(array_merge(array('view'), $pathArray));
+                    if ( false !== file_put_contents($path, $content) )
+                        return json_encode(array('success' => "The file is saved."));
+                    else return json_encode(array('error' => "Something went wrong while trying to save this File."));
+                } else return json_encode(array('error' => "Something went wrong while trying to open this File. File not found or non-writable."));
+            } else return json_encode(array('error' => "Something went wrong while trying to save this File. File not edited."));
         } else if ( 'use' == $args[0] ) {
             if ( 'save' != $args[1] ) {
                 unset($args[0]);
@@ -813,6 +800,7 @@ class AdministratorController extends RapidAuth {
                     if ( is_file($path) && in_array($info['extension'] , array('js', 'css', 'less')) ) {
                         $sourcepath = 'applications' . DIRECTORY_SEPARATOR . $app . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'];
                         $sources = json_decode(@file_get_contents($sourcepath), true);
+                        $path = DIRECTORY_SEPARATOR . $path;
                         switch ($info['extension']) {
                             case 'js':  
                                 if ( false === in_array($path, $sources['javascripts']) ) $sources['javascripts'][] = $path;
@@ -1140,8 +1128,8 @@ class AdministratorController extends RapidAuth {
                     Rpd::a('preferences', $siteArray);
             } else @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile'], json_encode(array('titlePrefix'=>"",'author'=>"",'favicon'=>"")));
         } else if ( 'save' == $args[0] ) {
-            if ( Rpd::rq($_POST['preferences']['indexing']) ) @file_put_contents('robots.txt', "User-agent: *\r\nDisallow: /\r\nDisallow: /cgi-bin/");
-            else if ( is_file('robots.txt') ) @unlink('robots.txt');
+            if ( Rpd::rq($_POST['preferences']['indexing']) ) @file_put_contents('robots.txt', "User-agent: *\r\nDisallow:");
+            else @file_put_contents('robots.txt', "User-agent: *\r\nDisallow: /");
             if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile']) ) {
                 if ( @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$cl . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile'], json_encode($_POST['preferences'])) )
                     Rpd::a('success', "The Preferences are saved.");

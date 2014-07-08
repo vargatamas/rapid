@@ -9,8 +9,8 @@
 <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Kész!</strong> {$success}</div>
 {/if}
 {if="'' != $beanName && '' != $bean"}
-    <a href="{$baseURL}administrator/beans/bean:{$beanName}/add" class="btn btn-primary">Új Bean</a>&nbsp;
-    <a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove-all');" class="btn btn-danger">Minden Bean eltávolítása</a>
+    <a href="{$baseURL}administrator/beans/bean:{$beanName}/add" class="btn btn-primary">Új elem</a>&nbsp;
+    <a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove-all');" class="btn btn-danger">Minden elem eltávolítása</a>
     <div class="table-responsive">
 		<table class="table table-striped table-condensed">
 			<thead>
@@ -50,8 +50,8 @@
 								{if="6 > $counter"}<td>{$value|substr:0,80}{if="80 < strlen($value)"} ..{/if}</td>{/if}
 							{/loop}
 							<td>
-								<a href="{$baseURL}administrator/beans/bean:{$beanName}/edit/id:{$id}" title="Bean szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-								<a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove/id:{$id}');" title="Bean eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+								<a href="{$baseURL}administrator/beans/bean:{$beanName}/edit/id:{$id}" title="Elem szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
+								<a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove/id:{$id}');" title="Elem eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
 							</td>
 						</tr>
 					{/loop}
@@ -73,7 +73,7 @@
         {/if}
     {else}
         <div class="alert alert-info">
-            <strong>Nincsenek Bean-ek</strong> most itt.
+            <strong>Nincsenek elemek</strong> most itt.
         </div>
     {/if}
 {else}

@@ -7,14 +7,14 @@
                 {if="'' != $sourceContent.javascripts.0"}
                     {loop="sourceContent.javascripts"}
                         <div class="input-group">
-                            <input type="text" name="source[javascripts][]" value="{$value}" class="form-control" placeholder="lib/js/script.js" />
+                            <input type="text" name="source[javascripts][]" value="{$value}" class="form-control" placeholder="/assets/js/script.js" />
                             <span class="input-group-btn"><button class="btn btn-danger remove-source" type="button">Remove</button></span>
                         </div>
                         <br />
                     {/loop}
                 {else}
                     <div class="input-group">
-                        <input type="text" name="source[javascripts][]" id="javascripts" value="" class="form-control" placeholder="lib/js/script.js" />
+                        <input type="text" name="source[javascripts][]" id="javascripts" value="" class="form-control" placeholder="/assets/js/script.js" />
                         <span class="input-group-btn"><button class="btn btn-danger remove-source" type="button">Remove</button></span>
                     </div>
                     <br />
@@ -30,14 +30,14 @@
                 {if="'' != $sourceContent.stylesheets.0"}
                     {loop="sourceContent.stylesheets"}
                         <div class="input-group">
-                            <input type="text" name="source[stylesheets][]" value="{$value}" class="form-control" placeholder="lib/css/style.css" />
+                            <input type="text" name="source[stylesheets][]" value="{$value}" class="form-control" placeholder="/assets/css/style.css" />
                             <span class="input-group-btn"><button class="btn btn-danger remove-source" type="button">Remove</button></span>
                         </div>
                         <br />
                     {/loop}
                 {else}
                     <div class="input-group">
-                        <input type="text" name="source[stylesheets][]" id="stylesheets" value="" class="form-control" placeholder="lib/css/style.css" />
+                        <input type="text" name="source[stylesheets][]" id="stylesheets" value="" class="form-control" placeholder="/assets/css/style.css" />
                         <span class="input-group-btn"><button class="btn btn-danger remove-source" type="button">Remove</button></span>
                     </div>
                     <br />
@@ -53,14 +53,14 @@
                 {if="'' != $sourceContent.less.0"}
                     {loop="sourceContent.less"}
                         <div class="input-group">
-                            <input type="text" name="source[less][]" value="{$value}" class="form-control" placeholder="lib/less/style.less" />
+                            <input type="text" name="source[less][]" value="{$value}" class="form-control" placeholder="/assets/less/style.less" />
                             <span class="input-group-btn"><button class="btn btn-danger remove-source" type="button">Remove</button></span>
                         </div>
                         <br />
                     {/loop}
                 {else}
                     <div class="input-group">
-                        <input type="text" name="source[less][]" id="less" value="" class="form-control" placeholder="lib/less/style.less" />
+                        <input type="text" name="source[less][]" id="less" value="" class="form-control" placeholder="/assets/less/style.less" />
                         <span class="input-group-btn"><button class="btn btn-danger remove-source" type="button">Remove</button></span>
                     </div>
                     <br />

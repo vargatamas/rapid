@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.3.1";
+                      $version =        "v1.3.5";
         
         public $task =                  array(),
                $errors =                array();
@@ -135,7 +135,8 @@
 												'updaterFile' => 'updater.php',
 												'installerFile' => 'creator.php',
                                                 'mailsDir' => 'mails' . DIRECTORY_SEPARATOR,
-                                                'globalSourcesFile' => 'global-sources.json'
+                                                'globalSourcesFile' => 'global-sources.json',
+                                                'filesDir' => 'assets' . DIRECTORY_SEPARATOR
                                             );
                 Rpd::$c['db'] = array();
             }
@@ -652,6 +653,8 @@
         public static $v = '';
         
         public static function a($n, $v = '', $vb = array()) { return Rapid::assign($n, $v, $vb); }
+        
+        public static function t($v = '', $vb = array()) { return Rapid::translation($v, $vb); }
         
         public static function gA(){ return Rapid::getApplications(); }
         

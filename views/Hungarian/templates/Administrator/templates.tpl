@@ -24,17 +24,17 @@
                         <div class="row">
                             {loop="value"}
                             	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">
-                                    <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}">
+                                    <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}">
                                         <div class="icon"><span class="glyphicon glyphicon-file"></span></div>
                                         <div class="title">{$value.template}</div>
                                         <div class="description">{$value.last_modified}</div>
                                     </a>
                                     <div class="actions">
                                         {if="$value.writable"}
-                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}" title="Sablon szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
-                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.template}');" title="Végleges eltávolítás"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="Sablon szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
+                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.filename}');" title="Végleges eltávolítás"><span class="glyphicon glyphicon-trash"></span></a>
                                         {else}
-                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.template}" title="Sablon megtekintése"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="Sablon megtekintése"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         {/if}
                                     </div>
                                 </div>

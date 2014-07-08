@@ -514,21 +514,21 @@ $(document).ready(function(){
     });
 
     // Library upload, make dir, make file, remove dir, remove file, view file
-    $(".lib-upload").click(function(){
+	$(".lib-upload").click(function(){
         var path = libPath();
 		if ( false !== path ) {
-			$('#upload-path').val(libPath().replace('lib/', ''));
+			$('#upload-path').val(libPath().replace(filesDir, ''));
 			$('#upload-dialog').trigger('click');
 		} else location.href = '/administrator/library';
     });
     $('#upload-dialog').change(function(){ if ( '' != $(this).val() ) $('#lib-form').submit(); });
     $('.lib-mkdir').click(function() {
         $("#lib-mkdir-path").html(libPath());
-        $("#lib-mkdir-path-input").val(libPath().replace('lib/', ''));
+        $("#lib-mkdir-path-input").val(libPath().replace(filesDir, ''));
     });
     $('.lib-mkfile').click(function() {
         $("#lib-mkfile-path").html(libPath());
-        $("#lib-mkfile-path-input").val(libPath().replace('lib/', ''));
+        $("#lib-mkfile-path-input").val(libPath().replace(filesDir, ''));
     });
     
     // Add route argument
@@ -591,8 +591,8 @@ $(document).ready(function(){
 		$('input:last', $('#beanField').parent()).focus();
 	});
 	
-	// Save template
-	$("#template-edit-form").on("submit", function(event) {
+	// Save template / layout
+	$("#edit-form").on("submit", function(event) {
 		event.preventDefault();
 		$.post($(this).attr('action') + '/build-level:3', $(this).serialize(), function(data){
 			var obj = $.parseJSON(data);
@@ -633,7 +633,7 @@ function libPath() {
     if ( 0 < $('.breadcrumb').length ) {
 		var path = "";
 		$.each($('.breadcrumb li'), function(key, value) { path += $(this).text() + '/'; });
-		path = ( 'lib' == path.substr(0, (path.length-1)) ? '' : path.substr(0, (path.length-1)) );
+		path = ( filesDir.replace('/', '') == path.substr(0, (path.length-1)) ? '' : path.substr(0, (path.length-1)) );
 		return path;
 	} else return false;
 }
@@ -684,16 +684,16 @@ function changeDir(dir) {
 			if ( typeof obj.tree.directories != 'undefined' )
 				$.each(obj.tree.directories, function(key, value) {
 					html +=
-													'<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">' + 
-														'<a href="#" class="chdir" onclick="changeDir(\'' + value.path + '\');">' + 
-															'<div class="icon"><span class="glyphicon glyphicon-folder-close"></span></div>' + 
-															'<div class="title">' + value.filename + '</div>' + 
-															'<div class="description">' + value.last_modified + '</div>' + 
-														'</a>' + 
-														'<div class="actions">' + 
-															'<a href="#" class="rmdir" title="Delete Permanently" onclick="libraryRemoveDir(\'' + value.filename + '\');"><span class="glyphicon glyphicon-trash"></span></a>' + 
-														'</div>' + 
-													'</div>';
+							'<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">' + 
+								'<a href="#" class="chdir" onclick="changeDir(\'' + value.path + '\');">' + 
+									'<div class="icon"><span class="glyphicon glyphicon-folder-close"></span></div>' + 
+									'<div class="title">' + value.filename + '</div>' + 
+									'<div class="description">' + value.last_modified + '</div>' + 
+								'</a>' + 
+								'<div class="actions">' + 
+									'<a href="#" class="rmdir" title="Delete Permanently" onclick="libraryRemoveDir(\'' + value.filename + '\');"><span class="glyphicon glyphicon-trash"></span></a>' + 
+								'</div>' + 
+							'</div>';
 				});
 			else $('.admin-files .row .item:first').after('<div class="text-center"><em>This directory is empty.</em></div>');
 			
@@ -702,18 +702,18 @@ function changeDir(dir) {
 				$.each(obj.tree.files, function(key, value) {
 					var filename = ( 20 < value.basename.length ? value.basename.substr(0, 8) + ' ... ' + value.basename.substr(-8) : value.basename );
 					html +=
-													'<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">' + 
-														'<a href="#">' + 
-															'<div class="icon"><span class="glyphicon glyphicon-file"></span></div>' + 
-															'<div class="title">' + filename + '</div>' + 
-															'<div class="description">' + value.filesize + '</div>' + 
-														'</a>' + 
-														'<div class="actions">' + 
-															'<a href="#" class="rmfile" title="Delete Permanently" onclick="libraryRemoveFile(\'' + value.basename + '\');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;' + 
-															'<a href="#" class="vwfile" title="View / Edit file" onclick="libraryViewFile(\'' + value.basename + '\');"><span class="glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;' + 
-															'<a href="#" class="usefile" title="Use file as Source" onclick="libraryUseFile(\'' + value.basename + '\');"><span class="glyphicon glyphicon-paperclip"></span></a>' + 
-														'</div>' + 
-													'</div>';
+							'<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">' + 
+								'<a href="javascript:libraryViewFile(\'' + value.basename + '\');">' + 
+									'<div class="icon"><span class="glyphicon glyphicon-file"></span></div>' + 
+									'<div class="title">' + filename + '</div>' + 
+									'<div class="description">' + value.filesize + '</div>' + 
+								'</a>' + 
+								'<div class="actions">' + 
+									'<a href="#" class="rmfile" title="Delete Permanently" onclick="libraryRemoveFile(\'' + value.basename + '\');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;' + 
+									'<a href="#" class="vwfile" title="View / Edit file" onclick="libraryViewFile(\'' + value.basename + '\');"><span class="glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;' + 
+									'<a href="#" class="usefile" title="Use file as Source" onclick="libraryUseFile(\'' + value.basename + '\');"><span class="glyphicon glyphicon-paperclip"></span></a>' + 
+								'</div>' + 
+							'</div>';
 				});
 			else $('.admin-fies .row').html('<div class="text-center"><em>This directory is empty.</em></div>');
 			
@@ -727,7 +727,8 @@ function changeDir(dir) {
 // Library remove directory
 function libraryRemoveDir(path) {
 	var e = confirm('Do you really want this?');
-	if ( true === e ) location.href = '/administrator/library/rmdir/' + encodeURI(path);
+	var parentPath = ( '' == libPath() ? '' : libPath() + '/' );
+	if ( true === e ) location.href = '/administrator/library/rmdir/' + encodeURI(parentPath + path);
 	else return false;
 }
 
@@ -741,7 +742,7 @@ function libraryRemoveFile(path) {
 
 // Library view file
 function libraryViewFile(path) {
-	var parentPath = ( '' == libPath() ? 'lib/' : libPath() + '/' );
+	var parentPath = ( '' == libPath() ? filesDir : libPath() + '/' );
 	var url = '/administrator/library/view/' + encodeURI(parentPath + path);
 	location = url;
 	return false;
@@ -749,7 +750,7 @@ function libraryViewFile(path) {
 
 // Library use file
 function libraryUseFile(path) {
-	var parentPath = ( '' == libPath() ? 'lib/' : libPath() + '/' );
+	var parentPath = ( '' == libPath() ? filesDir : libPath() + '/' );
 	var url = '/administrator/library/use/build-level:3/' + encodeURI(parentPath + path);
 	$.get(url, function(data) {
 		var obj = JSON.parse(data);

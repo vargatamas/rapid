@@ -5,7 +5,7 @@
         {$success}
     </span>
 </div>
-<form method="post" action="{$baseURL}administrator/templates/edit/save" id="template-edit-form" class="form-horizontal" role="form">
+<form method="post" action="{$baseURL}administrator/templates/edit/save" id="edit-form" class="form-horizontal" role="form">
     <input type="hidden" name="template[application]" value="{$template.application}" />
     <input type="hidden" name="template[filename]" value="{$template.filename}" />
     <div class="form-group">

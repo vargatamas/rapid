@@ -1,4 +1,4 @@
-<h1>Új Bean hozzáadása ehhez: <em>{$beanName}</em></h1>
+<h1>Új elem hozzáadása ehhez: <em>{$beanName}</em></h1>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}

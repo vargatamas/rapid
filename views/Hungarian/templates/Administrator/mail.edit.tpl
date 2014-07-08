@@ -1,11 +1,11 @@
 <h1>E-mail Sablon szerkesztése</h1>
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
-{/if}
-{if="'' != $success"}
-<div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Kész!</strong> {$success}</div>
-{/if}
-<form method="post" action="{$baseURL}administrator/mails/edit/save" class="form-horizontal" role="form">
+<div class="alert hidden">
+    <strong class="alert-title">Success!</strong>
+    <span class="alert-body">
+        {$success}
+    </span>
+</div>
+<form method="post" id="edit-form" action="{$baseURL}administrator/mails/edit/save" class="form-horizontal" role="form">
     <input type="hidden" name="mail[filename]" value="{$mail.filename}" />
     <div class="form-group">
         <label class="col-lg-2 control-label">Fájlnév</label>

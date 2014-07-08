@@ -1,4 +1,4 @@
-<h1>Add new Bean to <em>{$beanName}</em></h1>
+<h1>Add new Item to <em>{$beanName}</em></h1>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}

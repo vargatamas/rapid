@@ -1,11 +1,11 @@
 <h1>Sablon szerkesztése</h1>
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
-{/if}
-{if="'' != $success"}
-<div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Kész!</strong> {$success}</div>
-{/if}
-<form method="post" action="{$baseURL}administrator/templates/edit/save" id="template-edit-form" class="form-horizontal" role="form">
+<div class="alert hidden">
+    <strong class="alert-title">Success!</strong>
+    <span class="alert-body">
+        {$success}
+    </span>
+</div>
+<form method="post" action="{$baseURL}administrator/templates/edit/save" id="edit-form" class="form-horizontal" role="form">
     <input type="hidden" name="template[application]" value="{$template.application}" />
     <input type="hidden" name="template[filename]" value="{$template.filename}" />
     <div class="form-group">

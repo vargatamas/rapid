@@ -68,7 +68,10 @@
                                                 'mailsDir' =>                'mails' . DIRECTORY_SEPARATOR,
                                                 
                                                 // The filename of the global sources file for site.
-                                                'globalSourcesFile' =>       'global-sources.json'
+                                                'globalSourcesFile' =>       'global-sources.json',
+                                                
+                                                // The path of the files directory where the sources and other files likes images stored. Path from index.php relatively.
+                                                'filesDir' =>                'assets' . DIRECTORY_SEPARATOR,
                                             )
                     );
 	

@@ -2,35 +2,35 @@
     font-family: 'Raleway';
     font-style: normal;
     font-weight: 300;
-    src: local('Raleway Light'), local('Raleway-Light'), url(/lib/fonts/-_Ctzj9b56b8RgXW8FAriRsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+    src: local('Raleway Light'), local('Raleway-Light'), url(/assets/fonts/-_Ctzj9b56b8RgXW8FAriRsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
 }
 
 @font-face {
     font-family: 'Raleway';
     font-style: normal;
     font-weight: 400;
-    src: local('Raleway'), url(/lib/fonts/IczWvq5y_Cwwv_rBjOtT0w.woff) format('woff');
+    src: local('Raleway'), url(/assets/fonts/IczWvq5y_Cwwv_rBjOtT0w.woff) format('woff');
 }
 
 @font-face {
     font-family: 'Raleway';
     font-style: normal;
     font-weight: 500;
-    src: local('Raleway Medium'), local('Raleway-Medium'), url(/lib/fonts/CcKI4k9un7TZVWzRVT-T8xsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+    src: local('Raleway Medium'), local('Raleway-Medium'), url(/assets/fonts/CcKI4k9un7TZVWzRVT-T8xsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
 }
 
 @font-face {
     font-family: 'Raleway';
     font-style: normal;
     font-weight: 600;
-    src: local('Raleway SemiBold'), local('Raleway-SemiBold'), url(/lib/fonts/xkvoNo9fC8O2RDydKj12bxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+    src: local('Raleway SemiBold'), local('Raleway-SemiBold'), url(/assets/fonts/xkvoNo9fC8O2RDydKj12bxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
 }
 
 @font-face {
     font-family: 'Raleway';
     font-style: normal;
     font-weight: 700;
-    src: local('Raleway Bold'), local('Raleway-Bold'), url(/lib/fonts/JbtMzqLaYbbbCL9X6EvaIxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+    src: local('Raleway Bold'), local('Raleway-Bold'), url(/assets/fonts/JbtMzqLaYbbbCL9X6EvaIxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
 }
 
 h1, h2, h3, h4, h5, h6, h7 {
@@ -49,7 +49,7 @@ html, body {
 #background-image {
     z-index: -999;
     min-height: 100%;
-    background: url('/lib/images/background.jpg') center center no-repeat;
+    background: url('/assets/images/background.jpg') center center no-repeat;
     background-size: cover;
     width: 100%;
     height: auto;
@@ -69,6 +69,8 @@ html, body {
 
 .admin-files {
     .item {
+        height: 180px;
+        
         a {
             text-decoration: none;
             color: #000;
@@ -81,6 +83,7 @@ html, body {
             
             .title {
                 font-size: 14px;
+                word-break: break-all;
             }
             
             .description {

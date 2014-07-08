@@ -1,11 +1,11 @@
 <h1>Edit File</h1>
-{if="'' != $success"}
-    <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Success!</strong> {$success}</div>
-{/if}
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
-{/if}
-<form method="post" action="{$baseURL}administrator/library/file-save" class="form-horizontal" role="form">
+<div class="alert hidden">
+    <strong class="alert-title">Success!</strong>
+    <span class="alert-body">
+        {$success}
+    </span>
+</div>
+<form method="post" id="edit-form" action="{$baseURL}administrator/library/file-save" class="form-horizontal" role="form">
     <input type="hidden" name="file[path]" value="{$file.path}" />
     <div class="form-group">
         <label class="col-lg-2 control-label">Filename</label>
