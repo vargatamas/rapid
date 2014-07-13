@@ -1253,7 +1253,7 @@ class AdministratorController extends RapidAuth {
         Rpd::a('menu', array('globalSourcesActive' => true));
         
         $sourcePath = 'applications' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['globalSourcesFile'];
-        if ( !@is_file($sourcePath) ) @file_put_contents($sourcePath, json_encode(array('javascripts' => array(), 'stylesheets' => array(), 'less' => array())));
+        if ( !is_file($sourcePath) ) @file_put_contents($sourcePath, json_encode(array('javascripts' => array(), 'stylesheets' => array(), 'less' => array())));
         if ( 'save' != $args[0] ) {
             if ( @file_get_contents($sourcePath) )
                 $sourceContent = json_decode(file_get_contents($sourcePath), true);

@@ -23,10 +23,10 @@
 			$zip = new ZipArchive;
 			if ( true !== $zip->open($update) ) $messages[] = "Error: Can not open <em>" . $update . "</em> update file.";
 			else {
-				if ( @is_file("lib" . DIRECTORY_SEPARATOR . $backup) ) @unlink("lib" . DIRECTORY_SEPARATOR . $backup);
-				if ( true !== @Zip(getcwd(), "lib" . DIRECTORY_SEPARATOR . $backup) ) $messages[] = "Error: Can not create backup of Rapid.";
+				if ( @is_file("assets" . DIRECTORY_SEPARATOR . $backup) ) @unlink("assets" . DIRECTORY_SEPARATOR . $backup);
+				if ( true !== @Zip(getcwd(), "assets" . DIRECTORY_SEPARATOR . $backup) ) $messages[] = "Error: Can not create backup of Rapid.";
 				else {
-					$messages[] = "Backup archive created of Rapid (<a href=\"/lib/" . $backup . "\" target=\"_blank\">" . $backup . "</a> - " . number_format(filesize("lib" . DIRECTORY_SEPARATOR . $backup) / 1048576, 2) . " MB).";
+					$messages[] = "Backup archive created of Rapid (<a href=\"/assets/" . $backup . "\" target=\"_blank\">" . $backup . "</a> - " . number_format(filesize("assets" . DIRECTORY_SEPARATOR . $backup) / 1048576, 2) . " MB).";
 
 					$files = array_diff(scandir(getcwd()), array('.', '..'));
 					$zip->extractTo(getcwd());
@@ -49,7 +49,7 @@
 							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator', getcwd() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator');
 						}
 						if ( $visual )
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'lib', getcwd() . DIRECTORY_SEPARATOR . 'lib');
+							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'assets', getcwd() . DIRECTORY_SEPARATOR . 'assets');
 						if ( $core )
 							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'rapid', getcwd() . DIRECTORY_SEPARATOR . 'rapid');
 						if ( $config )
@@ -107,7 +107,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="visual" class="col-lg-3 control-label">Visual elements (lib/)</label>
+							<label for="visual" class="col-lg-3 control-label">Visual elements (assets/)</label>
 							<div class="col-lg-9">
 								<div class="checkbox">
 									<input type="checkbox" name="update[visual]" id="visual" checked="checked">
