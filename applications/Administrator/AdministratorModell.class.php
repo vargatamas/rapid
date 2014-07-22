@@ -107,9 +107,9 @@ class AdministratorModell {
         return R::inspect($bean);
     }
     
-    public static function findBeans($bean) {
+    public static function findBeans($bean, $start = 0, $items = 30) {
         if ( !Rpd::nE($bean) ) return false;
-        return R::findAll($bean);
+        return R::findAll($bean, ' LIMIT ? OFFSET ? ', array($items, $start));
     }
     
     public static function removeAllBean($bean) {
@@ -158,6 +158,11 @@ class AdministratorModell {
         R::store($bean);
         R::wipe($name);
         return true;
+    }
+    
+    public static function countBean($name) {
+        if ( !Rpd::nE($name) ) return false;
+        return R::count($name);
     }
 
 

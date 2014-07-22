@@ -1,1 +1,1 @@
-{"javascripts":["\/\/code.jquery.com\/jquery-2.1.0.min.js","\/\/cdnjs.cloudflare.com\/ajax\/libs\/less.js\/1.6.1\/less.min.js","\/\/netdna.bootstrapcdn.com\/bootstrap\/3.1.1\/js\/bootstrap.min.js","\/assets\/js\/administrator.pack.js"],"stylesheets":["\/\/netdna.bootstrapcdn.com\/bootstrap\/3.1.1\/css\/bootstrap.min.css","\/assets\/css\/administrator.pack.css"],"less":["\/assets\/less\/admin.less"]}
+{"javascripts":["\/assets\/js\/administrator.pack.js"],"stylesheets":["\/assets\/css\/administrator.pack.css"],"less":["\/assets\/less\/admin.less"]}

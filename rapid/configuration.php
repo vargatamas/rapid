@@ -53,7 +53,7 @@
                                                 'siteFile' =>               'site.json',
                                                 
                                                 // If it's true, you can manage the Administrator application via itself (not recommended).
-                                                'editAdmin' =>              false,
+                                                'editAdmin' =>              true,
                                                 
                                                 // The extensions of files which are editable in the Library function of Administrator.
                                                 'libEditables' =>           array('js', 'less', 'css', 'txt'),
@@ -72,6 +72,9 @@
                                                 
                                                 // The path of the files directory where the sources and other files likes images stored. Path from index.php relatively.
                                                 'filesDir' =>                'assets' . DIRECTORY_SEPARATOR,
+                                                
+                                                // If set to true, the defaultApplication will called every time, so the application's constructor function will run on every request.
+                                                'allwaysLoadDefaultApp' =>    false
                                             )
                     );
 	

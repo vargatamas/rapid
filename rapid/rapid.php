@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.3.7";
+                      $version =        "v1.4";
         
         public $task =                  array(),
                $errors =                array();
@@ -54,11 +54,14 @@
                     $this->assignMeta();
                     $this->assignPreferences();
                     $buildLevel = $this->buildLevel();
+                    if ( Rpd::$c['rapid']['allwaysLoadDefaultApp'] ) {
+                        $defApp = Rpd::$c['rapid']['defaultApplication'] . "Controller";
+                        new $defApp($this->task['args']);
+                    }
                     if ( $application instanceof RapidAuth && !$application->authenticated ) 
                         $authError = true;
 					else if ( $application->authenticated && $_SESSION['user']['depth'] > eval('return ' . get_class($application) . '::' . Rpd::$c['rapid']['controllerAuthVar'] . ';') ) {
 						$applicationContent = "Permission denied. Your account level is not acceptable here.";
-                        //$authError = true;
                     } else {
                         if ( null !== $action && !isset($this->task['static']) ) {
                             $return = $application->$action($this->task['args']);
@@ -136,7 +139,8 @@
 												'installerFile' => 'creator.php',
                                                 'mailsDir' => 'mails' . DIRECTORY_SEPARATOR,
                                                 'globalSourcesFile' => 'global-sources.json',
-                                                'filesDir' => 'assets' . DIRECTORY_SEPARATOR
+                                                'filesDir' => 'assets' . DIRECTORY_SEPARATOR,
+                                                'allwaysLoadDefaultApp' => false
                                             );
                 Rpd::$c['db'] = array();
             }
@@ -317,11 +321,17 @@
                 } else if ( method_exists($application, strtolower($this->task['action']) . 'Action') ) {
                     $this->task['action'] = strtolower($this->task['action']) . 'Action';
                     return $this->task['action'];
+                } else if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . $this->task['action'] . '.' . Rpd::$c['raintpl']['tpl_ext']) ) {
+                    $this->task['static'] = $this->task['action'];
+                    $this->task['action'] = null;
+                    return $this->task['action'];
                 } else if ( @is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['defaultApplication'] . DIRECTORY_SEPARATOR . $this->task['action'] . '.' . Rpd::$c['raintpl']['tpl_ext']) ) {
+                    // return default app template (no function called)
                     $this->task['static'] = $this->task['action'];
                     $this->task['action'] = null;
                     return $this->task['action'];
                 } else if ( method_exists($application, Rpd::$c['rapid']['defaultAction'] . 'Action') ) {
+                    // run function of default app
                     $this->task['action'] = Rpd::$c['rapid']['defaultAction'] . 'Action';
                     return $this->task['action'];
                 } else $this->errors[] = "Error in Rapid class runApplication function: both the <em>" . $this->task['action'] . "Action</em> and the default <em>" . Rpd::$c['rapid']['defaultAction'] . "Action</em> functions does not exists in <em>" . $this->task['controller'] . "</em> class.";

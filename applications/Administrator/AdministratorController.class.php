@@ -491,20 +491,18 @@ class AdministratorController extends RapidAuth {
                 if ( 0 < count($inspect) ) Rpd::a('bean', $inspect);
                 else Rpd::a('error', "Something went wrong while trying to load this Bean (#text#).", array($bean));
                 
-                $beans = AdministratorModell::findBeans($bean);
+                $items = 30;
+                $start = ( 0 < intval($args['start']) && AdministratorModell::countBean($bean) > intval($args['start']) ? intval($args['start']) : 0 );
+                if ( ($start + $items) < AdministratorModell::countBean($bean) ) Rpd::a('nextStart', ($start + $items));
+                if ( ($start - $items) > -1 ) Rpd::a('prevStart', ($start - $items));
+                Rpd::a('page', ($start + $items) / $items);
+                $beans = AdministratorModell::findBeans($bean, $start, $items);
                 $beansArray = array();
                 foreach ( $beans as $c_bean ) {
                     $cBeans = $c_bean->getProperties();
                     foreach ( $cBeans as $key => $item ) $cBeans[$key] = htmlentities($item, ENT_QUOTES, "UTF-8");
                     $beansArray[] = $cBeans;
                 }
-                
-                $items = 30;
-                $start = ( 0 <= intval($args['start']) && count($beansArray) > intval($args['start']) ? intval($args['start']) : 0 );
-                if ( ($start + $items) < count($beansArray) ) Rpd::a('nextStart', ($start + $items));
-                foreach ( $beansArray as $key => $item ) if ( $start > $key || ($start + $items) <= $key ) unset($beansArray[$key]);
-                if ( ($start - $items) > -1 ) Rpd::a('prevStart', ($start - $items));
-                Rpd::a('page', ($start + $items) / $items);
 
                 if ( 0 < count($beansArray) ) Rpd::a('beans', $beansArray);
             } else if ( Rpd::rq($args[0]) && 'add' == $args[0] ) {

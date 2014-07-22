@@ -14,12 +14,12 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#app-{$key}">
-                            {$key}
+                        <a data-toggle="collapse" data-parent="#accordion" href="#app-{$key}" style="display:block;">
+                            {$key} <span class="pull-right">{$value|count} sablon</span>
                         </a>
                     </h4>
                 </div>
-                <div id="app-{$key}" class="panel-collapse collapse in">
+                <div id="app-{$key}" class="panel-collapse collapse">
                     <div class="panel-body admin-files">
                         <div class="row">
                             {loop="value"}
