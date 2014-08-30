@@ -3,7 +3,7 @@
     /**
      * Rapid installer file.
     */
-    
+
     session_start();
     
     // Step 1: Permissions
@@ -110,7 +110,7 @@
         <p></p><br />
         <div class="container">
             <div class="well">
-                <?php if ( !isset($installed) ) { ?>
+                <?php if ( !isset($installed) ) : ?>
                     <h1>Rapid <small>installation</small></h1>
                     <h4>Hello there, this is the Rapid mini FrameWork. We are gonna install the newest version of Rapid, are you ready?</h4>
                     <br />
@@ -124,19 +124,19 @@
                     <br /><br />
                     <h4>Step 1: Permission status</h4>
                     <div class="alert alert-<?php print ( $permsOk ? "success" : "danger" ); ?>">Give file write permission to this file and folder (<em>installer.php</em> and <em><?php print getcwd(); ?></em>).</div>
-                    <?php if ( $permsOk ) { ?>
+                    <?php if ( $permsOk ) : ?>
                         <br />
                         <h4>Step 2: Database</h4>
-                        <?php if ( isset($dbOk) ) { ?>
+                        <?php if ( isset($dbOk) ) : ?>
                             <div class="alert alert-success">Database connection is OK and access is granted.</div>
-                        <?php } else { ?>
+                        <?php else : ?>
                             <form role="form" action="" method="post">
-                                <?php if ( isset($dbError) ) { ?>
+                                <?php if ( isset($dbError) ) : ?>
                                     <div class="alert alert-danger">
                                         <strong>Database Error</strong><br />
                                         <?php print $dbError; ?>
                                     </div>
-                                <? } ?>
+                                <?php endif; ?>
                                 <div class="row">
                                     <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label for="host">Host</label>
@@ -159,14 +159,14 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">Check</button>
                             </form>
-                        <?php } ?>
-                    <?php } else { ?><a href="" class="btn btn-primary">Check again</a><?php } ?>
-                    <?php if ( $permsOk && $dbOk ) { ?>
+                        <?php endif; ?>
+                    <?php else : ?><a href="" class="btn btn-primary">Check again</a><?php endif; ?>
+                    <?php if ( $permsOk && $dbOk ) : ?>
                         <br />
                         <h4>Step 3: Download and Install Rapid</h4>
                         The first and second step is ok. Now, we are ready to download and install the newest version of Rapid, click <em>Download &amp; Install</em> to confirm action.
                         <br />
-                        <?php if ( isset($installError) ) { ?>
+                        <?php if ( isset($installError) ) : ?>
                             <br />
                             <div class="alert alert-danger">
                                 <strong>Installation error</strong><br />
@@ -181,15 +181,15 @@
                             </div>
                             <br />
                             <a href="" class="btn btn-primary btn-lg">Try again</a>
-                        <?php } else { ?>
-                            <?php if ( isset($downloadError) ) { ?>
+                        <?php else : ?>
+                            <?php if ( isset($downloadError) ) : ?>
                                 <div class="alert alert-danger">
                                 <strong>Download error</strong><br />
                                     Something went wrong while trying to download Rapid, please click to <em>Download &amp; Install</em> to try again.<br />
                                     Note: the installer using cURL for downloading files, do you have cURL module for your PHP?
                                 </div>
                                 <br />
-                            <?php } ?>
+                            <?php endif; ?>
                             <form action="" method="post" id="form-install">
                                 <input type="hidden" class="hided" name="install">
                                 <br />
@@ -206,16 +206,16 @@
                                     <button type="button" onclick="this.innerHTML = 'Downloading and Installing ..';this.disabled = true;document.getElementById('form-install').submit();" class="btn btn-primary btn-lg">Download &amp; Install</button>
                                 </div>
                             </form>
-                        <?php } ?>
-                    <?php } ?>
-                <?php } else { ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                <?php else : ?>
                     <h1>Rapid installed</h1>
                     <h4>Congratulations, the Rapid installation went successful. Now you can use Rapid, with smile on your face.</h4>
                     <br /><br />
                     <div class="text-center">
                         <a href="/Home/index/newly-installed" class="btn btn-success btn-lg">Hurray, lets go.</a>
                     </div>
-                <?php } ?>
+                <?php endif; ?>
             </div>
         </div>
         

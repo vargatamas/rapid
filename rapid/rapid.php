@@ -14,7 +14,8 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.4";
+                      $appData =        array(),
+                      $version =        "v1.4.1";
         
         public $task =                  array(),
                $errors =                array();
@@ -65,6 +66,7 @@
                     } else {
                         if ( null !== $action && !isset($this->task['static']) ) {
                             $return = $application->$action($this->task['args']);
+                            $this->assignMeta();
                             $template = eval('return (isset(' . $this->task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ')?' . $this->task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ':"' . strtolower(str_replace('Action', '', $this->task['action'])) . '");');
                             if ( !is_null($return) ) $applicationContent = $return;
                             else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $this->task['application'] . DIRECTORY_SEPARATOR . $template . '.' . Rpd::$c['raintpl']['tpl_ext']) ) 
@@ -391,6 +393,7 @@
                 $data = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
                 if ( isset($data[$this->task['application']]) ) $appData = $data[$this->task['application']];
             else $appData = $defData;
+            if ( 0 < count(self::$appData) ) $appData = self::$appData;
             Rpd::a('APP', $appData);
         }
         
@@ -570,6 +573,7 @@
                         unset($_SESSION['user']);
                     } else {
                         $this->authenticated = true;
+                        $_SESSION['user'] = $user->getProperties();
                         Rpd::a('USER', $user);
                     }
                 } else $this->authenticated = false;
@@ -673,6 +677,8 @@
         public static function gC(){ return Rapid::getCultures(); }
         
         public static function dT($d) { return Rapid::delTree($d); }
+
+        public static function aD($aD = array()) { Rapid::$appData = $aD; }
         
         //RapidValidate shorthands
         public static function nE($f){ return RapidValidate::nonEmpty($f); }

@@ -1283,13 +1283,13 @@ class AdministratorController extends RapidAuth {
      * Upload images from WYSIWYG (Summernote)
      */ 
     public function imageUploadAction($args = array()) {
-        if ( !@is_dir("lib" . DIRECTORY_SEPARATOR . "images") ) @mkdir('lib' . DIRECTORY_SEPARATOR . 'images');
-        if ( !@is_dir("lib" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "upload") ) @mkdir('lib' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'upload');
+        if ( !@is_dir(Rpd::$c['rapid']['filesDir'] . "images") ) @mkdir(Rpd::$c['rapid']['filesDir'] . 'images');
+        if ( !@is_dir(Rpd::$c['rapid']['filesDir'] . "images" . DIRECTORY_SEPARATOR . "upload") ) @mkdir(Rpd::$c['rapid']['filesDir'] . 'images' . DIRECTORY_SEPARATOR . 'upload');
         $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $formats = array('jpg', 'jpeg', 'png', 'gif');
         $return = array();
         if ( in_array($ext, $formats) ) {
-            $targetPath = "lib" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . basename($_FILES['image']['name']);
+            $targetPath = Rpd::$c['rapid']['filesDir'] . "images" . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . basename($_FILES['image']['name']);
             if ( !@is_file($targetPath) )
                 if ( @move_uploaded_file($_FILES['image']['tmp_name'], $targetPath) ) 
                     $return['url'] = DIRECTORY_SEPARATOR . $targetPath;
