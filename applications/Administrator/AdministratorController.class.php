@@ -25,6 +25,7 @@ class AdministratorController extends RapidAuth {
     */ 
     public function indexAction($args = array()) {
         // welcome page in index.tpl
+        Rapid::redirect('home', 'index');
     }
 
     /**

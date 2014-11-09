@@ -18,7 +18,6 @@
 			$admin = ( isset($_POST['update']['admin-app']) ? true : false );
 			$visual = ( isset($_POST['update']['visual']) ? true : false );;
 			$core = ( isset($_POST['update']['core']) ? true : false );;
-			$config = ( isset($_POST['update']['config']) ? true : false );;
 			
 			$zip = new ZipArchive;
 			if ( true !== $zip->open($update) ) $messages[] = "Error: Can not open <em>" . $update . "</em> update file.";
@@ -52,15 +51,11 @@
 							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'assets', getcwd() . DIRECTORY_SEPARATOR . 'assets');
 						if ( $core )
 							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'rapid', getcwd() . DIRECTORY_SEPARATOR . 'rapid');
-						if ( $config )
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'rapid' . DIRECTORY_SEPARATOR . 'configuration.php', getcwd() . DIRECTORY_SEPARATOR . 'rapid' . DIRECTORY_SEPARATOR . 'configuration.php');
 						if ( 0 < $copied ) {
 							$messages[] = $copied . " files are updated.";
 							
 							@delTree($dir);
 							@unlink($update);
-							if ( $config || $core )
-								@file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $dbconf['host'] . '\',\'dbname\' => \'' . $dbconf['dbname'] . '\',\'username\' => \'' . $dbconf['username'] . '\',\'password\' => \'' . $dbconf['password'] . '\');', FILE_APPEND);
 							$updated = true;
 							$messages[] = "Temporary files are removed.";
 							
@@ -122,18 +117,6 @@
 									<input type="checkbox" name="update[core]" id="core" checked="checked">
 								</div>
 								<p class="help-block">It refresh the core files of Rapid, everything except configuration file.</p>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="config" class="col-lg-3 control-label">Configuration</label>
-							<div class="col-lg-9">
-								<div class="checkbox">
-									<input type="checkbox" name="update[config]" id="config" checked="checked">
-								</div>
-								<p class="help-block">
-									It refresh the variables of the configuration file and set everything to default, except database access.<br>
-									Default Application, Language and settings like these have to reconfigured after update.
-								</p>
 							</div>
 						</div>
 						<div class="form-group">

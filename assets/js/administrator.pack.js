@@ -614,6 +614,10 @@ $(document).ready(function(){
 			$('.alert:first').removeClass('hidden');
 		});
 	});
+
+	// Alerts
+	if ( 0 < $('.alert.alert-success').length ) setTimeout('$(".alert.alert-success").fadeOut();', 5000);
+
 });
 
 // Confirm the link
