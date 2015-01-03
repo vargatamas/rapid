@@ -1,7 +1,7 @@
 <div id="background-image"></div>
 
 <div class="container content-area">
-    <div class="well text-center">
+    <div class="text-center">
         <h1>Jelentkezz be&nbsp;<small>az alkalmazás futtatásához</small></h1>
         <form method="post" action="" class="form-inline" role="form">
             <div class="form-group">
