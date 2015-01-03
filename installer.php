@@ -80,7 +80,7 @@
                                     $lang = ( isset($_POST['rapid']['lang']) ? $_POST['rapid']['lang'] : 'English' );
                                     @file_put_contents('rapid' . DIRECTORY_SEPARATOR . 'configuration.php', '$configuration[\'db\'] = array(\'host\' => \'' . $_SESSION['db']['host'] . '\',\'dbname\' => \'' . $_SESSION['db']['dbname'] . '\',\'username\' => \'' . $_SESSION['db']['username'] . '\',\'password\' => \'' . $_SESSION['db']['password'] . '\');'."\r\n\t".'$configuration[\'rapid\'][\'culture\'] = "' . $lang . '";', FILE_APPEND);
                                     if ( isset($_POST['rapid']['username']) && isset($_POST['rapid']['pass1']) && $_POST['rapid']['pass1'] == $_POST['rapid']['pass2'] ) {
-                                        require_once 'rapid' . DIRECTORY_SEPARATOR . 'rb.phar';
+                                        require_once 'rapid' . DIRECTORY_SEPARATOR . 'rb.php';
                                         R::setup('mysql:host=' . $_SESSION['db']['host'] . ';dbname=' . $_SESSION['db']['dbname'], $_SESSION['db']['username'], $_SESSION['db']['password']);
                                         $admin = R::dispense('users');
                                         $admin->username = $_POST['rapid']['username'];
