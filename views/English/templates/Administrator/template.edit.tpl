@@ -21,8 +21,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="templateContent" class="col-lg-2 control-label">Template content</label>
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             <textarea class="form-control codemirror" name="template[content]" id="templateContent" rows="12">{$template.content}</textarea>
         </div>
     </div>

@@ -14,7 +14,7 @@
                       $config =         array(),
                       $tpl =            null,
                       $culture =        '',
-                      $version =        "v1.4.5",
+                      $version =        "v1.4.6",
                       $task =           array(),
                       $errors =         array();
         
@@ -26,8 +26,8 @@
             spl_autoload_register('Rapid::autoload');
 
             // RedBean
-            if ( is_file(Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.phar') ) {
-                require_once Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.phar';
+            if ( is_file(Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.php') ) {
+                require_once Rapid::$dir . DIRECTORY_SEPARATOR . 'rb.php';
                 if ( Rpd::rq(Rpd::$c['db']) && 0 < count(Rpd::$c['db']) )
                     R::setup('mysql:host=' . Rpd::$c['db']['host'] . ';dbname=' . Rpd::$c['db']['dbname'], Rpd::$c['db']['username'], Rpd::$c['db']['password']);
                 else {
@@ -48,7 +48,7 @@
         /**
          * This is the heart of Rapid, this function runs the application.
         */
-        public static function run($controller = "", $action = "") {
+        private static function run($controller = "", $action = "") {
             self::pathToTask($controller, $action);
             $application = self::loadApplication();
             if ( !is_null($application) ) {
@@ -84,7 +84,12 @@
                     // Build the template
                     if ( isset($authError) ) {
                         $applicationContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['authTpl'], $return_string = true);
-                        Rapid::$tpl->assign('LAYOUT_CONTENT', $applicationContent);
+                        if ( Rpd::$c['rapid']['layoutForAuth'] ) {
+                            Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $applicationContent . '<!-- application content end -->');
+                            $layout = self::loadLayout();
+                            $layoutContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout, $return_string = true);
+                            Rapid::$tpl->assign('LAYOUT_CONTENT', $layoutContent);
+                        } else Rapid::$tpl->assign('LAYOUT_CONTENT', $applicationContent);
                         Rapid::$tpl->draw('frame');
                     } else {
                         if ( 'application' == $buildLevel ) 
@@ -135,14 +140,14 @@
                                                 'path_replace' => false
                                             );
                 Rpd::$c['rapid'] = array(
-                                                'defaultApplication' => 'Default',
+                                                'defaultApplication' => 'Home',
                                                 'defaultAction' => 'index',
                                                 'argArraySeparator' => ':',
                                                 'controllerTemplateVar' => '$template',
-                                                'defaultLayout' => 'default',
+                                                'defaultLayout' => 'home',
                                                 'sourcesFiles' => 'sources.json',
                                                 'authTpl' => 'auth',
-                                                'controllerAuthVar' => 'auth_depth',
+                                                'controllerAuthVar' => '$auth_depth',
                                                 'language' => 'English',
                                                 'translationsDir' => 'translations' . DIRECTORY_SEPARATOR,
                                                 'metaFile' => 'meta.json',
@@ -150,11 +155,11 @@
                                                 'editAdmin' => false,
                                                 'libEditables' => array('js', 'less', 'css', 'txt'),
 												'updaterFile' => 'updater.php',
-												'installerFile' => 'creator.php',
                                                 'mailsDir' => 'mails' . DIRECTORY_SEPARATOR,
                                                 'globalSourcesFile' => 'global-sources.json',
                                                 'filesDir' => 'assets' . DIRECTORY_SEPARATOR,
-                                                'allwaysLoadDefaultApp' => false
+                                                'allwaysLoadDefaultApp' => false,
+                                                'layoutForAuth' => false
                                             );
                 Rpd::$c['db'] = array();
             }
@@ -182,7 +187,7 @@
         /**
          * This function is called when something go wrong. It dies with the error messages.
         */
-        public static function crash($message = "") {
+        private static function crash($message = "") {
             if ( !empty($message) ) echo '- ' . $message;
             else foreach ( self::$errors as $error ) echo '- ' . $error . '<br />';
             die();
@@ -192,7 +197,7 @@
          * Convert URL to Array and define the controller, action and arguments after checked the routing.
          * This function requires the .htaccess file with this line: 'RewriteRule ^(.*)$ index.php?path=$1 [QSA,L]'
         */
-        public static function pathToTask($controller = "", $action = "") {
+        private static function pathToTask($controller = "", $action = "") {
             $path = $_GET['path'];
             $pathArray = array();
             if ( 0 < strlen($path) && 0 < count(explode('/', $path)) ) $pathArray = explode('/', $path);
@@ -240,7 +245,7 @@
             } else {
                 self::$task['controller'] = $routing[0];
                 self::$task['action'] = $routing[1];
-                self::$createArgs($routing);
+                self::createArgs($routing);
             }
         }
 
@@ -248,7 +253,7 @@
          * Now we know the requested controller and it's action. It's time to collect the arguments and pass to controller's action.
          * This function checks if there is any array argument (array separator can set through argArraySeparator).
         */ 
-        public static function createArgs($pathArray = array()) {
+        private static function createArgs($pathArray = array()) {
             if ( isset($pathArray[0]) ) unset($pathArray[0]);
             if ( isset($pathArray[1]) ) unset($pathArray[1]);
             
@@ -269,7 +274,7 @@
          * 
          * @return Controller Object or NULL
         */
-        public static function loadApplication() {
+        private static function loadApplication() {
             $application = null;
             if ( is_dir('applications' . DIRECTORY_SEPARATOR . self::$task['controller']) ) {
                 if ( is_file('applications' . DIRECTORY_SEPARATOR . self::$task['controller'] . DIRECTORY_SEPARATOR . self::$task['controller'] . 'Controller.class.php') ) {
@@ -328,7 +333,7 @@
         /**
          * If we successfully loaded the requested (or default) application, let's run it's requested (or default) action.
         */ 
-        public static function runApplication($application) {
+        private static function runApplication($application) {
             if ( !is_null($application) ) {
                 if ( method_exists($application, self::$task['action'] . 'Action') ) {
                     self::$task['action'] = self::$task['action'] . 'Action';
@@ -360,7 +365,7 @@
         /**
          * Load the attached layout for application.
         */
-        public static function loadLayout($findDefault = false) {
+        private static function loadLayout($findDefault = false) {
             $culture = Rapid::$culture;
             if ( !$findDefault ) {
                 $find = R::findOne('layoutlinks', 'application = ?', array(self::$task['application']));
@@ -383,7 +388,7 @@
         /**
          *  Check if the application own sources and load them.
         */ 
-        public static function assignSources() {
+        private static function assignSources() {
             if ( is_file('applications' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['globalSourcesFile']) )
                 $globalSources = json_decode(file_get_contents('applications' . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['globalSourcesFile']), true);
             else $globalSources = array('javascripts' => array(), 'stylesheets' => array(), 'less' => array());
@@ -403,7 +408,7 @@
         /**
          *  Load the defined Meta data for Application (or set defaults).
         */ 
-        public static function assignMeta() {
+        private static function assignMeta() {
             $defData = array('title' => "Rapid.", 'keywords' => "rapid,framework", 'description' => "The Rapid Framework.");
             if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']) )
                 $data = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
@@ -415,7 +420,7 @@
         /**
          *  Assign the preferences of the site.
         */ 
-        public static function assignPreferences() {
+        private static function assignPreferences() {
             if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile']) )
                 Rpd::a('SITE', array_merge(array('url' => $_SERVER['HTTP_HOST']), json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['siteFile']), true)));
         }
@@ -423,7 +428,7 @@
         /**
          *  Determine the template build level
         */ 
-        public static function buildLevel() {
+        private static function buildLevel() {
             $return = 'frame';
             if ( Rpd::rq(self::$task['args']['build-level']) || Rpd::rq($_POST['build-level']) ) {
                 if ( '3' == self::$task['args']['build-level'] || '3' == $_POST['build-level'] )

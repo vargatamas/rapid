@@ -16,13 +16,12 @@
 		<label for="allLanguage" class="col-lg-2 control-label">Létrehozás minden nyelven</label>
 		<div class="col-lg-10">
 			<div class="checkbox">
-				<input type="checkbox" name="mail[allLanguage]" id="allLanguage"{if="$mailTemplate.allLanguage"} checked="checked"{/if} />
+				<label><input type="checkbox" name="mail[allLanguage]" id="allLanguage"{if="$mailTemplate.allLanguage"} checked="checked"{/if} /></label>
 			</div>
 		</div>
     </div>
     <div class="form-group">
-        <label for="templateContent" class="col-lg-2 control-label">E-mail Sablon tartalma</label>
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             <textarea class="form-control codemirror" name="mail[content]" id="templateContent" rows="12">{$mailTemplate.content}</textarea>
         </div>
     </div>

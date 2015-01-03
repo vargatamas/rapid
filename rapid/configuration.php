@@ -53,16 +53,13 @@
                                                 'siteFile' =>               'site.json',
                                                 
                                                 // If it's true, you can manage the Administrator application via itself (not recommended).
-                                                'editAdmin' =>              true,
+                                                'editAdmin' =>              false,
                                                 
                                                 // The extensions of files which are editable in the Library function of Administrator.
                                                 'libEditables' =>           array('js', 'less', 'css', 'txt'),
                                                 
                                                 // The filename of the updater file (in the rapid directory).
                                                 'updaterFile' =>            'updater.php',
-                                                
-                                                // The filename of the installer file (in the rapid directory).
-												'installerFile' =>			'installer.php',
                                                 
                                                 // The path of the mail templates directory relative from tpl_dir DIRECTORY_SEPARATOR language.
                                                 'mailsDir' =>                'mails' . DIRECTORY_SEPARATOR,
@@ -74,10 +71,13 @@
                                                 'filesDir' =>                'assets' . DIRECTORY_SEPARATOR,
                                                 
                                                 // If set to true, the defaultApplication will called every time, so the application's constructor function will run on every request.
-                                                'allwaysLoadDefaultApp' =>    false
+                                                'allwaysLoadDefaultApp' =>    false,
+
+                                                // If set to true, the authTpl will load the layout too
+                                                'layoutForAuth' =>            false
                                             )
                     );
 	
     
     // Database access configuration
-	
+    

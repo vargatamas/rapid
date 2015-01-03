@@ -20,8 +20,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="fileContent" class="col-lg-2 control-label">File content</label>
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             {if="'js' == substr($file.filename, -2)"}
                 <div class="hidden">{$filetype = " javascript"}</div>
             {elseif="'css' == substr($file.filename, -3) || 'less' == substr($file.filename, -4)"}

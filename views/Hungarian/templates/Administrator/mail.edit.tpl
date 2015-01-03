@@ -14,8 +14,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="templateContent" class="col-lg-2 control-label">E-mail Sablon tartalma</label>
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             <textarea class="form-control codemirror" name="mail[content]" id="templateContent" rows="12">{$mail.content}</textarea>
         </div>
     </div>

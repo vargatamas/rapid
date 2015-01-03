@@ -72,10 +72,8 @@
     </div>
 </nav>
 
-<div class="container content-area">
-    <div class="well">
-        {$APPLICATION_CONTENT}
-    </div>
+<div class="content-area">
+    {$APPLICATION_CONTENT}
 </div>
 
 <!-- Modal -->
