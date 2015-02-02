@@ -18,6 +18,7 @@
             if( 0 < $db->connect_errno )
                 $dbError = $db->connect_error;
             else {
+                @$db->query("DROP TABLE IF EXISTS `users`;");
                 $_SESSION['db'] = $_POST['db'];
                 $dbOk = true;
             }
