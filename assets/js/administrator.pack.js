@@ -606,6 +606,8 @@ $(document).ready(function(){
 				$('.alert-body', $('.alert:first')).html(obj.error);
 			}
 			$('.alert:first').removeClass('hidden');
+			$('.alert:first').slideDown();
+			setTimeout('$(".alert:first").slideUp();', 5000);
 			$('html, body').animate({scrollTop: $('h1:first').offset().top}, 600);
 		}).fail(function(){
 			$('.alert:first').removeClass('alert-success').addClass('alert-danger');
@@ -616,7 +618,7 @@ $(document).ready(function(){
 	});
 
 	// Alerts
-	if ( 0 < $('.alert.alert-success').length ) setTimeout('$(".alert.alert-success").fadeOut();', 5000);
+	if ( 0 < $('.alert.alert-success').length ) setTimeout('$(".alert.alert-success").slideUp();', 5000);
 
 	// Change template
 	if ( 0 < $('#other-template').length ) $('#other-template').change(function() {

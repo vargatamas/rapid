@@ -23,7 +23,15 @@
                 $dbOk = true;
             }
         }
-    } else $dbOk = true;
+    } else {
+        $db = @new mysqli($_SESSION['db']['host'], $_SESSION['db']['username'], $_SESSION['db']['password'], $_SESSION['db']['dbname']);
+        if( 0 < $db->connect_errno )
+            $dbError = $db->connect_error;
+        else {
+            @$db->query("DROP TABLE IF EXISTS `users`;");
+            $dbOk = true;
+        }
+    }
 
     //Step 3: Download and Install
     if ( isset($_POST['install']) ) {
