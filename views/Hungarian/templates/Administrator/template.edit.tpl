@@ -17,7 +17,15 @@
     <div class="form-group">
         <label class="col-lg-2 control-label">Fájlnév</label>
         <div class="col-lg-10">
+            {if="isset($otherTemplates)"}
+            <select class="form-control" id="other-template">
+                {loop="otherTemplates"}
+                <option value="{$value.filename}"{if="$value.filename == $template.filename"} selected{/if}>{$value.filename} ({$value.last_modified})</option>
+                {/loop}
+            </select>
+            {else}
             <p class="form-control-static">{$template.filename}</p>
+            {/if}
         </div>
     </div>
     <div class="form-group">

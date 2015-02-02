@@ -13,8 +13,10 @@
                       $configFile =     'configuration.php',
                       $config =         array(),
                       $tpl =            null,
+                      $layout =         null,
+                      $meta =           array(),
                       $culture =        '',
-                      $version =        "v1.4.8",
+                      $version =        "v1.5",
                       $task =           array(),
                       $errors =         array();
         
@@ -57,7 +59,6 @@
                     // Get the application's content
                     $culture = Rapid::$culture;
                     self::assignSources();
-                    self::assignMeta();
                     self::assignPreferences();
                     $buildLevel = self::buildLevel();
                     if ( Rpd::$c['rapid']['allwaysLoadDefaultApp'] ) {
@@ -71,6 +72,7 @@
                     } else {
                         if ( null !== $action && !isset(self::$task['static']) ) {
                             $return = $application->$action(self::$task['args']);
+                            self::assignMeta();
                             $template = eval('return (isset(' . self::$task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ')?' . self::$task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ':"' . strtolower(str_replace('Action', '', self::$task['action'])) . '");');
                             if ( !is_null($return) ) $applicationContent = $return;
                             else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . self::$task['application'] . DIRECTORY_SEPARATOR . $template . '.' . Rpd::$c['raintpl']['tpl_ext']) ) 
@@ -382,6 +384,9 @@
                 else $return = Rpd::$c['rapid']['defaultLayout'];
             }
             
+            if ( isset(self::$layout) && is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.' . self::$layout . '.' . Rpd::$c['raintpl']['tpl_ext']) )
+                $return = self::$layout;
+
             return 'layout.' . $return;
         }
 
@@ -414,6 +419,11 @@
                 $data = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
                 if ( isset($data[self::$task['application']]) ) $appData = $data[self::$task['application']];
             else $appData = $defData;
+
+            if ( isset(self::$meta['title']) ) $appData['title'] = self::$meta['title'];
+            if ( isset(self::$meta['keywords']) ) $appData['keywords'] = self::$meta['keywords'];
+            if ( isset(self::$meta['description']) ) $appData['description'] = self::$meta['description'];
+
             Rpd::a('APP', $appData);
         }
         
@@ -696,6 +706,10 @@
         public static function gC(){ return Rapid::getCultures(); }
         
         public static function dT($d) { return Rapid::delTree($d); }
+
+        public static function sL($l) { Rapid::$layout = $l; }
+
+        public static function sM($m) { Rapid::$meta = $m; }
         
         //RapidValidate shorthands
         public static function nE($f){ return RapidValidate::nonEmpty($f); }

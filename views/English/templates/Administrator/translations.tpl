@@ -23,8 +23,8 @@
                 {loop="translations"}
                     <tr>
                         <td>{$value.language}</td>
-                        <td>{$value.from|substr:0,60}</td>
-                        <td>{$value.to|substr:0,60}</td>
+                        <td>{$value.from|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.from)"}..{/if}</td>
+                        <td>{$value.to|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.to)"}..{/if}</td>
                         <td>
                             <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Edit Translation"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
                             <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Remove Translation"><span class="glyphicon glyphicon-trash"></span></a>

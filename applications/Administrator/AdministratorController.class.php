@@ -293,7 +293,18 @@ class AdministratorController extends RapidAuth {
         } else if ( 'edit' == $args[0] ) {
             if ( 'save' != $args[1] ) {
                 if ( Rpd::rq($args['application']) && Rpd::rq($args['template']) ) {
-                    $path = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $args['application'] . DIRECTORY_SEPARATOR . $args['template'];
+                    $templateDir = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $args['application'] . DIRECTORY_SEPARATOR;
+                    $templates = array_diff(scandir($templateDir), array('.', '..'));
+                    $otherTemplates = array();
+                    foreach ( $templates as $template ) {
+                        if ( '.' . Rpd::$c['raintpl']['tpl_ext'] == substr($template, -4) )
+                            $otherTemplates[] = array(
+                                                                'filename' => $template,
+                                                                'last_modified' => date('Y-m-d H:i:s', filemtime($templateDir . $application . DIRECTORY_SEPARATOR . $template))
+                                                            );
+                    }
+                    if ( 1 < count($otherTemplates) ) Rpd::a('otherTemplates', $otherTemplates);
+                    $path = $templateDir . $args['template'];
                     if ( is_file($path) ) {
                         $application = $args['application'];
                         $filename = $args['template'];
@@ -1032,8 +1043,8 @@ class AdministratorController extends RapidAuth {
                             foreach ( $content as $from => $to )
                                 $translationsArray[] = array(
                                                                 'language' => $info['filename'],
-                                                                'from' => $from,
-                                                                'to' => $to,
+                                                                'from' => htmlentities($from),
+                                                                'to' => htmlentities($to),
                                                                 'index' => $index++
                                                             );
                     }

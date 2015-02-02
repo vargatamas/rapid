@@ -618,6 +618,11 @@ $(document).ready(function(){
 	// Alerts
 	if ( 0 < $('.alert.alert-success').length ) setTimeout('$(".alert.alert-success").fadeOut();', 5000);
 
+	// Change template
+	if ( 0 < $('#other-template').length ) $('#other-template').change(function() {
+		location.href = location.href.substr(0, location.href.indexOf('template:')+9) + $(this).val();
+	});
+
 });
 
 // Confirm the link
