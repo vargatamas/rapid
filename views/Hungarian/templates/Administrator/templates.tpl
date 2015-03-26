@@ -24,7 +24,7 @@ Sablonok menedzselése&nbsp;<small>Tudsz készíteni, szerkeszteni vagy töröln
                     <div class="panel-body admin-files">
                         <div class="row">
                             {loop="value"}
-                            	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">
+                            	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item moving">
                                     <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}">
                                         <div class="icon"><span class="glyphicon glyphicon-file"></span></div>
                                         <div class="title">{$value.template}</div>
