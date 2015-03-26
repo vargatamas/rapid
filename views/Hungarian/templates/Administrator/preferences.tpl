@@ -1,4 +1,4 @@
-<h1>Beállítások</h1>
+<h2>Beállítások</h2>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -31,9 +31,8 @@
 		<label for="indexing" class="col-lg-2 control-label">Indexelés</label>
 		<div class="col-lg-10">
 			<div class="checkbox">
-				<input type="checkbox" name="preferences[indexing]" id="indexing"{if="isset($preferences.indexing)"} checked="checked"{/if} />
+				<label><input type="checkbox" name="preferences[indexing]" id="indexing"{if="isset($preferences.indexing)"} checked="checked"{/if} /> Keresőmotorok beindexelésének engedélyezése.</label>
 			</div>
-            <p class="help-block">Keresőmotorok beindexelésének engedélyezése.</p>
 		</div>
     </div>
     <div class="form-group">

@@ -1,7 +1,9 @@
-<h1>Link Layouts</h1>
-<h5>Note: if no Layout linked to an application, Rapid tries to load the <em>layout.appname.tpl</em> Layout. When there is no linked and <em>layout.appname.tpl</em>, Rapid load the <em>defaultLayout</em>.</h5>
-<a href="{$baseURL}administrator/linkLayouts/add" class="btn btn-primary">Add Layout link</a>
-<br /><br />
+<h2>
+Link Layouts
+<a href="{$baseURL}administrator/linkLayouts/add" class="btn btn-primary btn-sm pull-right">Add Layout link</a>
+</h2>
+<h5>if no Layout linked to an application, Rapid tries to load the <em>layout.appname.tpl</em> Layout. When there is no linked and <em>layout.appname.tpl</em>, Rapid load the <em>defaultLayout</em>.</h5>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -23,9 +25,9 @@
                     <tr>
                         <td>{$value.from}</td>
                         <td>{$value.to}</td>
-                        <td>
+                        <td class="text-right">
                             <a href="{$baseURL}administrator/linkLayouts/edit/application:{$value.from}" title="Edit Layout link"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$value.from}');" title="Remove Layout link"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$value.from}');" title="Remove Layout link" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}

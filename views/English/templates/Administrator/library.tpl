@@ -1,6 +1,7 @@
-<h1>Library</h1>
-<h5>Upload or remove files from your <em>assets</em> directory.</h5>
-<br /><br />
+<h2>
+Library&nbsp;<small>Upload or remove files from your <em>{$filesDir}</em> directory.</small>
+</h2>
+<br>
 {if="'' != $error"}
     <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -44,7 +45,7 @@
                         <div class="description">{$value.last_modified}</div>
                     </a>
                     <div class="actions">
-                        <a href="#" class="rmdir" title="Delete Permanently" onclick="libraryRemoveDir('{$value.filename}');"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a href="#" class="rmdir text-danger" title="Delete Permanently" onclick="libraryRemoveDir('{$value.filename}');"><span class="glyphicon glyphicon-trash"></span></a>
                     </div>
                 </div>
             {/loop}
@@ -56,7 +57,7 @@
                         <div class="description">{$value.filesize}</div>
                     </a>
                     <div class="actions">
-                        <a href="#" class="rmfile" title="Delete Permanently" onclick="libraryRemoveFile('{$value.basename}');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
+                        <a href="#" class="rmfile text-danger" title="Delete Permanently" onclick="libraryRemoveFile('{$value.basename}');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
                         <a href="#" class="vwfile" title="View / Edit file" onclick="libraryViewFile('{$value.basename}');"><span class="glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;
                         <a href="#" class="usefile" title="Use file as Source" onclick="libraryUseFile('{$value.basename}');"><span class="glyphicon glyphicon-paperclip"></span></a>
                     </div>

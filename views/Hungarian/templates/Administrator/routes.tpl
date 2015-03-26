@@ -1,5 +1,7 @@
-<h1>Útvonalak</h1>
-<h5>Nem tetszik az alapértelmezett URI útvonal? Definiáld újra.</h5>
+<h2>
+Útvonalak&nbsp;<small>Nem tetszik az alapértelmezett URI útvonal? Definiáld újra.</small>
+<a href="{$baseURL}administrator/routes/add" class="btn btn-primary btn-sm pull-right">Új útvonal</a>&nbsp;
+</h2>
 <br />
 {if="'' != $error"}
     <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
@@ -7,8 +9,7 @@
 {if="'' != $success"}
     <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Kész!</strong> {$success}</div>
 {/if}
-<a href="{$baseURL}administrator/routes/add" class="btn btn-primary">Új útvonal</a>&nbsp;
-<br /><br />
+<br>
 {if="isset($routes) && 0 < count($routes)"}
     <div class="table-responsive">
         <table class="table table-striped table-condensed">
@@ -30,8 +31,8 @@
                         <td>{$url}/{$value.to}</td>
                         <td>{$value.user}</td>
                         <td>{$value.last_modified}</td>
-                        <td>
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Útvonal eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+                        <td class="text-right">
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Útvonal eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}

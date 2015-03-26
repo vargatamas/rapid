@@ -1,7 +1,8 @@
-<h1>E-mail Sablonok menedzselése</h1>
-<h5>Hozz létre, szerkessz vagy törölj e-mail sablonokat.</h5>
-<a href="{$baseURL}administrator/mails/add" class="btn btn-primary">Új E-mail Sablon</a>
-<br /><br />
+<h2>
+E-mail Sablonok menedzselése&nbsp;<small>Hozz létre, szerkessz vagy törölj e-mail sablonokat.</small>
+<a href="{$baseURL}administrator/mails/add" class="btn btn-primary btn-sm pull-right">Új E-mail Sablon</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -27,10 +28,10 @@
                         <td>{$value.variables}</td>
                         <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
                         <td>{$value.last_modified}</td>
-                        <td>
+                        <td class="text-right">
                             {if="$value.writable"}
                                 <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="E-mail Sablon módosítása"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="E-mail Sablon eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="E-mail Sablon eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                             {else}
                                 <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="E-mail Sablon megtekintése"><span class="glyphicon glyphicon-eye-open"></span></a>
                             {/if}

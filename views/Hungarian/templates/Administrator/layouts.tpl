@@ -1,7 +1,8 @@
-<h1>Layoutok menedzselése</h1>
-<h5>Készíts új Layoutot vagy szerkessz egy meglevőt.</h5>
-<a href="{$baseURL}administrator/layouts/add" class="btn btn-primary">Új Layout</a>
-<br /><br />
+<h2>
+Layoutok menedzselése&nbsp;<small>Készíts új Layoutot vagy szerkessz egy meglevőt.</small>
+<a href="{$baseURL}administrator/layouts/add" class="btn btn-primary btn-sm pull-right">Új Layout</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -25,10 +26,10 @@
                         <td>{$value.name}</td>
                         <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
                         <td>{$value.last_modified}</td>
-                        <td>
+                        <td class="text-right">
                             {if="$value.writable"}
                                 <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="Layout szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/layouts/remove/filename:{$value.name}');" title="Layout eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="javascript:linkConfirm('{$baseURL}administrator/layouts/remove/filename:{$value.name}');" title="Layout eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                             {else}
                                 <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="Layout megtekintése"><span class="glyphicon glyphicon-eye-open"></span></a>
                             {/if}

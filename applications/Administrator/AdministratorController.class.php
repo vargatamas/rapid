@@ -87,6 +87,22 @@ class AdministratorController extends RapidAuth {
             }
         } else if ( 'edit' == $args[0] && Rpd::rq($args['filename']) ) {
             // Edit layout
+            $tpl_dir = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'layouts';
+            $tpl_ext = Rpd::$c['raintpl']['tpl_ext'];
+            $scan = array_diff(scandir($tpl_dir), array('.', '..'));
+            $layoutArray = array();
+            foreach ( $scan as $key => $item ) {
+                if ( is_file($tpl_dir . DIRECTORY_SEPARATOR . $item) && 'layout.' == substr($item, 0, 7) && '.' . $tpl_ext == substr($item, (strlen(Rpd::$c['raintpl']['tpl_ext'])+1)*-1) ) {
+                    if ( Rpd::$c['rapid']['editAdmin'] || ( !Rpd::$c['rapid']['editAdmin'] && strtolower($item) != 'layout.administrator.' . $tpl_ext ) )
+                        $layoutArray[] = array(
+                                                    'filename' => $item,
+                                                    'last_modified' => date('Y-m-d H:i:s', filemtime($tpl_dir . DIRECTORY_SEPARATOR . $item)),
+                                                    'writable' => is_writable($tpl_dir . DIRECTORY_SEPARATOR . $item)
+                                                );
+                }
+            }
+            if ( 0 < count($layoutArray) ) Rpd::a('otherLayouts', $layoutArray);
+
             $filename = $args['filename'];
             Rpd::a('filename', $filename);
             if ( 'save' != $args[1] ) {
@@ -720,7 +736,7 @@ class AdministratorController extends RapidAuth {
                 $dirname = $_POST['lib-mkdir']['name'];
                 if ( @is_dir(Rpd::$c['rapid']['filesDir'] . $path) ) {
                     if ( @mkdir(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname) ) {
-                        Rpd::a('success', "The new directory (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname));
+                        Rpd::a('success', "The new directory (<em>" . Rpd::$c['rapid']['filesDir'] . "#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname));
                         Rpd::a('path', Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname);
                     } else Rpd::a('error', "Something went wrong while trying to create directory. Permission denied.");
                 } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong path.");
@@ -734,7 +750,7 @@ class AdministratorController extends RapidAuth {
                 $filename = $_POST['lib-mkfile']['name'];
                 if ( !@is_file(Rpd::$c['rapid']['filesDir'] . $path . DIRECTORY_SEPARATOR . $filename ) ) {
                     if ( false !== file_put_contents(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename, 'This is an automatic generated file.') ) {
-                        Rpd::a('success', "The new file (<em>lib/#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename));
+                        Rpd::a('success', "The new file (<em>" . Rpd::$c['rapid']['filesDir'] . "#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename));
                         Rpd::a('path', Rpd::$c['rapid']['filesDir'] . $path);
                     } else Rpd::a('error', "Something went wrong while trying to create file. Permission denied.");
                 } else Rpd::a('error', "Something went wrong while trying to create file. This file is already exists.");
@@ -1294,13 +1310,13 @@ class AdministratorController extends RapidAuth {
      * Upload images from WYSIWYG (Summernote)
      */ 
     public function imageUploadAction($args = array()) {
-        if ( !@is_dir("lib" . DIRECTORY_SEPARATOR . "images") ) @mkdir('lib' . DIRECTORY_SEPARATOR . 'images');
-        if ( !@is_dir("lib" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "upload") ) @mkdir('lib' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'upload');
+        if ( !@is_dir(Rpd::$c['rapid']['filesDir'] . "images") ) @mkdir(Rpd::$c['rapid']['filesDir'] . 'images');
+        if ( !@is_dir(Rpd::$c['rapid']['filesDir'] . "images" . DIRECTORY_SEPARATOR . "upload") ) @mkdir(Rpd::$c['rapid']['filesDir'] . 'images' . DIRECTORY_SEPARATOR . 'upload');
         $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $formats = array('jpg', 'jpeg', 'png', 'gif');
         $return = array();
         if ( in_array($ext, $formats) ) {
-            $targetPath = "lib" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . basename($_FILES['image']['name']);
+            $targetPath = Rpd::$c['rapid']['filesDir'] . "images" . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . basename($_FILES['image']['name']);
             if ( !@is_file($targetPath) )
                 if ( @move_uploaded_file($_FILES['image']['tmp_name'], $targetPath) ) 
                     $return['url'] = DIRECTORY_SEPARATOR . $targetPath;

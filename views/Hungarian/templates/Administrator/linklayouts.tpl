@@ -1,7 +1,9 @@
-<h1>Layout összerendelése</h1>
+<h2>
+Layout összerendelése
+<a href="{$baseURL}administrator/linkLayouts/add" class="btn btn-primary btn-sm pull-right">Új Layout összerendelés</a>
+</h2>
 <h5>Megjegyzés: ha nincs Layout kapcsolva egy alkalmazáshoz, akkor a Rapid megpróbálja betölteni a <em>layout.appname.tpl</em> Layoutot. Ha nincs kapcsolt és <em>layout.appname.tpl</em> Layout sem, akkor a Rapid betölti a <em>defaultLayout</em>-ot.</h5>
-<a href="{$baseURL}administrator/linkLayouts/add" class="btn btn-primary">Új Layout összerendelés</a>
-<br /><br />
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -23,9 +25,9 @@
                     <tr>
                         <td>{$value.from}</td>
                         <td>{$value.to}</td>
-                        <td>
+                        <td class="text-right">
                             <a href="{$baseURL}administrator/linkLayouts/edit/application:{$value.from}" title="Layout összerendelés szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$value.from}');" title="Layout összerendelés eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$value.from}');" title="Layout összerendelés eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}

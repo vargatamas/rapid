@@ -59,7 +59,7 @@
         {if="$USER"}
             <form method="post" action="/administrator" class="navbar-form navbar-right">
                 <input type="hidden" name="auth[logout]" value="1" />
-                <button type="submit" class="btn btn-default">Kilépés</button>
+                <button type="submit" class="btn btn-default">Kilépés</button>&nbsp;&nbsp;&nbsp;
             </form>
         {/if}
         <form method="post" action="{$baseURL}administrator" class="navbar-form navbar-right">

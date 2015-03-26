@@ -1,6 +1,7 @@
-<h1>Könyvtár</h1>
-<h5>Tölts fel vagy törölj fájlokat az <em>assets</em> mappádból.</h5>
-<br /><br />
+<h2>
+Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em> mappádból.</small>
+</h2>
+<br>
 {if="'' != $error"}
     <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -44,7 +45,7 @@
                         <div class="description">{$value.last_modified}</div>
                     </a>
                     <div class="actions">
-                        <a href="#" class="rmdir" title="Végleges eltávolítás" onclick="libraryRemoveDir('{$value.filename}');"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a href="#" class="rmdir text-danger" title="Végleges eltávolítás" onclick="libraryRemoveDir('{$value.filename}');"><span class="glyphicon glyphicon-trash"></span></a>
                     </div>
                 </div>
             {/loop}
@@ -56,7 +57,7 @@
                         <div class="description">{$value.filesize}</div>
                     </a>
                     <div class="actions">
-                        <a href="#" class="rmfile" title="Végleges eltávolítás" onclick="libraryRemoveFile('{$value.basename}');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
+                        <a href="#" class="rmfile text-danger" title="Végleges eltávolítás" onclick="libraryRemoveFile('{$value.basename}');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
                         <a href="#" class="vwfile" title="Megtekintés / Szerkesztés" onclick="libraryViewFile('{$value.basename}');"><span class="glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;
                         <a href="#" class="usefile" title="Fájl használása Forrásként" onclick="libraryUseFile('{$value.basename}');"><span class="glyphicon glyphicon-paperclip"></span></a>
                     </div>

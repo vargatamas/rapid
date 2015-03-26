@@ -1,6 +1,14 @@
 {if="$beanName"}
-    <h1>Bean <em>{$beanName}</em></h1>
-    <br /><br />
+    <h2>
+    	Bean <em>{$beanName}</em>
+    	{if="'' != $beanName && '' != $bean"}
+    	<div class="btn-group btn-group-sm pull-right" role="group">
+	    	<a href="{$baseURL}administrator/beans/bean:{$beanName}/add" class="btn btn-primary">Új elem</a>&nbsp;
+	    	<a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove-all');" class="btn btn-danger">Minden elem eltávolítása</a>
+    	</div>
+    	{/if}
+    </h2>
+    <br>
 {/if}
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
@@ -9,8 +17,6 @@
 <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Kész!</strong> {$success}</div>
 {/if}
 {if="'' != $beanName && '' != $bean"}
-    <a href="{$baseURL}administrator/beans/bean:{$beanName}/add" class="btn btn-primary">Új elem</a>&nbsp;
-    <a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove-all');" class="btn btn-danger">Minden elem eltávolítása</a>
     <div class="table-responsive">
 		<table class="table table-striped table-condensed">
 			<thead>
@@ -49,9 +55,9 @@
 								{if="'id' == $key"}{$id=$value}{/if}
 								{if="6 > $counter"}<td>{$value|substr:0,80}{if="80 < strlen($value)"} ..{/if}</td>{/if}
 							{/loop}
-							<td>
+							<td class="text-right">
 								<a href="{$baseURL}administrator/beans/bean:{$beanName}/edit/id:{$id}" title="Elem szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-								<a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove/id:{$id}');" title="Elem eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+								<a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove/id:{$id}');" title="Elem eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
 							</td>
 						</tr>
 					{/loop}

@@ -1,7 +1,8 @@
-<h1>Manage Translations</h1>
-<h5>Translate messages, which goes through Rapid, to any language.</h5>
-<a href="{$baseURL}administrator/translations/add" class="btn btn-primary">New Translation</a>
-<br /><br />
+<h2>
+Manage Translations&nbsp;<small>Translate messages, which goes through Rapid, to any language.</small>
+<a href="{$baseURL}administrator/translations/add" class="btn btn-primary btn-sm pull-right">New Translation</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -25,9 +26,9 @@
                         <td>{$value.language}</td>
                         <td>{$value.from|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.from)"}..{/if}</td>
                         <td>{$value.to|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.to)"}..{/if}</td>
-                        <td>
+                        <td class="text-right">
                             <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Edit Translation"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Remove Translation"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Remove Translation" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}

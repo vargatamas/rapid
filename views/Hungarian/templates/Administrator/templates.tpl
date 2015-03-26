@@ -1,7 +1,8 @@
-<h1>Sablonok menedzselése</h1>
-<h5>Tudsz készíteni, szerkeszteni vagy törölni Sablonokat.</h5>
-<a href="{$baseURL}administrator/templates/add" class="btn btn-primary">Új Sablon</a>
-<br /><br />
+<h2>
+Sablonok menedzselése&nbsp;<small>Tudsz készíteni, szerkeszteni vagy törölni Sablonokat.</small>
+<a href="{$baseURL}administrator/templates/add" class="btn btn-primary btn-sm pull-right">Új Sablon</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -19,7 +20,7 @@
                         </a>
                     </h4>
                 </div>
-                <div id="app-{$key}" class="panel-collapse collapse">
+                <div id="app-{$key}" class="panel-collapse collapse in">
                     <div class="panel-body admin-files">
                         <div class="row">
                             {loop="value"}
@@ -32,7 +33,7 @@
                                     <div class="actions">
                                         {if="$value.writable"}
                                             <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="Sablon szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
-                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.filename}');" title="Végleges eltávolítás"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.filename}');" title="Végleges eltávolítás" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                                         {else}
                                             <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="Sablon megtekintése"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         {/if}

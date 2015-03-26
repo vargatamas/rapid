@@ -16,7 +16,7 @@
                       $layout =         null,
                       $meta =           array(),
                       $culture =        '',
-                      $version =        "v1.5.2",
+                      $version =        "v1.5.3",
                       $task =           array(),
                       $errors =         array();
         
@@ -63,7 +63,7 @@
                     $buildLevel = self::buildLevel();
                     if ( Rpd::$c['rapid']['allwaysLoadDefaultApp'] ) {
                         $defApp = Rpd::$c['rapid']['defaultApplication'] . "Controller";
-                        new $defApp(self::$task['args']);
+                        new $defApp(self::$task);
                     }
                     if ( $application instanceof RapidAuth && !$application->authenticated ) 
                         $authError = true;
@@ -150,13 +150,14 @@
                                                 'sourcesFiles' => 'sources.json',
                                                 'authTpl' => 'auth',
                                                 'controllerAuthVar' => '$auth_depth',
-                                                'language' => 'English',
+                                                'culture' => 'English',
                                                 'translationsDir' => 'translations' . DIRECTORY_SEPARATOR,
                                                 'metaFile' => 'meta.json',
                                                 'siteFile' => 'site.json',
                                                 'editAdmin' => false,
                                                 'libEditables' => array('js', 'less', 'css', 'txt'),
 												'updaterFile' => 'updater.php',
+                                                'installerFile' => 'installer.php',
                                                 'mailsDir' => 'mails' . DIRECTORY_SEPARATOR,
                                                 'globalSourcesFile' => 'global-sources.json',
                                                 'filesDir' => 'assets' . DIRECTORY_SEPARATOR,
@@ -560,8 +561,8 @@
             curl_close($ch);
             $content = json_decode($data);
             
-            if ( $return ) return $content[0]->name;
-            if ( $zipUrl ) return $content[0]->zipball_url;
+            if ( $return ) return ( isset($content[0]->name) ? $content[0]->name : 'unknown' );
+            if ( $zipUrl ) return ( isset($content[0]->zipball_url) ? $content[0]->zipball_url : false );
         }
 
         /**

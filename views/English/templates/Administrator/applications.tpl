@@ -1,6 +1,8 @@
-<h1>Applications</h1>
-<a href="{$baseURL}administrator/applications/add" class="btn btn-primary">Add new Application</a>
-<br /><br />
+<h2>
+Applications
+<a href="{$baseURL}administrator/applications/add" class="btn btn-primary btn-sm pull-right">Add new Application</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -26,9 +28,9 @@
 						<td>{$value.languages}</td>
 						<td>{$value.sources}</td>
 						<td><span class="glyphicon glyphicon-{if="$value.default"}ok{else}remove{/if}"></span></td>
-						<td>
+						<td class="text-right">
 							<a href="{$baseURL}administrator/applications/edit/application:{$key}" title="Edit Application"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-							<a href="javascript:linkConfirm('{$baseURL}administrator/applications/remove/application:{$key}');" title="Remove Application"><span class="glyphicon glyphicon-trash"></span></a>
+							<a href="javascript:linkConfirm('{$baseURL}administrator/applications/remove/application:{$key}');" title="Remove Application" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
 						</td>
 					</tr>
 				{/loop}

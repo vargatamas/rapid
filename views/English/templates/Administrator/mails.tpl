@@ -1,7 +1,8 @@
-<h1>Manage Mail Templates</h1>
-<h5>You can create, edit or remove the Mail Templates.</h5>
-<a href="{$baseURL}administrator/mails/add" class="btn btn-primary">New Mail Template</a>
-<br /><br />
+<h2>
+Manage Mail Templates&nbsp;<small>You can create, edit or remove the Mail Templates.</small>
+<a href="{$baseURL}administrator/mails/add" class="btn btn-primary btn-sm pull-right">New Mail Template</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -27,10 +28,10 @@
                         <td>{$value.variables}</td>
                         <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
                         <td>{$value.last_modified}</td>
-                        <td>
+                        <td class="text-right">
                             {if="$value.writable"}
                                 <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="Edit Mail Template"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="Remove Mail Template"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="Remove Mail Template" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                             {else}
                                 <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="View Mail Template"><span class="glyphicon glyphicon-eye-open"></span></a>
                             {/if}

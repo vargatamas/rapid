@@ -1,7 +1,8 @@
-<h1>Manage Templates</h1>
-<h5>You can create, edit or remove the Templates.</h5>
-<a href="{$baseURL}administrator/templates/add" class="btn btn-primary">New Template</a>
-<br /><br />
+<h2>
+Manage Templates&nbsp;<small>You can create, edit or remove the Templates.</small>
+<a href="{$baseURL}administrator/templates/add" class="btn btn-primary btn-sm pull-right">New Template</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -19,11 +20,11 @@
                         </a>
                     </h4>
                 </div>
-                <div id="app-{$key}" class="panel-collapse collapse">
+                <div id="app-{$key}" class="panel-collapse collapse in">
                     <div class="panel-body admin-files">
                         <div class="row">
                             {loop="value"}
-                            	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">
+                            	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item moving">
                                     <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}">
                                         <div class="icon"><span class="glyphicon glyphicon-file"></span></div>
                                         <div class="title">{$value.template}</div>
@@ -32,7 +33,7 @@
                                     <div class="actions">
                                         {if="$value.writable"}
                                             <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
-                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.filename}');" title="Remove Permanently"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.filename}');" title="Remove Permanently" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                                         {else}
                                             <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="View Template"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         {/if}

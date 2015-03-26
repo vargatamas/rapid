@@ -1,6 +1,8 @@
-<h1>Alkalmazások</h1>
-<a href="{$baseURL}administrator/applications/add" class="btn btn-primary">Új Alkalmazás</a>
-<br /><br />
+<h2>
+Alkalmazások
+<a href="{$baseURL}administrator/applications/add" class="btn btn-primary btn-sm pull-right">Új Alkalmazás</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -26,9 +28,9 @@
                         <td>{$value.languages}</td>
                         <td>{$value.sources}</td>
                         <td><span class="glyphicon glyphicon-{if="$value.default"}ok{else}remove{/if}"></span></td>
-                        <td>
+                        <td class="text-right">
                             <a href="{$baseURL}administrator/applications/edit/application:{$key}" title="Alkalmazás szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/applications/remove/application:{$key}');" title="Alkalmazás eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/applications/remove/application:{$key}');" title="Alkalmazás eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}

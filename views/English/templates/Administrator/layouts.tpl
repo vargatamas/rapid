@@ -1,7 +1,8 @@
-<h1>Manage Layouts</h1>
-<h5>Feel free to create new Layout or edit an existing.</h5>
-<a href="{$baseURL}administrator/layouts/add" class="btn btn-primary">Add Layout</a>
-<br /><br />
+<h2>
+Manage Layouts&nbsp;<small>Feel free to create new Layout or edit an existing.</small>
+<a href="{$baseURL}administrator/layouts/add" class="btn btn-primary btn-sm pull-right">Add Layout</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -25,10 +26,10 @@
                         <td>{$value.name}</td>
                         <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
                         <td>{$value.last_modified}</td>
-                        <td>
+                        <td class="text-right">
                             {if="$value.writable"}
                                 <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="Edit Layout"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/layouts/remove/filename:{$value.name}');" title="Remove Layout"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="javascript:linkConfirm('{$baseURL}administrator/layouts/remove/filename:{$value.name}');" title="Remove Layout" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                             {else}
                                 <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="View Layout"><span class="glyphicon glyphicon-eye-open"></span></a>
                             {/if}

@@ -1,7 +1,8 @@
-<h1>Manage Languages</h1>
-<h5>Check or create Languages of your Site.</h5>
-<a data-toggle="modal" href="#new-language" class="btn btn-primary">New Language</a>
-<br /><br />
+<h2>
+Manage Languages&nbsp;<small>Check or create Languages of your Site.</small>
+<a data-toggle="modal" href="#new-language" class="btn btn-primary btn-sm pull-right">New Language</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -39,7 +40,9 @@
                         </td>
                         <td><span class="glyphicon glyphicon-{if="$value.isDefault"}ok{else}remove{/if}"></span></td>
                         <td><span class="glyphicon glyphicon-{if="$value.isActive"}ok{else}remove{/if}"></span></td>
-                        <td><a href="javascript:linkConfirm('{$baseURL}administrator/languages/remove/language:{$key}');" title="Remove Language"><span class="glyphicon glyphicon-trash"></span></a></td>
+                        <td class="text-right">
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/languages/remove/language:{$key}');" title="Remove Language" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
                     </tr>
                 {/loop}
             </tbody>

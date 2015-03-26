@@ -28,13 +28,12 @@
         </div>
     </div>
     <div class="form-group">
-		<label for="indexing" class="col-lg-2 control-label">Indexing</label>
-		<div class="col-lg-10">
-			<div class="checkbox">
-				<input type="checkbox" name="preferences[indexing]" id="indexing"{if="isset($preferences.indexing)"} checked="checked"{/if} />
-			</div>
-            <p class="help-block">Allow search engines to index this Site.</p>
-		</div>
+        <label for="indexing" class="col-lg-2 control-label">Indexing</label>
+        <div class="col-lg-10">
+            <div class="checkbox">
+                <label><input type="checkbox" name="preferences[indexing]" id="indexing"{if="isset($preferences.indexing)"} checked="checked"{/if} /> Allow search engines to index this Site.</label>
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">

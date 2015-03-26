@@ -1,6 +1,6 @@
-<h1>Alkalmazás Források menedzselése</h1>
+<h2>Alkalmazás Források menedzselése</h2>
 <h5>Szeretnél néhány egyedülálló javascript plugint vagy stílusfájlt az alkalmazásodnak? Rögzítsd ezeket a Forrásokat.</h5>
-<br /><br />
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -24,11 +24,11 @@
                         <td>{$value.name}</td>
                         <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
                         <td>{$value.last_modified}</td>
-                        <td>
+                        <td class="text-right">
                             {if="$value.writable"}
                                 <a href="{$baseURL}administrator/sources/edit/application:{$value.name}" title="Források szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>
                                 {if="'-' != $value.last_modified"}
-                                    &nbsp;<a href="javascript:linkConfirm('{$baseURL}administrator/sources/clear/application:{$value.name}');" title="Források ürítése"><span class="glyphicon glyphicon-trash"></span></a>
+                                    &nbsp;<a href="javascript:linkConfirm('{$baseURL}administrator/sources/clear/application:{$value.name}');" title="Források ürítése" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                                 {/if}
                             {else}
                                 <a href="{$baseURL}administrator/sources/edit/application:{$value.name}" title="Források megtekintése"><span class="glyphicon glyphicon-eye-open"></span></a>

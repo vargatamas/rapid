@@ -9,7 +9,15 @@
     <div class="form-group">
         <label class="col-lg-2 control-label">Layout fájlneve</label>
         <div class="col-lg-10">
+            {if="isset($otherLayouts)"}
+            <select class="form-control" id="other-layout">
+                {loop="otherLayouts"}
+                <option value="{$value.filename}"{if="$value.filename == $filename"} selected{/if}>{$value.filename} ({$value.last_modified})</option>
+                {/loop}
+            </select>
+            {else}
             <p class="form-control-static">{$filename}</p>
+            {/if}
         </div>
     </div>
     <div class="form-group">

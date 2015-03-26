@@ -1,14 +1,14 @@
-<h1>Routes</h1>
-<h5>You do not like the default URI path? Redefine it.</h5>
-<br />
+<h2>
+Routes&nbsp;<small>You do not like the default URI path? Redefine it.</small>
+<a href="{$baseURL}administrator/routes/add" class="btn btn-primary btn-sm pull-right">Add Route</a>&nbsp;
+</h2>
+<br>
 {if="'' != $error"}
     <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
 {if="'' != $success"}
     <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Success!</strong> {$success}</div>
 {/if}
-<a href="{$baseURL}administrator/routes/add" class="btn btn-primary">Add Route</a>&nbsp;
-<br /><br />
 {if="isset($routes) && 0 < count($routes)"}
     <div class="table-responsive">
         <table class="table table-striped table-condensed">
@@ -30,8 +30,8 @@
                         <td>{$url}/{$value.to}</td>
                         <td>{$value.user}</td>
                         <td>{$value.last_modified}</td>
-                        <td>
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Remove Route"><span class="glyphicon glyphicon-trash"></span></a>
+                        <td class="text-right">
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Remove Route" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}

@@ -1,7 +1,8 @@
-<h1>Fordítások menedzselése</h1>
-<h5>Fordíts le üzeneteket, amelyek a Rapidon mennek keresztül, bármilyen nyelvre.</h5>
-<a href="{$baseURL}administrator/translations/add" class="btn btn-primary">Új Fordítás</a>
-<br /><br />
+<h2>
+Fordítások menedzselése&nbsp;<small>Fordíts le üzeneteket, amelyek a Rapidon mennek keresztül, bármilyen nyelvre.</small>
+<a href="{$baseURL}administrator/translations/add" class="btn btn-primary btn-sm pull-right">Új Fordítás</a>
+</h2>
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
 {/if}
@@ -25,9 +26,9 @@
                         <td>{$value.language}</td>
                         <td>{$value.from|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.from)"}..{/if}</td>
                         <td>{$value.to|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.to)"}..{/if}</td>
-                        <td>
+                        <td class="text-right">
                             <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Fordítás szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Fordítás eltávolítása"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Fordítás eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 {/loop}

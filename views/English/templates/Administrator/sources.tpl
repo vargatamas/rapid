@@ -1,6 +1,8 @@
-<h1>Manage Application Sources</h1>
+<h2>
+Manage Application Sources
+</h2>
 <h5>Do you want some unique javascript plugin or an out-standing css for your application? Attach these Sources.</h5>
-<br /><br />
+<br>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -24,11 +26,11 @@
                         <td>{$value.name}</td>
                         <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
                         <td>{$value.last_modified}</td>
-                        <td>
+                        <td class="text-right">
                             {if="$value.writable"}
                                 <a href="{$baseURL}administrator/sources/edit/application:{$value.name}" title="Edit Source"><span class="glyphicon glyphicon-pencil"></span></a>
                                 {if="'-' != $value.last_modified"}
-                                    &nbsp;<a href="javascript:linkConfirm('{$baseURL}administrator/sources/clear/application:{$value.name}');" title="Clear Source"><span class="glyphicon glyphicon-trash"></span></a>
+                                    &nbsp;<a href="javascript:linkConfirm('{$baseURL}administrator/sources/clear/application:{$value.name}');" title="Clear Source" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
                                 {/if}
                             {else}
                                 <a href="{$baseURL}administrator/sources/edit/application:{$value.name}" title="View Source"><span class="glyphicon glyphicon-eye-open"></span></a>
