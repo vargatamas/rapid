@@ -24,7 +24,7 @@
         </div>
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-10">
-                <button type="submit" class="btn btn-primary">Mentés</button>&nbsp;
+                <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>&nbsp;
                 <a href="{$baseURL}administrator/linkLayouts">Mégse és vissza a listához</a>
             </div>
         </div>

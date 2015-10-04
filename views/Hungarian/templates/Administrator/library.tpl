@@ -19,19 +19,21 @@ Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em
         </button>
         <ul class="dropdown-menu" role="menu">
             <li>
-                <a data-toggle="modal" href="#lib-mkfile-modal" class="lib-mkfile"><i class="glyphicon glyphicon-file"></i>&nbsp;Új fájl</a>
+                <a data-toggle="modal" href="#lib-mkfile-modal" class="lib-mkfile"><i class="fa fa-file"></i>&nbsp;Új fájl</a>
             </li>
             <li>
-                <a data-toggle="modal" href="#lib-mkdir-modal" class="lib-mkdir"><i class="glyphicon glyphicon-folder-close"></i>&nbsp;Új könyvtár</a>
+                <a data-toggle="modal" href="#lib-mkdir-modal" class="lib-mkdir"><i class="fa fa-folder"></i>&nbsp;Új könyvtár</a>
             </li>
             <li>
-                <a href="#" class="lib-upload"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;Fájl(ok) feltöltése</a>
+                <a href="#" class="lib-upload"><i class="fa fa-cloud-upload"></i>&nbsp;Fájl(ok) feltöltése</a>
             </li>
         </ul>
     </div>
     <ol class="breadcrumb">
+        {$path=""}
         {loop="library.path"}
-            <li><a href="#">{$value}</a></li>
+            {$path.=$value.'/'}
+            {if="$value != $library.current"}<li><a href="#" onclick="changeDir('{$path|substr:0,-1}');">{$value}</a></li>{/if}
         {/loop}
         <li class="active">{$library.current}</li>
     </ol>
@@ -40,26 +42,26 @@ Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em
             {loop="library.tree.directories"}
                 <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">
                     <a href="#" class="chdir" onclick="changeDir('{$value.path}');">
-                        <div class="icon"><span class="glyphicon glyphicon-folder-close"></span></div>
+                        <div class="icon"><i class="fa fa-folder"></i></div>
                         <div class="title">{$value.filename}</div>
                         <div class="description">{$value.last_modified}</div>
                     </a>
                     <div class="actions">
-                        <a href="#" class="rmdir text-danger" title="Végleges eltávolítás" onclick="libraryRemoveDir('{$value.filename}');"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a href="#" class="rmdir text-danger" title="Végleges eltávolítás" onclick="libraryRemoveDir('{$value.filename}');"><i class="fa fa-trash-o"></i></a>
                     </div>
                 </div>
             {/loop}
             {loop="library.tree.files"}
                 <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item">
                     <a href="javascript:libraryViewFile('{$value.basename}');">
-                        <div class="icon"><span class="glyphicon glyphicon-file"></span></div>
+                        <div class="icon"><i class="fa fa-file"></i></div>
                         <div class="title">{$value.basename}</div>
                         <div class="description">{$value.filesize}</div>
                     </a>
                     <div class="actions">
-                        <a href="#" class="rmfile text-danger" title="Végleges eltávolítás" onclick="libraryRemoveFile('{$value.basename}');"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
-                        <a href="#" class="vwfile" title="Megtekintés / Szerkesztés" onclick="libraryViewFile('{$value.basename}');"><span class="glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;
-                        <a href="#" class="usefile" title="Fájl használása Forrásként" onclick="libraryUseFile('{$value.basename}');"><span class="glyphicon glyphicon-paperclip"></span></a>
+                        <a href="#" class="rmfile text-danger" title="Végleges eltávolítás" onclick="libraryRemoveFile('{$value.basename}');"><i class="fa fa-trash-o"></i></a>&nbsp;&nbsp;
+                        <a href="#" class="vwfile" title="Megtekintés / Szerkesztés" onclick="libraryViewFile('{$value.basename}');"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;
+                        <a href="#" class="usefile" title="Fájl használása Forrásként" onclick="libraryUseFile('{$value.basename}');"><i class="fa fa-paperclip"></i></a>
                     </div>
                 </div>
             {/loop}
@@ -93,7 +95,7 @@ Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em
                     <div class="form-group">
                         <label class="col-lg-4 control-label">Szülő könyvtár</label>
                         <div class="col-lg-8">
-                            <p class="form-control-static" id="lib-mkdir-path">/assets/</p>
+                            <p class="form-control-static" id="lib-mkdir-path">/{$filesDir}</p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -104,8 +106,8 @@ Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
-                    <button type="submit" class="btn btn-primary">Mentés</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-ban"></i> Bezárás</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>
                 </div>
             </form>
         </div>
@@ -125,7 +127,7 @@ Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em
                     <div class="form-group">
                         <label class="col-lg-4 control-label">Szülő könyvtár</label>
                         <div class="col-lg-8">
-                            <p class="form-control-static" id="lib-mkfile-path">/assets/</p>
+                            <p class="form-control-static" id="lib-mkfile-path">/{$filesDir}</p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -136,8 +138,8 @@ Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
-                    <button type="submit" class="btn btn-primary">Mentés</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-ban"></i> Bezárás</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>
                 </div>
             </form>
         </div>
@@ -168,8 +170,8 @@ Könyvtár&nbsp;<small>Tölts fel vagy törölj fájlokat az <em>{$filesDir}</em
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
-            <button type="submit" class="btn btn-primary">Mentés</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-ban"></i> Bezárás</button>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>
           </div>
       </form>
     </div><!-- /.modal-content -->

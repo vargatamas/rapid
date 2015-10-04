@@ -1,11 +1,16 @@
-<h1>Edit File</h1>
-<div class="alert hidden">
-    <strong class="alert-title">Success!</strong>
-    <span class="alert-body">
-        {$success}
-    </span>
-</div>
 <form method="post" id="edit-form" action="{$baseURL}administrator/library/file-save" class="form-horizontal" role="form">
+    <h1>
+        Edit File
+        {if="$file.writable"}
+            <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Save</button>
+        {/if}
+    </h1>
+    <div class="alert hidden">
+        <strong class="alert-title">Success!</strong>
+        <span class="alert-body">
+            {$success}
+        </span>
+    </div>
     <input type="hidden" name="file[path]" value="{$file.path}" />
     <div class="form-group">
         <label class="col-lg-2 control-label">Filename</label>
@@ -20,6 +25,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-lg-2 control-label">Last modified</label>
+        <div class="col-lg-10">
+            <p class="form-control-static">{$file.last_modified}</p>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="col-lg-12">
             {if="'js' == substr($file.filename, -2)"}
                 <div class="hidden">{$filetype = " javascript"}</div>
@@ -30,20 +41,14 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-2 control-label">Last modified</label>
-        <div class="col-lg-10">
-            <p class="form-control-static">{$file.last_modified}</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-lg-offset-2 col-lg-10">
+        <div class="col-lg-12 text-center">
             {if="$file.writable"}
-                <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+                <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
             {else}
                 <div class="alert alert-warning"><strong>Warning!</strong> You can not Save this File because this is non-writable.</div>
             {/if}
-            <a href="javascript:linkConfirm('{$baseURL}administrator/library/rmfile/{$file.path}');" class="btn btn-danger">Remove file</a>&nbsp;
-            <a href="/{$file.path}" class="btn btn-default" target="_blank">Download file</a>&nbsp;
+            <a href="javascript:linkConfirm('{$baseURL}administrator/library/rmfile/{$file.path}');" class="btn btn-danger"><i class="fa fa-trash-o"></i> Remove file</a>&nbsp;
+            <a href="/{$file.path}" class="btn btn-default" target="_blank"><i class="fa fa-download"></i> Download file</a>&nbsp;
             <a href="{$baseURL}administrator/library">Cancel and back to list</a>
         </div>
     </div>

@@ -3,8 +3,8 @@
     	Bean&nbsp;<em>{$beanName}</em>
     	{if="'' != $beanName && '' != $bean"}
     	<div class="btn-group btn-group-sm pull-right" role="group">
-			<a href="{$baseURL}administrator/beans/bean:{$beanName}/add" class="btn btn-primary">Add Item</a>&nbsp;
-		    <a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove-all');" class="btn btn-danger">Remove all items</a>
+			<a href="{$baseURL}administrator/beans/bean:{$beanName}/add" class="btn btn-primary"><i class="fa fa-plus"></i> Add Item</a>&nbsp;
+		    <a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove-all');" class="btn btn-danger"><i class="fa fa-trash-o"></i> Remove all items</a>
 		</div>
 		{/if}
     </h2>
@@ -56,8 +56,8 @@
 								{if="6 > $counter"}<td>{$value|substr:0,80}{if="80 < strlen($value)"} ..{/if}</td>{/if}
 							{/loop}
 							<td class="text-right">
-								<a href="{$baseURL}administrator/beans/bean:{$beanName}/edit/id:{$id}" title="Edit item"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-								<a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove/id:{$id}');" title="Remove item" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+								<a href="{$baseURL}administrator/beans/bean:{$beanName}/edit/id:{$id}" title="Edit item"><i class="fa fa-pencil"></i></a>&nbsp;
+								<a href="javascript:linkConfirm('{$baseURL}administrator/beans/bean:{$beanName}/remove/id:{$id}');" title="Remove item" class="text-danger"><i class="fa fa-trash-o"></i></a>
 							</td>
 						</tr>
 					{/loop}
@@ -69,10 +69,10 @@
                 <strong>{$page}. page</strong><br /><br />
                 <div class="btn-group">
                     {if="isset($prevStart)"}
-                        <a href="{$baseURL}administrator/beans/bean:{$beanName}/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;previous</a>
+                        <a href="{$baseURL}administrator/beans/bean:{$beanName}/start:{$prevStart}" class="btn btn-default"><i class="fa fa-angle-left"></i>&nbsp;previous</a>
                     {/if}
                     {if="isset($nextStart)"}
-                        <a href="{$baseURL}administrator/beans/bean:{$beanName}/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                        <a href="{$baseURL}administrator/beans/bean:{$beanName}/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="fa fa-angle-right"></i></a>
                     {/if}
                 </div>
             </div>

@@ -1,11 +1,16 @@
-<h1>Edit Template</h1>
-<div class="alert hidden">
-    <strong class="alert-title">Success!</strong>
-    <span class="alert-body">
-        {$success}
-    </span>
-</div>
 <form method="post" action="{$baseURL}administrator/templates/edit/save" id="edit-form" class="form-horizontal" role="form">
+    <h1>
+        Edit Template
+        {if="$template.writable"}
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Save</button>
+        {/if}
+    </h1>
+    <div class="alert hidden">
+        <strong class="alert-title">Success!</strong>
+        <span class="alert-body">
+            {$success}
+        </span>
+    </div>
     <input type="hidden" name="template[application]" value="{$template.application}" />
     <input type="hidden" name="template[filename]" value="{$template.filename}" />
     <div class="form-group">
@@ -42,7 +47,7 @@
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
             {if="$template.writable"}
-                <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+                <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
             {else}
                 <div class="alert alert-warning"><strong>Warning!</strong> You can not Save this Template because this file is non-writable.</div>
             {/if}

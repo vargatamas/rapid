@@ -1,6 +1,6 @@
 <h2>
 Manage Translations&nbsp;<small>Translate messages, which goes through Rapid, to any language.</small>
-<a href="{$baseURL}administrator/translations/add" class="btn btn-primary btn-sm pull-right">New Translation</a>
+<a href="{$baseURL}administrator/translations/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> New Translation</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -14,9 +14,9 @@ Manage Translations&nbsp;<small>Translate messages, which goes through Rapid, to
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
-                    <th>Language</th>
-                    <th>From</th>
-                    <th>To</th>
+                    <th>Translate to</th>
+                    <th>String from</th>
+                    <th>String to</th>
                     <th></th>
                 </tr>
             </thead>
@@ -27,8 +27,8 @@ Manage Translations&nbsp;<small>Translate messages, which goes through Rapid, to
                         <td>{$value.from|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.from)"}..{/if}</td>
                         <td>{$value.to|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.to)"}..{/if}</td>
                         <td class="text-right">
-                            <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Edit Translation"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Remove Translation" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Edit Translation"><i class="fa fa-pencil"></i></a>&nbsp;
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Remove Translation" class="text-danger"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
                 {/loop}

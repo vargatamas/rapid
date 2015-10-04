@@ -1,5 +1,8 @@
-<h1>Edit Application Meta</h1>
 <form method="post" action="{$baseURL}administrator/applications/edit/application:{$application}/save" class="form-horizontal" role="form">
+    <h1>
+        Edit Application Meta
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Save</button>
+    </h1>
     <div class="form-group">
         <label class="col-lg-2 control-label">Application</label>
         <div class="col-lg-10">
@@ -22,7 +25,7 @@
     <div class="form-group">
         <label for="keywords" class="col-lg-2 control-label">Keywords</label>
         <div class="col-lg-10">
-            <input type="text" name="application[keywords]" value="{$appMeta.keywords}" class="form-control" id="keywords" placeholder="receipts, cakes, meals, food" />
+            <input type="text" name="application[keywords]" value="{$appMeta.keywords}" class="form-control" id="keywords" placeholder="receipts,cakes,meals,food" />
             <p class="help-block">Separate the keywords with commas.</p>
         </div>
     </div>
@@ -41,7 +44,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
             <a href="{$baseURL}administrator/applications">Cancel and back to list</a>
         </div>
     </div>

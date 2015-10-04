@@ -16,7 +16,7 @@
                       $layout =         null,
                       $meta =           array(),
                       $culture =        '',
-                      $version =        "v1.5.4",
+                      $version =        "v1.6",
                       $task =           array(),
                       $errors =         array();
         
@@ -50,8 +50,8 @@
         /**
          * This is the heart of Rapid, this function runs the application.
         */
-        private static function run($controller = "", $action = "") {
-            self::pathToTask($controller, $action);
+        private static function run($controller = "", $action = "", $path = "") {
+            self::pathToTask($controller, $action, $path);
             $application = self::loadApplication();
             if ( !is_null($application) ) {
                 $action = self::runApplication($application);
@@ -63,8 +63,9 @@
                     $buildLevel = self::buildLevel();
                     if ( Rpd::$c['rapid']['allwaysLoadDefaultApp'] ) {
                         $defApp = Rpd::$c['rapid']['defaultApplication'] . "Controller";
-                        new $defApp(self::$task);
+                        new $defApp(self::$task['args']);
                     }
+                    self::assignMeta();
                     if ( $application instanceof RapidAuth && !$application->authenticated ) 
                         $authError = true;
                     else if ( $application->authenticated && $_SESSION['user']['depth'] > eval('return ' . get_class($application) . '::' . Rpd::$c['rapid']['controllerAuthVar'] . ';') ) {
@@ -72,7 +73,6 @@
                     } else {
                         if ( null !== $action && !isset(self::$task['static']) ) {
                             $return = $application->$action(self::$task['args']);
-                            self::assignMeta();
                             $template = eval('return (isset(' . self::$task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ')?' . self::$task['controller'] . '::' . Rpd::$c['rapid']['controllerTemplateVar'] . ':"' . strtolower(str_replace('Action', '', self::$task['action'])) . '");');
                             if ( !is_null($return) ) $applicationContent = $return;
                             else if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $culture . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . self::$task['application'] . DIRECTORY_SEPARATOR . $template . '.' . Rpd::$c['raintpl']['tpl_ext']) ) 
@@ -116,8 +116,8 @@
         /**
          * Redirect Rapid to another application to run (and kill the current process).
         */
-        public static function redirect($controller = "", $action = "") {
-            self::run($controller, $action);
+        public static function redirect($controller = "", $action = "", $path = "") {
+            self::run($controller, $action, $path);
             die();
         }
 
@@ -200,8 +200,8 @@
          * Convert URL to Array and define the controller, action and arguments after checked the routing.
          * This function requires the .htaccess file with this line: 'RewriteRule ^(.*)$ index.php?path=$1 [QSA,L]'
         */
-        private static function pathToTask($controller = "", $action = "") {
-            $path = $_GET['path'];
+        private static function pathToTask($controller = "", $action = "", $path = "") {
+            $path = ( "" != $path ? $path : $_GET['path'] );
             $pathArray = array();
             if ( 0 < strlen($path) && 0 < count(explode('/', $path)) ) $pathArray = explode('/', $path);
 
@@ -283,50 +283,50 @@
                 if ( is_file('applications' . DIRECTORY_SEPARATOR . self::$task['controller'] . DIRECTORY_SEPARATOR . self::$task['controller'] . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . self::$task['controller'] . DIRECTORY_SEPARATOR . self::$task['controller'] . 'Controller.class.php';
                     self::$task['controller'] = self::$task['controller'] . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else if ( is_file('applications' . DIRECTORY_SEPARATOR . self::$task['controller'] . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . self::$task['controller'] . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . 'Controller.class.php';
                     self::$task['controller'] = ucfirst(self::$task['controller']) . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else if ( is_file('applications' . DIRECTORY_SEPARATOR . self::$task['controller'] . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . self::$task['controller'] . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . 'Controller.class.php';
                     self::$task['controller'] = strtolower(self::$task['controller']) . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else self::$errors[] = "Error in Rapid class loadApplication function: the <em>" . self::$task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . self::$task['controller'] . "</em>.";
             } else if ( is_dir('applications' . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller'])) ) {
                 if ( is_file('applications' . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . DIRECTORY_SEPARATOR . self::$task['controller'] . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . DIRECTORY_SEPARATOR . self::$task['controller'] . 'Controller.class.php';
                     self::$task['controller'] = self::$task['controller'] . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else if ( is_file('applications' . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . 'Controller.class.php';
                     self::$task['controller'] = ucfirst(self::$task['controller']) . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else if ( is_file('applications' . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . 'Controller.class.php';
                     self::$task['controller'] = strtolower(self::$task['controller']) . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else self::$errors[] = "Error in Rapid class loadApplication function: the <em>" . self::$task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . "</em>.";
             } else if ( is_dir('applications' . DIRECTORY_SEPARATOR . strtolower(self::$task['controller'])) ) {
                 if ( is_file('applications' . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . DIRECTORY_SEPARATOR . self::$task['controller'] . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . DIRECTORY_SEPARATOR . self::$task['controller'] . 'Controller.class.php';
                     self::$task['controller'] = self::$task['controller'] . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else if ( is_file('applications' . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . DIRECTORY_SEPARATOR . ucfirst(self::$task['controller']) . 'Controller.class.php';
                     self::$task['controller'] = ucfirst(self::$task['controller']) . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else if ( is_file('applications' . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . 'Controller.class.php';
                     self::$task['controller'] = strtolower(self::$task['controller']) . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else self::$errors[] = "Error in Rapid class loadApplication function: the <em>" . self::$task['controller'] . "Controller.class.php</em> does not exists in <em>applications" . DIRECTORY_SEPARATOR . strtolower(self::$task['controller']) . "</em>.";
             } else {
                 $defAction = Rpd::$c['rapid']['defaultApplication'];
                 if ( is_file('applications' . DIRECTORY_SEPARATOR . $defAction . DIRECTORY_SEPARATOR . $defAction . 'Controller.class.php') ) {
                     require_once 'applications' . DIRECTORY_SEPARATOR . $defAction . DIRECTORY_SEPARATOR . $defAction . 'Controller.class.php';
                     self::$task['controller'] = $defAction . 'Controller';
-                    $application = new self::$task['controller']();
+                    $application = new self::$task['controller'](self::$task['args']);
                 } else self::$errors[] = "Error in Rapid class loadApplication function: defaultApplication is defined (<em>" . Rpd::$c['rapid']['defaultApplication'] . "</em>), but does not exists in applications dir.";
             }
             self::$task['application'] = str_replace('Controller', '', self::$task['controller']);
@@ -529,7 +529,7 @@
          * @return string String with translation or input string
         */ 
         public static function translation($value, $variables = array()) {
-            if ( is_file(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n') && Rpd::$cl != Rpd::$c['rapid']['culture'] )
+            if ( is_file(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n') )
                 $translations = json_decode(@file_get_contents(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n'), true);
             else $translations = array();
             if ( "string" == gettype($value) ) {
@@ -711,6 +711,8 @@
         public static function sL($l) { Rapid::$layout = $l; }
 
         public static function sM($m) { Rapid::$meta = $m; }
+
+        public static function rd($c, $a, $p = '') { Rapid::redirect($c, $a, $p); }
         
         //RapidValidate shorthands
         public static function nE($f){ return RapidValidate::nonEmpty($f); }

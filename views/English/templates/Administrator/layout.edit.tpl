@@ -1,11 +1,14 @@
-<h1>Edit Layout</h1>
-<div class="alert hidden">
-    <strong class="alert-title">Success!</strong>
-    <span class="alert-body">
-        {$success}
-    </span>
-</div>
 <form id="edit-form" method="post" action="{$baseURL}administrator/layouts/edit/filename:{$filename}/save" class="form-horizontal" role="form">
+    <h1>
+        Edit Layout
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Save</button>
+    </h1>
+    <div class="alert hidden">
+        <strong class="alert-title">Success!</strong>
+        <span class="alert-body">
+            {$success}
+        </span>
+    </div>
     <div class="form-group">
         <label class="col-lg-2 control-label">Layout filename</label>
         <div class="col-lg-10">
@@ -35,7 +38,7 @@
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
             {if="$layout.writable"}
-                <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+                <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
             {else}
                 <div class="alert alert-warning"><strong>Warning!</strong> You can not Save this Layout because this file (applications/{$filename}) is non-writable.</div>
             {/if}

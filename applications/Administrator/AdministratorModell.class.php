@@ -165,6 +165,16 @@ class AdministratorModell {
         return R::count($name);
     }
 
+    public static function executeSQL($sql) {
+        if ( !Rpd::nE($sql) ) return false;
+        return R::exec($sql);
+    }
+
+    public static function getAllSQL($sql) {
+        if ( !Rpd::nE($sql) ) return false;
+        return R::getAll($sql);
+    }
+
 
     // Routes
     public static function getRoutes() {

@@ -1,6 +1,6 @@
 <h2>
 Layout összerendelése
-<a href="{$baseURL}administrator/linkLayouts/add" class="btn btn-primary btn-sm pull-right">Új Layout összerendelés</a>
+<a href="{$baseURL}administrator/linkLayouts/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Új Layout összerendelés</a>
 </h2>
 <h5>Megjegyzés: ha nincs Layout kapcsolva egy alkalmazáshoz, akkor a Rapid megpróbálja betölteni a <em>layout.appname.tpl</em> Layoutot. Ha nincs kapcsolt és <em>layout.appname.tpl</em> Layout sem, akkor a Rapid betölti a <em>defaultLayout</em>-ot.</h5>
 <br>
@@ -26,8 +26,8 @@ Layout összerendelése
                         <td>{$value.from}</td>
                         <td>{$value.to}</td>
                         <td class="text-right">
-                            <a href="{$baseURL}administrator/linkLayouts/edit/application:{$value.from}" title="Layout összerendelés szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$value.from}');" title="Layout összerendelés eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{$baseURL}administrator/linkLayouts/edit/application:{$value.from}" title="Layout összerendelés szerkesztése"><i class="fa fa-pencil"></i></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/linkLayouts/remove/application:{$value.from}');" title="Layout összerendelés eltávolítása" class="text-danger"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
                 {/loop}
@@ -36,13 +36,13 @@ Layout összerendelése
     </div>
     {if="isset($prevStart) || isset($nextStart) || isset($page)"}
         <div class="text-center">
-            <strong>{$page}. page</strong><br /><br />
+            <strong>{$page}. oldal</strong><br /><br />
             <div class="btn-group">
                 {if="isset($prevStart)"}
-                    <a href="{$baseURL}administrator/linkLayouts/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;előző</a>
+                    <a href="{$baseURL}administrator/linkLayouts/start:{$prevStart}" class="btn btn-default"><i class="fa fa-angle-left"></i>&nbsp;előző</a>
                 {/if}
                 {if="isset($nextStart)"}
-                    <a href="{$baseURL}administrator/linkLayouts/start:{$nextStart}" class="btn btn-default">következő&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                    <a href="{$baseURL}administrator/linkLayouts/start:{$nextStart}" class="btn btn-default">következő&nbsp;<i class="fa fa-angle-right"></i></a>
                 {/if}
             </div>
         </div>

@@ -1,6 +1,6 @@
 <h2>
 Manage Templates&nbsp;<small>You can create, edit or remove the Templates.</small>
-<a href="{$baseURL}administrator/templates/add" class="btn btn-primary btn-sm pull-right">New Template</a>
+<a href="{$baseURL}administrator/templates/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> New Template</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -26,16 +26,16 @@ Manage Templates&nbsp;<small>You can create, edit or remove the Templates.</smal
                             {loop="value"}
                             	<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 text-center item moving">
                                     <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}">
-                                        <div class="icon"><span class="glyphicon glyphicon-file"></span></div>
+                                        <div class="icon"><i class="fa fa-file"></i></div>
                                         <div class="title">{$value.template}</div>
                                         <div class="description">{$value.last_modified}</div>
                                     </a>
                                     <div class="actions">
                                         {if="$value.writable"}
-                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
-                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.filename}');" title="Remove Permanently" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="Edit Template"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;
+                                            <a href="javascript:linkConfirm('{$baseURL}administrator/templates/remove/application:{$value.application}/template:{$value.filename}');" title="Remove Permanently" class="text-danger"><i class="fa fa-trash-o"></i></a>
                                         {else}
-                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="View Template"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                            <a href="{$baseURL}administrator/templates/edit/application:{$value.application}/template:{$value.filename}" title="View Template"><i class="fa fa-eye"></i></a>
                                         {/if}
                                     </div>
                                 </div>
@@ -51,10 +51,10 @@ Manage Templates&nbsp;<small>You can create, edit or remove the Templates.</smal
             <strong>{$page}. page</strong><br /><br />
             <div class="btn-group">
                 {if="isset($prevStart)"}
-                    <a href="{$baseURL}administrator/templates/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;previous</a>
+                    <a href="{$baseURL}administrator/templates/start:{$prevStart}" class="btn btn-default"><i class="fa fa-angle-left"></i>&nbsp;previous</a>
                 {/if}
                 {if="isset($nextStart)"}
-                    <a href="{$baseURL}administrator/templates/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                    <a href="{$baseURL}administrator/templates/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="fa fa-angle-right"></i></a>
                 {/if}
             </div>
         </div>

@@ -1,6 +1,6 @@
 <h2>
 Routes&nbsp;<small>You do not like the default URI path? Redefine it.</small>
-<a href="{$baseURL}administrator/routes/add" class="btn btn-primary btn-sm pull-right">Add Route</a>&nbsp;
+<a href="{$baseURL}administrator/routes/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Add Route</a>&nbsp;
 </h2>
 <br>
 {if="'' != $error"}
@@ -31,7 +31,7 @@ Routes&nbsp;<small>You do not like the default URI path? Redefine it.</small>
                         <td>{$value.user}</td>
                         <td>{$value.last_modified}</td>
                         <td class="text-right">
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Remove Route" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Remove Route" class="text-danger"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 {/loop}

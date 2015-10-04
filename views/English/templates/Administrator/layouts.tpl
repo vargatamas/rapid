@@ -1,6 +1,6 @@
 <h2>
 Manage Layouts&nbsp;<small>Feel free to create new Layout or edit an existing.</small>
-<a href="{$baseURL}administrator/layouts/add" class="btn btn-primary btn-sm pull-right">Add Layout</a>
+<a href="{$baseURL}administrator/layouts/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Add Layout</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -24,14 +24,14 @@ Manage Layouts&nbsp;<small>Feel free to create new Layout or edit an existing.</
                 {loop="layouts"}
                     <tr>
                         <td>{$value.name}</td>
-                        <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
+                        <td><i class="fa fa-{if="$value.writable"}check{else}remove{/if}"></i></td>
                         <td>{$value.last_modified}</td>
                         <td class="text-right">
                             {if="$value.writable"}
-                                <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="Edit Layout"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/layouts/remove/filename:{$value.name}');" title="Remove Layout" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="Edit Layout"><i class="fa fa-pencil"></i></a>&nbsp;
+                                <a href="javascript:linkConfirm('{$baseURL}administrator/layouts/remove/filename:{$value.name}');" title="Remove Layout" class="text-danger"><i class="fa fa-trash-o"></i></a>
                             {else}
-                                <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="View Layout"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                <a href="{$baseURL}administrator/layouts/edit/filename:{$value.name}" title="View Layout"><i class="fa fa-eye"></i></a>
                             {/if}
                         </td>
                     </tr>
@@ -44,10 +44,10 @@ Manage Layouts&nbsp;<small>Feel free to create new Layout or edit an existing.</
             <strong>{$page}. page</strong><br /><br />
             <div class="btn-group">
                 {if="isset($prevStart)"}
-                    <a href="{$baseURL}administrator/layouts/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;previous</a>
+                    <a href="{$baseURL}administrator/layouts/start:{$prevStart}" class="btn btn-default"><i class="fa fa-angle-left"></i>&nbsp;previous</a>
                 {/if}
                 {if="isset($nextStart)"}
-                    <a href="{$baseURL}administrator/layouts/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                    <a href="{$baseURL}administrator/layouts/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="fa fa-angle-right"></i></a>
                 {/if}
             </div>
         </div>

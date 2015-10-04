@@ -1,6 +1,6 @@
 <h2>
 Manage Mail Templates&nbsp;<small>You can create, edit or remove the Mail Templates.</small>
-<a href="{$baseURL}administrator/mails/add" class="btn btn-primary btn-sm pull-right">New Mail Template</a>
+<a href="{$baseURL}administrator/mails/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> New Mail Template</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -26,14 +26,14 @@ Manage Mail Templates&nbsp;<small>You can create, edit or remove the Mail Templa
                     <tr>
                         <td>{$value.template}</td>
                         <td>{$value.variables}</td>
-                        <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
+                        <td><i class="fa fa-{if="$value.writable"}check{else}remove{/if}"></i></td>
                         <td>{$value.last_modified}</td>
                         <td class="text-right">
                             {if="$value.writable"}
-                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="Edit Mail Template"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="Remove Mail Template" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="Edit Mail Template"><i class="fa fa-pencil"></i></a>&nbsp;
+                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="Remove Mail Template" class="text-danger"><i class="fa fa-trash-o"></i></a>
                             {else}
-                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="View Mail Template"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="View Mail Template"><i class="fa fa-eye"></i></a>
                             {/if}
                         </td>
                     </tr>
@@ -46,10 +46,10 @@ Manage Mail Templates&nbsp;<small>You can create, edit or remove the Mail Templa
             <strong>{$page}. page</strong><br /><br />
             <div class="btn-group">
                 {if="isset($prevStart)"}
-                    <a href="{$baseURL}administrator/mails/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;previous</a>
+                    <a href="{$baseURL}administrator/mails/start:{$prevStart}" class="btn btn-default"><i class="fa fa-angle-left"></i>&nbsp;previous</a>
                 {/if}
                 {if="isset($nextStart)"}
-                    <a href="{$baseURL}administrator/mails/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                    <a href="{$baseURL}administrator/mails/start:{$nextStart}" class="btn btn-default">next&nbsp;<i class="fa fa-angle-right"></i></a>
                 {/if}
             </div>
         </div>

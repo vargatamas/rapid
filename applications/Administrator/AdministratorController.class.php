@@ -10,7 +10,7 @@ class AdministratorController extends RapidAuth {
      * Use contructor to assign variables to Layout.
      * Important: do not forget to call parent::__construct() if this class extends another Rapid class!
     */ 
-    public function __construct() {
+    public function __construct($args = array()) {
         parent::__construct();
         if ( 0 < count(AdministratorModell::inspectBeans()) ) Rpd::a('navBeans', AdministratorModell::inspectBeans());
         Rpd::a('cultures', Rpd::gC());
@@ -24,7 +24,19 @@ class AdministratorController extends RapidAuth {
      * The default action when nothing requested.
     */ 
     public function indexAction($args = array()) {
-        // welcome page in index.tpl
+        $apps = array_diff(scandir('applications'), array('.', '..'));
+        foreach ( $apps as $k => $a ) if ( !is_dir('applications' . DIRECTORY_SEPARATOR . $a) ) unset($apps[$k]);
+        Rpd::a('appCount', count($apps));
+
+        Rpd::a('langCount', count(Rpd::gC()));
+
+        $index = false;
+        if ( is_file('robots.txt') ) {
+            $robot = file_get_contents('robots.txt');
+            if ( false === strpos($robot, 'Disallow: /') ) $index = true;
+            else $index = false;
+        } else $index = true;
+        Rpd::a('index', $index);
     }
 
     /**
@@ -33,10 +45,11 @@ class AdministratorController extends RapidAuth {
     public function layoutsAction($args = array()) {
         Rpd::a('menu', array('layoutActive' => true, 'layoutsActive' => true));
 
+        $tpl_ext = Rpd::$c['raintpl']['tpl_ext'];
+        Rpd::a('tpl_ext', $tpl_ext);
         if ( '' == $args[0] ) {
             // List layouts
             $tpl_dir = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'layouts';
-            $tpl_ext = Rpd::$c['raintpl']['tpl_ext'];
             $scan = array_diff(scandir($tpl_dir), array('.', '..'));
             $layoutArray = array();
             foreach ( $scan as $key => $item ) {
@@ -58,7 +71,6 @@ class AdministratorController extends RapidAuth {
             Rpd::a('page', ($start + $items) / $items);
             
             if ( 0 < count($layoutArray) ) Rpd::a('layouts', $layoutArray);
-            Rpd::a('tpl_ext', $tpl_ext);
         } else if ( 'add' == $args[0] ) {
             // Add new layout
             if ( 'save' == $args[1] && Rpd::rq($_POST['layout']) ) {
@@ -604,6 +616,44 @@ class AdministratorController extends RapidAuth {
                     Rpd::a('success', "The Bean (" . $bean . ") is removed with every existing Beans.");
                 else Rpd::a('error', "Something went wrong while trying to remove this Bean (" . $bean . "). No Beans removed.");
             } else Rpd::a('error', "Something went wrong while working with Beans. Nothing changed.");
+        } else if ( 'execute' == $args[0] ) {
+            Rpd::a('menu', array('executeActive' => true));
+            self::$template = 'bean.execute';
+
+            if ( Rpd::nE($_POST['exec']['sql']) ) {
+                // Execute
+                $sql = $_POST['exec']['sql'];
+                $isSelect = false;
+                $runnable = false;
+                switch ( strtoupper(substr($sql, 0, 6)) ) {
+                    case 'SELECT':      $runnable = true; $isSelect = true; break;
+                    case 'INSERT':      $runnable = true; $isSelect = false; break;
+                    case 'UPDATE':      $runnable = true; $isSelect = false; break;
+                    case 'DELETE':      $runnable = true; $isSelect = false; break;
+                }
+                if ( $runnable ) {
+                    if ( $isSelect ) {
+                        $result = AdministratorModell::getAllSQL(str_replace(';', '', $sql) . ' LIMIT 100 OFFSET 0;');
+                        $result2 = AdministratorModell::getAllSQL($sql);
+                        $tableMatches = array();
+                        preg_match('/\bfrom\b\s*(\w+)/i', $sql, $tableMatches);
+                        if ( isset($tableMatches[1]) && !empty($tableMatches[1]) ) Rpd::a('bean', $tableMatches[1]);
+                        if ( is_array($result) && 0 < count($result) ) {
+                            Rpd::a('result', $result);
+                            Rpd::a('sql', str_replace(';', '', $sql) . ' LIMIT 100 OFFSET 0;');
+                            Rpd::a('success', "The command execution was successful.");
+                        } else if ( is_array($result2) && 0 < count($result2) ) {
+                            Rpd::a('result', $result2);
+                            Rpd::a('sql', $sql);
+                            Rpd::a('success', "The command execution was successful.");
+                        } else Rpd::a('error', "The result of the command was empty.");
+                    } else {
+                        $result = AdministratorModell::executeSQL($sql);
+                        if ( false !== $result ) Rpd::a('success', "The execution was successful, number of affected rows: <em>#text#</em>.", array($result));
+                        else Rpd::a('error', "The execution was unsuccessful.");
+                    }
+                } else Rpd::a('error', "This command is not runnable, allowed commands: SELECT, INSERT, UPDATE, DELETE.");
+            }
         } else Rpd::a('error', "Something went wrong while trying to load this Bean.");
     }
     
@@ -611,7 +661,7 @@ class AdministratorController extends RapidAuth {
      * Edit the Applications' sources.
     */ 
     public function sourcesAction($args = array()) {
-        Rpd::a('menu', array('appSourcesActive' => true));
+        Rpd::a('menu', array('sourcesActive' => true, 'appSourcesActive' => true));
         
         if ( '' == $args[0] ) {
             // List
@@ -675,13 +725,14 @@ class AdministratorController extends RapidAuth {
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
     }
-    public function libraryAction($args = array()) {
+    public function libraryAction($args = array(), $loadpath = false) {
         Rpd::a('menu', array('libraryActive' => true));
 
         if ( !Rpd::rq($args[0]) || '' == $args[0] ) {
             Rpd::a('filesDir', Rpd::$c['rapid']['filesDir']);
             $return = array();
             $path = ( Rpd::nE($_POST['path']) && is_dir(str_replace('../', '', $_POST['path'])) ? str_replace('../', '', $_POST['path']) : str_replace(DIRECTORY_SEPARATOR, '', Rpd::$c['rapid']['filesDir']) );
+            if ( false !== $loadpath ) $path = $loadpath;
             $pathArray = array();
             foreach ( explode('/', $path) as $dir ) $pathArray[] = $dir;
             if ( empty($pathArray[count($pathArray)-1]) ) unset($pathArray[count($pathArray)-1]);
@@ -727,62 +778,83 @@ class AdministratorController extends RapidAuth {
                     else Rpd::a('error', "Something went wrong (probably permission denied) while trying to upload the selected file(s). No file(s) uploaded.");
                 } else Rpd::a('error', "Something went wrong while trying to upload file. No file(s) selected.");
             } else Rpd::a('error', "Something went wrong while trying to upload file. The selected path is wrong.");
-            $this->libraryAction();
+            $this->libraryAction(array(), Rpd::$c['rapid']['filesDir'] . $path);
         } else if ( 'mkdir' == $args[0] ) {
             $path = "";
             if ( Rpd::rq($_POST['lib-mkdir']['path']) ) $path = str_replace('../', '', $_POST['lib-mkdir']['path']);
             while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
             if ( Rpd::rq($_POST['lib-mkdir']['name']) && !empty($_POST['lib-mkdir']['name']) ) {
                 $dirname = $_POST['lib-mkdir']['name'];
+                $success = false;
                 if ( @is_dir(Rpd::$c['rapid']['filesDir'] . $path) ) {
                     if ( @mkdir(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname) ) {
-                        Rpd::a('success', "The new directory (<em>" . Rpd::$c['rapid']['filesDir'] . "#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname));
+                        Rpd::a('success', "The new directory (<em>#text#</em>) is created.", array(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname));
                         Rpd::a('path', Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname);
+                        $this->libraryAction(array(), Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $dirname);
+                        $success = true;
                     } else Rpd::a('error', "Something went wrong while trying to create directory. Permission denied.");
                 } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong path.");
             } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
-            $this->libraryAction();
+            if ( false === $success ) $this->libraryAction();
         } else if ( 'mkfile' == $args[0] ) {
             $path = "";
+            $success = false;
             if ( Rpd::rq($_POST['lib-mkfile']['path']) ) $path = str_replace('../', '', $_POST['lib-mkfile']['path']);
             while ( '/' == substr($path, -1) ) $path = substr($path, 0, -1);
             if ( Rpd::rq($_POST['lib-mkfile']['name']) && !empty($_POST['lib-mkfile']['name']) ) {
                 $filename = $_POST['lib-mkfile']['name'];
                 if ( !@is_file(Rpd::$c['rapid']['filesDir'] . $path . DIRECTORY_SEPARATOR . $filename ) ) {
                     if ( false !== file_put_contents(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename, 'This is an automatic generated file.') ) {
-                        Rpd::a('success', "The new file (<em>" . Rpd::$c['rapid']['filesDir'] . "#text#</em>) is created.", array(( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename));
+                        Rpd::a('success', "The new file (<em>#text#</em>) is created.", array(Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ) . $filename));
                         Rpd::a('path', Rpd::$c['rapid']['filesDir'] . $path);
+                        $this->libraryAction(array(), Rpd::$c['rapid']['filesDir'] . ( empty($path) ? '' : $path . DIRECTORY_SEPARATOR ));
+                        $success = true;
                     } else Rpd::a('error', "Something went wrong while trying to create file. Permission denied.");
                 } else Rpd::a('error', "Something went wrong while trying to create file. This file is already exists.");
             } else Rpd::a('error', "Something went wrong while trying to create directory. Wrong name.");
-            $this->libraryAction();
+            if ( false === $success ) $this->libraryAction();
         } else if ( 'rmdir' == $args[0] ) {
-            $path = Rpd::$c['rapid']['filesDir'];
-            for ( $x = 1; $x < count($args); $x++ )
-                if ( str_replace(DIRECTORY_SEPARATOR, '', Rpd::$c['rapid']['filesDir']) != $args[$x] ) $path .= $args[$x] . DIRECTORY_SEPARATOR;
+            $path = $dirPath = Rpd::$c['rapid']['filesDir'];
+            for ( $x = 1; $x < count($args); $x++ ) {
+                if ( str_replace(DIRECTORY_SEPARATOR, '', Rpd::$c['rapid']['filesDir']) != $args[$x] ) {
+                    $path .= $args[$x] . DIRECTORY_SEPARATOR;
+                    if ( $x+1 < count($args) ) $dirPath .= $args[$x] . DIRECTORY_SEPARATOR;
+                }
+            }
             $path = substr(str_replace('../', '', $path), 0, -1);
+            $success = false;
             if ( @is_dir($path) ) {
                 if ( 0 < array_diff(scandir($path), array('.', '..')) )
-                    if ( Rpd::dT($path) )
+                    if ( Rpd::dT($path) ) {
                         Rpd::a('success', "The selected directory (<em>#text#</em>) is removed recursively.", array($args[$x-1]));
-                    else Rpd::a('error', "Something went wrong while trying to remove directory. Recursive remove did not work.");
+                        $success = true;
+                        $this->libraryAction(array(), $dirPath);
+                    } else Rpd::a('error', "Something went wrong while trying to remove directory. Recursive remove did not work.");
                 else 
-                    if ( @rmdir($path) )
+                    if ( @rmdir($path) ) {
                         Rpd::a('success', "The selected directory (<em>#text#</em>) is removed.", array($args[$x-1]));
-                    else Rpd::a('error', "Something went wrong while trying to remove directory. Permission denied or non-empty directory.");
+                        $success = true;
+                        $this->libraryAction(array(), $dirPath);
+                    } else Rpd::a('error', "Something went wrong while trying to remove directory. Permission denied or non-empty directory.");
             } else Rpd::a('error', "Something went wrong while trying to remove directory. Wrong path.");
-            $this->libraryAction();
+            if ( false === $success ) $this->libraryAction();
         } else if ( 'rmfile' == $args[0] ) {
             $path = Rpd::$c['rapid']['filesDir'];
+            $success = false;
+            $dirPath = "";
             if ( str_replace(DIRECTORY_SEPARATOR, '', Rpd::$c['rapid']['filesDir']) == $args[1] ) $args[1] = "";
-            for ( $x = 1; $x < count($args); $x++ )
+            for ( $x = 1; $x < count($args); $x++ ) {
                 if ( !empty($args[$x]) ) $path .= $args[$x] . ( $x+1 == count($args) ? '' : DIRECTORY_SEPARATOR );
+                if ( !empty($args[$x]) && $x+1 < count($args) ) $dirPath .= $args[$x] . DIRECTORY_SEPARATOR;
+            }
             if ( @is_file($path) ) {
-                if ( @unlink($path) )
+                if ( @unlink($path) ) {
                     Rpd::a('success', "The selected file (<em>#text#</em>) is removed.", array($path));
-                else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Permission denied.", array($args[$x-1]));
+                    $this->libraryAction(array(), Rpd::$c['rapid']['filesDir'] . $dirPath);
+                    $success = true;
+                } else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Permission denied.", array($args[$x-1]));
             } else Rpd::a('error', "Something went wrong while trying to remove file (<em>#text#</em>). Wrong path.", array($args[$x-1]));
-            $this->libraryAction();
+            if ( false === $success ) $this->libraryAction();
         } else if ( 'view' == $args[0] ) {
             unset($args[0]);
             $path = join(DIRECTORY_SEPARATOR, $args);
@@ -938,37 +1010,38 @@ class AdministratorController extends RapidAuth {
                     $name = $_POST['application']['name'];
                     $languages = ( 0 < count($_POST['application']['languages']) ? $_POST['application']['languages'] : array(Rpd::$c['rapid']['culture']) );
                     if ( @mkdir('applications' . DIRECTORY_SEPARATOR . $name) ) {
-                        @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $name . 'Controller.class.php', "<?php\n\nclass " . $name . "Controller {\n\n\tpublic function indexAction(\$args = array()) {\n\t\t\n\t}\n\n}");
-                        @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $name . 'Modell.class.php', "<?php\n\nclass " . $name . "Modell {\n\n}");
+                        @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $name . 'Controller.class.php', "<?php\n\nclass " . $name . "Controller {\n\n\tpublic static \$template;\n\n\tpublic function indexAction(\$args = array()) {\n\t\t\n\t}\n\n}");
+                        @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $name . 'Modell.class.php', "<?php\n\nclass " . $name . "Modell {\n\n\t\n\n}");
                         @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'], "{\"javascripts\":[],\"stylesheets\":[],\"less\":[]}");
                     }
                     else Rpd::a('error', "Something went wrong while trying to create Application. Permission denied on applications directory.");
                     foreach ( $languages as $language ) {
+                        $data = array();
                         if ( @mkdir(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name) ) {
                             @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['defaultAction'] . '.' . Rpd::$c['raintpl']['tpl_ext'], "This is an automatic generated content.");
-                            if ( $language == Rapid::$culture ) {
-                                $data = array();
-                                if ( Rpd::nE($_POST['application']['title']) ) $data['title'] = $_POST['application']['title'];
-                                if ( Rpd::nE($_POST['application']['keywords']) ) {
-                                    $keywords = $_POST['application']['keywords'];
-                                    $keywordsArray = explode(',', $keywords);
-                                    foreach ( $keywordsArray as &$keyword ) {
-                                        while ( ' ' == substr($keyword, 0, 1) ) $keyword = substr($keyword, 1);
-                                        while ( ' ' == substr($keyword, -1, 1) ) $keyword = substr($keyword, 0, -1);
-                                    }
-                                    $data['keywords'] = implode(',', $keywordsArray);
+                            if ( Rpd::nE($_POST['application']['title']) ) $data['title'] = $_POST['application']['title'];
+                            if ( Rpd::nE($_POST['application']['keywords']) ) {
+                                $keywords = $_POST['application']['keywords'];
+                                $keywordsArray = explode(',', $keywords);
+                                foreach ( $keywordsArray as &$keyword ) {
+                                    while ( ' ' == substr($keyword, 0, 1) ) $keyword = substr($keyword, 1);
+                                    while ( ' ' == substr($keyword, -1, 1) ) $keyword = substr($keyword, 0, -1);
                                 }
-                                if ( Rpd::nE($_POST['application']['description']) ) $data['description'] = $_POST['application']['description'];
-                                if ( Rpd::nE($_POST['application']['languages']) )
-                                    foreach ( $_POST['application']['languages'] as $language ) $data['languages'][$language] = true;
-                                if ( !Rpd::rq($data['languages'][Rpd::$c['rapid']['culture']]) ) $data['languages'][Rpd::$c['rapid']['culture']] = true;
-                                if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']) )
-                                    $metaData = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
-                                else $metaData = array();
-                                $metaData[$name] = $data;
-                                @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'], json_encode($metaData));
+                                $data['keywords'] = implode(',', $keywordsArray);
                             }
+                            if ( Rpd::nE($_POST['application']['description']) ) $data['description'] = $_POST['application']['description'];
+                            if ( is_array($_POST['application']['languages']) ) foreach ( $_POST['application']['languages'] as $subLanguage ) $data['languages'][$subLanguage] = true;
+                            if ( !Rpd::rq($data['languages'][Rpd::$c['rapid']['culture']]) ) $data['languages'][Rpd::$c['rapid']['culture']] = true;
                         }
+                        if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']) ) {
+                            $metaData = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
+                            echo Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'] . ' EXISTS!<br>';
+                        } else {
+                            $metaData = array();
+                            echo Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'] . ' NOT EXISTS!<br>';
+                        }
+                        $metaData[$name] = $data;
+                        @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'], json_encode($metaData));
                     }
                     if ( @mkdir(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['culture'] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name) ) {
                         @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . Rpd::$c['rapid']['culture'] . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['defaultAction'] . '.' . Rpd::$c['raintpl']['tpl_ext'], "This is an automatic generated content.");
@@ -1031,6 +1104,11 @@ class AdministratorController extends RapidAuth {
                         foreach ( $templates as $template ) @unlink(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $application . DIRECTORY_SEPARATOR . $template);
                         @rmdir(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $application);
                     }
+                    if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']) )
+                        $metaData = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
+                    else $metaData = array();
+                    if ( isset($metaData[$application]) ) unset($metaData[$application]);
+                    @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'], json_encode($metaData));
                 }
                 if ( !is_dir('applications' . DIRECTORY_SEPARATOR . $application) && !is_dir(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $application) )
                     Rpd::a('success', "The selected Application is removed.");
@@ -1045,16 +1123,15 @@ class AdministratorController extends RapidAuth {
     */ 
     public function translationsAction($args = array()) {
         Rpd::a('menu', array('translationsActive' => true));
-        
+
         if ( '' == $args[0] ) {
             if ( is_dir(Rpd::$c['rapid']['translationsDir']) ) {
-                $files = array_diff(scandir(Rpd::$c['rapid']['translationsDir']), array('.', '..'));
                 $translationsArray = array();
-                foreach ( $files as $file ) {
-                    $info = pathinfo(Rpd::$c['rapid']['translationsDir'] . DIRECTORY_SEPARATOR . $file);
-                    if ( 'i18n' == $info['extension'] ) {
-                        $content = json_decode(file_get_contents(Rpd::$c['rapid']['translationsDir'] . DIRECTORY_SEPARATOR . $file), true);
-                        $index = 1;
+                $index = 1;
+                if ( is_file(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n') ) {
+                    $info = pathinfo(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n');
+                    if ( in_array($info['filename'], Rpd::gC()) ) {
+                        $content = json_decode(file_get_contents(Rpd::$c['rapid']['translationsDir'] . Rpd::$cl . '.i18n'), true);
                         if ( 0 < count($content) )
                             foreach ( $content as $from => $to )
                                 $translationsArray[] = array(
@@ -1068,12 +1145,10 @@ class AdministratorController extends RapidAuth {
                 if ( 1 < $index ) Rpd::a('translations', $translationsArray);
             }
         } else if ( 'add' == $args[0] ) {
-            if ( 'save' != $args[1] ) {
-                Rpd::a('languages', array_diff(Rpd::gC(), array(Rpd::$c['rapid']['culture'])));
-                AdministratorController::$template = 'translation.add';
-            } else {
-                if ( Rpd::nE($_POST['translation']['language']) && Rpd::nE($_POST['translation']['from']) && Rpd::nE($_POST['translation']['to']) ) {
-                    $language = $_POST['translation']['language'];
+            if ( 'save' != $args[1] ) AdministratorController::$template = 'translation.add';
+            else {
+                if ( Rpd::nE($_POST['translation']['from']) && Rpd::nE($_POST['translation']['to']) ) {
+                    $language = Rpd::$cl;
                     $from = $_POST['translation']['from'];
                     $to = $_POST['translation']['to'];
                     if ( !is_file(Rpd::$c['rapid']['translationsDir'] . $language . '.i18n') )
@@ -1304,26 +1379,6 @@ class AdministratorController extends RapidAuth {
             else Rpd::a('error', "Something went wrong whily trying to save Global Sources. Global Sources does not changed.");
             $this->globalsourcesAction();
         }
-    }
-
-    /**
-     * Upload images from WYSIWYG (Summernote)
-     */ 
-    public function imageUploadAction($args = array()) {
-        if ( !@is_dir(Rpd::$c['rapid']['filesDir'] . "images") ) @mkdir(Rpd::$c['rapid']['filesDir'] . 'images');
-        if ( !@is_dir(Rpd::$c['rapid']['filesDir'] . "images" . DIRECTORY_SEPARATOR . "upload") ) @mkdir(Rpd::$c['rapid']['filesDir'] . 'images' . DIRECTORY_SEPARATOR . 'upload');
-        $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $formats = array('jpg', 'jpeg', 'png', 'gif');
-        $return = array();
-        if ( in_array($ext, $formats) ) {
-            $targetPath = Rpd::$c['rapid']['filesDir'] . "images" . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . basename($_FILES['image']['name']);
-            if ( !@is_file($targetPath) )
-                if ( @move_uploaded_file($_FILES['image']['tmp_name'], $targetPath) ) 
-                    $return['url'] = DIRECTORY_SEPARATOR . $targetPath;
-                else $return['error'] = "Something went wrong while trying to upload image. Probably permission denied.";
-            else $return['error'] = "This file (" . $targetPath . ") is already exists. Please rename it and upload again.";
-        } else $return['error'] = "This extension (" . $ext . ") is not supported. Supported extensions are: " . implode(", ", $formats) . ".";
-        return json_encode($return);
     }
 
     /**

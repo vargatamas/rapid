@@ -1,6 +1,6 @@
 <h2>
 E-mail Sablonok menedzselése&nbsp;<small>Hozz létre, szerkessz vagy törölj e-mail sablonokat.</small>
-<a href="{$baseURL}administrator/mails/add" class="btn btn-primary btn-sm pull-right">Új E-mail Sablon</a>
+<a href="{$baseURL}administrator/mails/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Új E-mail Sablon</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -26,14 +26,14 @@ E-mail Sablonok menedzselése&nbsp;<small>Hozz létre, szerkessz vagy törölj e
                     <tr>
                         <td>{$value.template}</td>
                         <td>{$value.variables}</td>
-                        <td><span class="glyphicon glyphicon-{if="$value.writable"}ok{else}remove{/if}"></span></td>
+                        <td><i class="fa fa-{if="$value.writable"}check{else}remove{/if}"></i></td>
                         <td>{$value.last_modified}</td>
                         <td class="text-right">
                             {if="$value.writable"}
-                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="E-mail Sablon módosítása"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="E-mail Sablon eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="E-mail Sablon módosítása"><i class="fa fa-pencil"></i></a>&nbsp;
+                                <a href="javascript:linkConfirm('{$baseURL}administrator/mails/remove/mail:{$value.template}');" title="E-mail Sablon eltávolítása" class="text-danger"><i class="fa fa-trash-o"></i></a>
                             {else}
-                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="E-mail Sablon megtekintése"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                <a href="{$baseURL}administrator/mails/edit/mail:{$value.template}" title="E-mail Sablon megtekintése"><i class="fa fa-eye"></i></a>
                             {/if}
                         </td>
                     </tr>
@@ -43,13 +43,13 @@ E-mail Sablonok menedzselése&nbsp;<small>Hozz létre, szerkessz vagy törölj e
     </div>
     {if="isset($prevStart) || isset($nextStart) || isset($page)"}
         <div class="text-center">
-            <strong>{$page}. page</strong><br /><br />
+            <strong>{$page}. oldal</strong><br /><br />
             <div class="btn-group">
                 {if="isset($prevStart)"}
-                    <a href="{$baseURL}administrator/mails/start:{$prevStart}" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;előző</a>
+                    <a href="{$baseURL}administrator/mails/start:{$prevStart}" class="btn btn-default"><i class="fa fa-angle-left"></i>&nbsp;előző</a>
                 {/if}
                 {if="isset($nextStart)"}
-                    <a href="{$baseURL}administrator/mails/start:{$nextStart}" class="btn btn-default">következő&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                    <a href="{$baseURL}administrator/mails/start:{$nextStart}" class="btn btn-default">következő&nbsp;<i class="fa fa-angle-right"></i></a>
                 {/if}
             </div>
         </div>

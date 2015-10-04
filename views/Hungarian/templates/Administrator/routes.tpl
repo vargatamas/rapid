@@ -1,6 +1,6 @@
 <h2>
 Útvonalak&nbsp;<small>Nem tetszik az alapértelmezett URI útvonal? Definiáld újra.</small>
-<a href="{$baseURL}administrator/routes/add" class="btn btn-primary btn-sm pull-right">Új útvonal</a>&nbsp;
+<a href="{$baseURL}administrator/routes/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Új útvonal</a>&nbsp;
 </h2>
 <br />
 {if="'' != $error"}
@@ -32,7 +32,7 @@
                         <td>{$value.user}</td>
                         <td>{$value.last_modified}</td>
                         <td class="text-right">
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Útvonal eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/routes/remove/id:{$value.id}');" title="Útvonal eltávolítása" class="text-danger"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
                 {/loop}

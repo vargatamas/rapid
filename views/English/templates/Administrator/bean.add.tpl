@@ -1,11 +1,14 @@
-<h1>Add new Item to <em>{$beanName}</em></h1>
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
-{/if}
-<div class="alert alert-warning">
-    <strong>Be careful.</strong> If you do not know what this Bean is used exactly for, do not add it.
-</div>
 <form method="post" action="{$baseURL}administrator/beans/bean:{$beanName}/add/save" class="form-horizontal" role="form">
+    <h1>
+        Add new Item to <em>{$beanName}</em>
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Save</button>
+    </h1>
+    {if="'' != $error"}
+    <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
+    {/if}
+    <div class="alert alert-warning">
+        <strong>Be careful.</strong> If you do not know what this Bean is used exactly for, do not add it.
+    </div>
     {loop="$columns"}
         {if="'id' != $key"}
             {$c=$key}
@@ -26,7 +29,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
             <a href="{$baseURL}administrator/beans/bean:{$beanName}">Cancel and back to list</a>
         </div>
     </div>

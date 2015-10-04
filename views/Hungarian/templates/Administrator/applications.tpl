@@ -1,6 +1,6 @@
 <h2>
 Alkalmazások
-<a href="{$baseURL}administrator/applications/add" class="btn btn-primary btn-sm pull-right">Új Alkalmazás</a>
+<a href="{$baseURL}administrator/applications/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Új Alkalmazás</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -27,10 +27,10 @@ Alkalmazások
                         <td>{$key}</td>
                         <td>{$value.languages}</td>
                         <td>{$value.sources}</td>
-                        <td><span class="glyphicon glyphicon-{if="$value.default"}ok{else}remove{/if}"></span></td>
+                        <td><i class="fa fa-{if="$value.default"}check{else}remove{/if}"></i></td>
                         <td class="text-right">
-                            <a href="{$baseURL}administrator/applications/edit/application:{$key}" title="Alkalmazás szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/applications/remove/application:{$key}');" title="Alkalmazás eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{$baseURL}administrator/applications/edit/application:{$key}" title="Alkalmazás szerkesztése"><i class="fa fa-pencil"></i></a>&nbsp;
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/applications/remove/application:{$key}');" title="Alkalmazás eltávolítása" class="text-danger"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
                 {/loop}

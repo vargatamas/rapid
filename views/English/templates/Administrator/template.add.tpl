@@ -1,8 +1,11 @@
-<h1>Create new Template</h1>
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
-{/if}
 <form method="post" action="{$baseURL}administrator/templates/add/save" class="form-horizontal" role="form">
+    <h1>
+        Create new Template
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Save</button>
+    </h1>
+    {if="'' != $error"}
+    <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
+    {/if}
     <div class="form-group">
         <label for="application" class="col-lg-2 control-label">Application</label>
         <div class="col-lg-3">
@@ -36,7 +39,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
             <a href="{$baseURL}administrator/templates">Cancel and back to list</a>
         </div>
     </div>

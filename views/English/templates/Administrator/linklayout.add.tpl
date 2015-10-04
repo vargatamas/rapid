@@ -1,4 +1,6 @@
-<h1>Add Layout link</h1>
+<h1>
+    Add Layout link
+</h1>
 {if="'' != $error"}
 <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
 {/if}
@@ -24,7 +26,7 @@
         </div>
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-10">
-                <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+                <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
                 <a href="{$baseURL}administrator/linkLayouts">Cancel and back to list</a>
             </div>
         </div>

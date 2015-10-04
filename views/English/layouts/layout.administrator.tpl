@@ -23,7 +23,7 @@
                 </ul>
             </li>
             {if="'' != $navBeans"}
-                <li class="dropdown{if="isset($menu.beanActive) || isset($menu.newBeanActive)"} active{/if}">
+                <li class="dropdown{if="isset($menu.beanActive) || isset($menu.newBeanActive) || isset($menu.executeActive)"} active{/if}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Database <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         {loop="$navBeans"}
@@ -34,6 +34,8 @@
                         {/loop}
                         <li class="divider"></li>
                         <li{$menu.newBeanActive?' class="active"':''}><a href="{$baseURL}administrator/beans/new">Create Bean</a></li>
+                        <li class="divider"></li>
+                        <li{$menu.executeActive?' class="active"':''}><a href="{$baseURL}administrator/beans/execute">Execute SQL</a></li>
                     </ul>
                 </li>
             {/if}
@@ -44,7 +46,7 @@
                     <li{$menu.libraryActive?' class="active"':''}><a href="{$baseURL}administrator/library">Library</a></li>
                 </ul>
             </li>
-            <li class="dropdown{$menu.routesActive || $menu.applicationsActive || $menu.translationsActive || $menu.languagesActive || $menu.preferencesActive?" active":""}">
+            <li class="dropdown{$menu.routesActive || $menu.applicationsActive || $menu.translationsActive || $menu.languagesActive || $menu.preferencesActive || $menu.globalSourcesActive?" active":""}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Site <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li{$menu.routesActive?' class="active"':''}><a href="{$baseURL}administrator/routes">Routes</a></li>
@@ -59,7 +61,7 @@
         {if="$USER"}
             <form method="post" action="/administrator" class="navbar-form navbar-right">
                 <input type="hidden" name="auth[logout]" value="1" />
-                <button type="submit" class="btn btn-default">Sign out</button>&nbsp;&nbsp;&nbsp;
+				<button type="submit" class="btn btn-default">Sign out <i class="fa fa-sign-out"></i></button>&nbsp;&nbsp;&nbsp;
             </form>
         {/if}
         <form method="post" action="{$baseURL}administrator" class="navbar-form navbar-right">
@@ -108,10 +110,10 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <a href="{$baseURL}administrator/">Welcome Page</a>&nbsp;&nbsp;
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  <a href="{$baseURL}administrator/" class="btn btn-default pull-left"><i class="fa fa-home"></i> Welcome Page</a>
+		  <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
         {if="isset($currentVersion)"}
-            <a href="{$baseURL}administrator/update" class="btn btn-success">Update to {$currentVersion}</a>
+			<a href="{$baseURL}administrator/update" class="btn btn-success"><i class="fa fa-cogs"></i> Update to {$currentVersion}</a>
         {/if}
       </div>
     </div>

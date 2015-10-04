@@ -1,6 +1,6 @@
 <h2>
 Fordítások menedzselése&nbsp;<small>Fordíts le üzeneteket, amelyek a Rapidon mennek keresztül, bármilyen nyelvre.</small>
-<a href="{$baseURL}administrator/translations/add" class="btn btn-primary btn-sm pull-right">Új Fordítás</a>
+<a href="{$baseURL}administrator/translations/add" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Új Fordítás</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -14,9 +14,9 @@ Fordítások menedzselése&nbsp;<small>Fordíts le üzeneteket, amelyek a Rapido
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
-                    <th>Cél nyelv</th>
-                    <th>Miről</th>
-                    <th>Mire</th>
+                    <th>Fordítás célnyelve</th>
+                    <th>Szöveg amiről</th>
+                    <th>Szöveg amire</th>
                     <th></th>
                 </tr>
             </thead>
@@ -27,8 +27,8 @@ Fordítások menedzselése&nbsp;<small>Fordíts le üzeneteket, amelyek a Rapido
                         <td>{$value.from|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.from)"}..{/if}</td>
                         <td>{$value.to|mb_substr:0,80,'utf-8'}{if="80 < strlen($value.to)"}..{/if}</td>
                         <td class="text-right">
-                            <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Fordítás szerkesztése"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Fordítás eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{$baseURL}administrator/translations/edit/language:{$value.language}/index:{$value.index}" title="Fordítás szerkesztése"><i class="fa fa-pencil"></i></a>&nbsp;
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/translations/remove/language:{$value.language}/index:{$value.index}');" title="Fordítás eltávolítása" class="text-danger"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
                 {/loop}

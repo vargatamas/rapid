@@ -1,8 +1,11 @@
-<h1>Új Útvonal</h1>
-{if="'' != $error"}
-    <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
-{/if}
 <form id="route-form" method="post" action="{$baseURL}administrator/routes/add/save" class="form-horizontal" role="form">
+    <h1>
+        Új Útvonal
+        <button type="button" class="btn btn-sm pull-right btn-primary route-submit"><i class="fa fa-floppy-o"></i> Mentés</button>
+    </h1>
+    {if="'' != $error"}
+        <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
+    {/if}
     <div class="form-group">
         <label class="col-lg-2 control-label">Bázis URL</label>
         <div class="col-lg-10">
@@ -23,7 +26,6 @@
                         <li class="divider"></li>
                         <li role="presentation" class="dropdown-header">Változók</li>
                         <li><a href="#" class="select-var">Szöveg</a></li>
-                        <li><a href="#" class="select-var">Szám</a></li>
                         <li class="divider"></li>
                         <li role="presentation" class="dropdown-header">Akciók</li>
                         <li><a href="#" class="route-arg-remove">Argumentum eltávolítása</a></li>
@@ -34,7 +36,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="button" class="btn btn-default add-from-arg"><i class="glyphicon glyphicon-plus"></i>&nbsp;Új argumentum</button>
+            <button type="button" class="btn btn-default add-from-arg"><i class="fa fa-plus"></i>&nbsp;Új argumentum</button>
         </div>
     </div>
     <div class="form-group">
@@ -51,7 +53,6 @@
                         <li class="divider"></li>
                         <li role="presentation" class="dropdown-header">Változók</li>
                         <li><a href="#" class="select-var">Szöveg</a></li>
-                        <li><a href="#" class="select-var">Szám</a></li>
                         <li class="divider"></li>
                         <li role="presentation" class="dropdown-header">Akciók</li>
                         <li><a href="#" class="route-arg-remove">Argumentum eltávolítása</a></li>
@@ -62,7 +63,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="button" class="btn btn-default add-to-arg"><i class="glyphicon glyphicon-plus"></i>&nbsp;Új argumentum</button>
+            <button type="button" class="btn btn-default add-to-arg"><i class="fa fa-plus"></i>&nbsp;Új argumentum</button>
         </div>
     </div>
     <div class="form-group">
@@ -70,7 +71,7 @@
             <div class="alert alert-danger hided">
                 <strong>Hiba</strong>, nem lehetnek üres argumentumaid. Töltsd ki vagy távolítsd el.
             </div>
-            <button type="button" class="btn btn-primary route-submit">Mentés</button>&nbsp;
+            <button type="button" class="btn btn-primary route-submit"><i class="fa fa-floppy-o"></i> Mentés</button>&nbsp;
             <a href="{$baseURL}administrator/routes">Mégse és vissza a listához</a>
         </div>
     </div>

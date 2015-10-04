@@ -1,6 +1,6 @@
 <h2>
 Nyelvek menedzselése&nbsp;<small>Ellenőrizz vagy készíts nyelvet a weboldalhoz.</small>
-<a data-toggle="modal" href="#new-language" class="btn btn-primary btn-sm pull-right">Új Nyelv</a>
+<a data-toggle="modal" href="#new-language" class="btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i> Új Nyelv</a>
 </h2>
 <br>
 {if="'' != $error"}
@@ -38,10 +38,10 @@ Nyelvek menedzselése&nbsp;<small>Ellenőrizz vagy készíts nyelvet a weboldalh
                                 ?
                             {/if}
                         </td>
-                        <td><span class="glyphicon glyphicon-{if="$value.isDefault"}ok{else}remove{/if}"></span></td>
-                        <td><span class="glyphicon glyphicon-{if="$value.isActive"}ok{else}remove{/if}"></span></td>
+                        <td><i class="fa fa-{if="$value.isDefault"}check{else}remove{/if}"></i></td>
+                        <td><i class="fa fa-{if="$value.isActive"}check{else}remove{/if}"></i></td>
                         <td class="text-right">
-                            <a href="javascript:linkConfirm('{$baseURL}administrator/languages/remove/language:{$key}');" title="Nyelv eltávolítása" class="text-danger"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="javascript:linkConfirm('{$baseURL}administrator/languages/remove/language:{$key}');" title="Nyelv eltávolítása" class="text-danger"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
                 {/loop}
@@ -73,15 +73,16 @@ Nyelvek menedzselése&nbsp;<small>Ellenőrizz vagy készíts nyelvet a weboldalh
                 		<label for="mklang-copy" class="col-lg-4 control-label">Sablonok másolása</label>
                 		<div class="col-lg-8">
                 			<div class="checkbox">
-                				<input type="checkbox" name="language[copy]" id="mklang-copy" checked="checked" />
-                                <small>(Sablonok és Layout-ok másolása az alapértelmezett nyelvről)</small>
+                				<label>
+                                    <input type="checkbox" name="language[copy]" id="mklang-copy" checked="checked" /><small>Sablonok és Layout-ok másolása az alapértelmezett nyelvről</small>
+                                </label>
                 			</div>
                 		</div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Bezárás</button>
-                    <button type="submit" class="btn btn-primary">Mentés</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-ban"></i> Bezárás</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>
                 </div>
             </form>
         </div>

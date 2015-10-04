@@ -1,5 +1,8 @@
-<h1>Alkalmazás Meta adatainak szerkesztése</h1>
 <form method="post" action="{$baseURL}administrator/applications/edit/application:{$application}/save" class="form-horizontal" role="form">
+    <h1>
+        Alkalmazás Meta adatainak szerkesztése
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>
+    </h1>
     <div class="form-group">
         <label class="col-lg-2 control-label">Alkalmazás</label>
         <div class="col-lg-10">
@@ -22,7 +25,7 @@
     <div class="form-group">
         <label for="keywords" class="col-lg-2 control-label">Kulcsszavak</label>
         <div class="col-lg-10">
-            <input type="text" name="application[keywords]" value="{$appMeta.keywords}" class="form-control" id="keywords" placeholder="receptek, torták, ételek" />
+            <input type="text" name="application[keywords]" value="{$appMeta.keywords}" class="form-control" id="keywords" placeholder="receptek,torták,ételek" />
             <p class="help-block">Vesszővel válaszd el a kulcsszavakat.</p>
         </div>
     </div>
@@ -41,7 +44,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">Mentés</button>&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>&nbsp;
             <a href="{$baseURL}administrator/applications">Mégse és vissza a listához</a>
         </div>
     </div>

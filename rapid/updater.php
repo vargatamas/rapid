@@ -8,7 +8,6 @@
     
     // Set the variables
     $update = 'rapid-update.zip';
-    $backup = "rapid-" . date("Y-m-d") . ".bak.zip";
     $messages = array();
 
     
@@ -22,45 +21,39 @@
 			$zip = new ZipArchive;
 			if ( true !== $zip->open($update) ) $messages[] = "Error: Can not open <em>" . $update . "</em> update file.";
 			else {
-				if ( @is_file("assets" . DIRECTORY_SEPARATOR . $backup) ) @unlink("assets" . DIRECTORY_SEPARATOR . $backup);
-				if ( true !== @Zip(getcwd(), "assets" . DIRECTORY_SEPARATOR . $backup) ) $messages[] = "Error: Can not create backup of Rapid.";
-				else {
-					$messages[] = "Backup archive created of Rapid (<a href=\"/assets/" . $backup . "\" target=\"_blank\">" . $backup . "</a> - " . number_format(filesize("assets" . DIRECTORY_SEPARATOR . $backup) / 1048576, 2) . " MB).";
-
-					$files = array_diff(scandir(getcwd()), array('.', '..'));
-					$zip->extractTo(getcwd());
-					$zip->close();
-					$filesNow = array_diff(scandir(getcwd()), array('.', '..'));
-					$newFile = array_diff($filesNow, $files);
-					$dir = array_shift($newFile);
-					if ( !empty($dir) ) {
-						$messages[] = "Update pack is extracted to <em>" . $dir . "</em>";
+				$files = array_diff(scandir(getcwd()), array('.', '..'));
+				$zip->extractTo(getcwd());
+				$zip->close();
+				$filesNow = array_diff(scandir(getcwd()), array('.', '..'));
+				$newFile = array_diff($filesNow, $files);
+				$dir = array_shift($newFile);
+				if ( !empty($dir) ) {
+					$messages[] = "Update pack is extracted to <em>" . $dir . "</em>";
+					
+					require_once 'rapid' . DIRECTORY_SEPARATOR . 'configuration.php';
+					$dbconf = $configuration['db'];
+					//$copied = @recurse_copy($dir, getcwd());
+					$copied = 0;
+					if ( $admin ) {
+						$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'applications' . DIRECTORY_SEPARATOR . 'Administrator', getcwd() . DIRECTORY_SEPARATOR . 'applications' . DIRECTORY_SEPARATOR . 'Administrator');
+						$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'English' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl', getcwd() . DIRECTORY_SEPARATOR . $configuration['raintpl']['tpl_dir'] . 'English' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl');
+						$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'English' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator', getcwd() . DIRECTORY_SEPARATOR . $configuration['raintpl']['tpl_dir'] . 'English' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator');
+						$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl', getcwd() . DIRECTORY_SEPARATOR . $configuration['raintpl']['tpl_dir'] . 'Hungarian' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl');
+						$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator', getcwd() . DIRECTORY_SEPARATOR . $configuration['raintpl']['tpl_dir'] . 'Hungarian' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator');
+					}
+					if ( $visual )
+						$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'assets', getcwd() . DIRECTORY_SEPARATOR . substr($configuration['rapid']['filesDir'], 0, -1));
+					if ( $core )
+						$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'rapid', getcwd() . DIRECTORY_SEPARATOR . 'rapid');
+					if ( 0 < $copied ) {
+						$messages[] = $copied . " files are updated.";
 						
-						require_once 'rapid' . DIRECTORY_SEPARATOR . 'configuration.php';
-						$dbconf = $configuration['db'];
-						//$copied = @recurse_copy($dir, getcwd());
-						$copied = 0;
-						if ( $admin ) {
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'applications' . DIRECTORY_SEPARATOR . 'Administrator', getcwd() . DIRECTORY_SEPARATOR . 'applications' . DIRECTORY_SEPARATOR . 'Administrator');
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'English' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl', getcwd() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'English' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl');
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'English' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator', getcwd() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'English' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator');
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl', getcwd() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'layout.administrator.tpl');
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator', getcwd() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Hungarian' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'Administrator');
-						}
-						if ( $visual )
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'assets', getcwd() . DIRECTORY_SEPARATOR . 'assets');
-						if ( $core )
-							$copied += @recurse_copy($dir . DIRECTORY_SEPARATOR . 'rapid', getcwd() . DIRECTORY_SEPARATOR . 'rapid');
-						if ( 0 < $copied ) {
-							$messages[] = $copied . " files are updated.";
-							
-							@delTree($dir);
-							@unlink($update);
-							$updated = true;
-							$messages[] = "Temporary files are removed.";
-							
-							$messages[] = "The update was successful, you have the newest version from now on.";
-						}
+						@delTree($dir);
+						@unlink($update);
+						$updated = true;
+						$messages[] = "Temporary files are removed.";
+						
+						$messages[] = "The update was successful, you have the newest version from now on.";
 					}
 				}
 			}
@@ -74,20 +67,23 @@
         <title>Rapid | Updater</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
         <link rel="stylesheet" href="//rapid.momentoom.hu/lib/css/installer.css" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     </head>
     <body>
         <p></p><br />
 		<div class="container">
 			<div class="well">
-				<h1>Rapid update</h1>
+				<h1>
+					Rapid update&nbsp;<small>Please make a backup of your files before update!</small>
+				</h1>
 				<h3>Choose the components you want to update:</h3>
 				<?php if ( isset($noItem) ) { ?>
 					<div class="alert alert-danger">
 						<strong>No components selected.</strong> You have to choose at least one component to update.
 						<br><br>
-						<a href="/" class="btn btn-default">Cancel and back to my Rapid</a>
+						<a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> Cancel and go back to my Rapid</a>
 					</div>
 				<?php } ?>
 				<?php if ( !isset($_GET['start']) || isset($noItem) ) { ?>
@@ -116,12 +112,12 @@
 								<div class="checkbox">
 									<input type="checkbox" name="update[core]" id="core" checked="checked">
 								</div>
-								<p class="help-block">It refresh the core files of Rapid, everything except configuration file.</p>
+								<p class="help-block">It refresh the core files of Rapid, everything except the content of the configuration file.</p>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-5 col-sm-7">
-								<button type="button" onclick="this.innerHTML = 'Updating Rapid ..';this.disabled = true;document.getElementById('form-update').submit();" class="btn btn-primary">Update these items</button>
+								<button type="button" onclick="this.innerHTML = '<i class=\'fa fa-cogs\'></i> Updating Rapid ..';this.disabled = true;document.getElementById('form-update').submit();" class="btn btn-primary"><i class="fa fa-upload"></i> Update these items</button>
 							</div>
 						</div>
 					</form>
@@ -139,14 +135,14 @@
 				<?php if ( isset($updated) ) { ?>
 					<br /><br />
 					<div class="text-center">
-						<a href="/Home/index/newly-installed" class="btn btn-success btn-lg">Hurray, lets go.</a>
+						<a href="/Home/index/newly-installed" class="btn btn-success btn-lg"><i class="fa fa-smile-o"></i> Hurray, lets go.</a>
 					</div>
 				<? } ?>
 			</div>
 		</div>
         
         <script src="https://code.jquery.com/jquery.js"></script>
-        <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     </body>
 </html>
 <?php

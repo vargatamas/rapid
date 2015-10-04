@@ -1,8 +1,11 @@
-<h1>Új Alkalmazás</h1>
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
-{/if}
 <form method="post" action="{$baseURL}administrator/applications/add/save" class="form-horizontal" role="form">
+    <h1>
+        Új Alkalmazás
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>
+    </h1>
+    {if="'' != $error"}
+    <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
+    {/if}
     <div class="form-group">
         <label for="applicationName" class="col-lg-2 control-label">Név</label>
         <div class="col-lg-5">
@@ -25,7 +28,7 @@
     <div class="form-group">
         <label for="keywords" class="col-lg-2 control-label">Kulcsszavak</label>
         <div class="col-lg-10">
-            <input type="text" name="application[keywords]" value="{$app.keywords}" class="form-control" id="keywords" placeholder="receptek, torták, ételek" />
+            <input type="text" name="application[keywords]" value="{$app.keywords}" class="form-control" id="keywords" placeholder="receptek,torták,ételek" />
             <p class="help-block">Vesszővel válaszd el a kulcsszavakat.</p>
         </div>
     </div>
@@ -48,7 +51,7 @@
     {/if}
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">Mentés</button>&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>&nbsp;
             <a href="{$baseURL}administrator/applications">Mégse és vissza a listához</a>
         </div>
     </div>

@@ -1,40 +1,5 @@
-@font-face {
-    font-family: 'Raleway';
-    font-style: normal;
-    font-weight: 300;
-    src: local('Raleway Light'), local('Raleway-Light'), url(/assets/fonts/-_Ctzj9b56b8RgXW8FAriRsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
-}
-
-@font-face {
-    font-family: 'Raleway';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Raleway'), url(/assets/fonts/IczWvq5y_Cwwv_rBjOtT0w.woff) format('woff');
-}
-
-@font-face {
-    font-family: 'Raleway';
-    font-style: normal;
-    font-weight: 500;
-    src: local('Raleway Medium'), local('Raleway-Medium'), url(/assets/fonts/CcKI4k9un7TZVWzRVT-T8xsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
-}
-
-@font-face {
-    font-family: 'Raleway';
-    font-style: normal;
-    font-weight: 600;
-    src: local('Raleway SemiBold'), local('Raleway-SemiBold'), url(/assets/fonts/xkvoNo9fC8O2RDydKj12bxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
-}
-
-@font-face {
-    font-family: 'Raleway';
-    font-style: normal;
-    font-weight: 700;
-    src: local('Raleway Bold'), local('Raleway-Bold'), url(/assets/fonts/JbtMzqLaYbbbCL9X6EvaIxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
-}
-
 h1, h2, h3, h4, h5, h6, h7 {
-    font-family: 'Raleway';
+    font-family: -apple-system-font, HelveticaNeue, LucidaGrande, "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-weight: 300;
 }
 
@@ -48,12 +13,35 @@ h1, h2, h3, h4, h5, h6, h7 {
     text-align: center;
 }
 
+.index-bg {
+    background: url('/assets/images/simplicity.jpg') center center no-repeat;
+    background-size: auto 100%;
+}
+
+.index-bg .jumbotron {
+    background-color: transparent !important;
+    margin-bottom: 0;
+}
+
+.note-editor .form-group {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 html, body {
     height: 100%;
     width: 100%;
     padding: 0;
     margin: 0;
-    font-family: 'Raleway';
+    font-family: -apple-system-font, HelveticaNeue, LucidaGrande, "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #333;
+}
+
+.alert-info a {
+    color: #fff;
 }
 
 #background-image {

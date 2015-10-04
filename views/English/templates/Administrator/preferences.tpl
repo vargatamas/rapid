@@ -1,11 +1,14 @@
-<h1>Preferences</h1>
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
-{/if}
-{if="'' != $success"}
-<div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Success!</strong> {$success}</div>
-{/if}
 <form method="post" action="{$baseURL}administrator/preferences/save" class="form-horizontal" role="form">
+    <h1>
+        Preferences
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Save</button>
+    </h1>
+    {if="'' != $error"}
+    <div class="alert alert-danger"><strong>Error!</strong> {$error}</div>
+    {/if}
+    {if="'' != $success"}
+    <div class="alert alert-success"><a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a><strong>Success!</strong> {$success}</div>
+    {/if}
     <div class="form-group">
         <label for="titlePrefix" class="col-lg-2 control-label">Title Prefix</label>
         <div class="col-lg-10">
@@ -37,7 +40,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Save</button>&nbsp;
         </div>
     </div>
 </form>

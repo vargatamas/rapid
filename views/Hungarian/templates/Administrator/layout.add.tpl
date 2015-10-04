@@ -1,8 +1,11 @@
-<h1>Új Layout</h1>
-{if="'' != $error"}
-<div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
-{/if}
 <form method="post" action="{$baseURL}administrator/layouts/add/save" class="form-horizontal" role="form">
+    <h1>
+        Új Layout
+        <button type="submit" class="btn btn-sm pull-right btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>
+    </h1>
+    {if="'' != $error"}
+    <div class="alert alert-danger"><strong>Hiba!</strong> {$error}</div>
+    {/if}
     <div class="form-group">
         <label for="layout" class="col-lg-2 control-label">Layout fájlneve</label>
         <div class="col-lg-10">
@@ -29,7 +32,7 @@
     </div>
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">Mentés</button>&nbsp;
+            <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Mentés</button>&nbsp;
             <a href="{$baseURL}administrator/layouts">Mégse és vissza a listához</a>
         </div>
     </div>
