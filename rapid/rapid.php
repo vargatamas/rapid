@@ -16,7 +16,7 @@
                       $layout =         null,
                       $meta =           array(),
                       $culture =        '',
-                      $version =        "v1.6",
+                      $version =        "v1.6.1",
                       $task =           array(),
                       $errors =         array();
         
