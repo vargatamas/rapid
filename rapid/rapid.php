@@ -16,7 +16,7 @@
                       $layout =         null,
                       $meta =           array(),
                       $culture =        '',
-                      $version =        "v1.6.1",
+                      $version =        "v1.6.2",
                       $task =           array(),
                       $errors =         array();
         
@@ -710,7 +710,7 @@
 
         public static function sL($l) { Rapid::$layout = $l; }
 
-        public static function sM($m) { Rapid::$meta = $m; }
+        public static function sM($m) { Rapid::$meta = $m; Rapid::assignMeta(); }
 
         public static function rd($c, $a, $p = '') { Rapid::redirect($c, $a, $p); }
         

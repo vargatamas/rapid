@@ -158,7 +158,7 @@
                                         <strong>Database Error</strong><br />
                                         <?php print $dbError; ?>
                                     </div>
-                                <? } ?>
+                                <?php } ?>
                                 <div class="row">
                                     <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label for="host">Host</label>
