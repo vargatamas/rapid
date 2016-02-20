@@ -41,7 +41,7 @@
                                                 'controllerAuthVar' =>      '$auth_depth',
                                                 
                                                 // The default language (culture) when not set.
-                                                'culture' =>                'English',
+                                                'culture' =>                'Hungarian',
                                                 
                                                 // The path of the translations directory from the webroot.
                                                 'translationsDir' =>        'translations' . DIRECTORY_SEPARATOR,
@@ -77,7 +77,10 @@
                                                 'allwaysLoadDefaultApp' =>    false,
 
                                                 // If set to true, the authTpl will load the layout too
-                                                'layoutForAuth' =>            false
+                                                'layoutForAuth' =>            false,
+
+                                                // If set to true, the output HTML will be minimized
+                                                'minimizeHTML' =>             true
                                             )
                     );
 	

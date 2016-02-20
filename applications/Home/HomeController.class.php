@@ -27,7 +27,7 @@ class HomeController {
         $formats = array('jpg', 'jpeg', 'png', 'gif');
         $return = array();
         if ( in_array($ext, $formats) ) {
-            $targetPath = "lib" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . basename($_FILES['image']['name']);
+            $targetPath = Rpd::$c['rapid']['filesDir'] . "images" . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . basename($_FILES['image']['name']);
             if ( !@is_file($targetPath) )
                 if ( @move_uploaded_file($_FILES['image']['tmp_name'], $targetPath) ) 
                     $return['url'] = DIRECTORY_SEPARATOR . $targetPath;

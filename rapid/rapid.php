@@ -16,7 +16,7 @@
                       $layout =         null,
                       $meta =           array(),
                       $culture =        '',
-                      $version =        "v1.6.2",
+                      $version =        "v1.6.3",
                       $task =           array(),
                       $errors =         array();
         
@@ -86,26 +86,33 @@
                     // Build the template
                     if ( isset($authError) ) {
                         $applicationContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['authTpl'], $return_string = true);
+                        $content = ( Rpd::$c['rapid']['minimizeHTML'] ? self::minimizeHTML($applicationContent) : $applicationContent );
                         if ( Rpd::$c['rapid']['layoutForAuth'] ) {
-                            Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $applicationContent . '<!-- application content end -->');
+                            Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $content . '<!-- application content end -->');
                             $layout = self::loadLayout();
                             $layoutContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout, $return_string = true);
-                            Rapid::$tpl->assign('LAYOUT_CONTENT', $layoutContent);
-                        } else Rapid::$tpl->assign('LAYOUT_CONTENT', $applicationContent);
-                        Rapid::$tpl->draw('frame');
+                            $content = ( Rpd::$c['rapid']['minimizeHTML'] ? self::minimizeHTML($layoutContent) : $layoutContent );
+                            Rapid::$tpl->assign('LAYOUT_CONTENT', $content);
+                        } else Rapid::$tpl->assign('LAYOUT_CONTENT', $content);
+                        if ( Rpd::$c['rapid']['minimizeHTML'] ) echo self::minimizeHTML(Rapid::$tpl->draw('frame', $return_string = true));
+                        else Rapid::$tpl->draw('frame');
                     } else {
                         if ( 'application' == $buildLevel ) 
-                            print $applicationContent;
+                            print ( self::$config['minimizeHTML'] ? self::minimizeHTML($applicationContent) : $applicationContent );
                         else if ( 'layout' == $buildLevel ) {
                             $layout = self::loadLayout();
-                            Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $applicationContent . '<!-- application content end -->');
+                            $content = ( Rpd::$c['rapid']['minimizeHTML'] ? self::minimizeHTML($applicationContent) : $applicationContent );
+                            Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $content . '<!-- application content end -->');
                             Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout);
                         } else {
                             $layout = self::loadLayout();
-                            Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $applicationContent . '<!-- application content end -->');
+                            $content = ( Rpd::$c['rapid']['minimizeHTML'] ? self::minimizeHTML($applicationContent) : $applicationContent );
+                            Rapid::$tpl->assign('APPLICATION_CONTENT', '<!-- application content start -->' . $content . '<!-- application content end -->');
                             $layoutContent = Rapid::$tpl->draw($culture . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . $layout, $return_string = true);
-                            Rapid::$tpl->assign('LAYOUT_CONTENT', $layoutContent);
-                            Rapid::$tpl->draw('frame');
+                            $content = ( Rpd::$c['rapid']['minimizeHTML'] ? self::minimizeHTML($layoutContent) : $layoutContent );
+                            Rapid::$tpl->assign('LAYOUT_CONTENT', $content);
+                            if ( Rpd::$c['rapid']['minimizeHTML'] ) echo self::minimizeHTML(Rapid::$tpl->draw('frame', $return_string = true));
+                            else Rapid::$tpl->draw('frame');
                         }
                     }
                 }
@@ -162,7 +169,8 @@
                                                 'globalSourcesFile' => 'global-sources.json',
                                                 'filesDir' => 'assets' . DIRECTORY_SEPARATOR,
                                                 'allwaysLoadDefaultApp' => false,
-                                                'layoutForAuth' => false
+                                                'layoutForAuth' => false,
+                                                'minimizeHTML' => true
                                             );
                 Rpd::$c['db'] = array();
             }
@@ -414,7 +422,7 @@
         /**
          *  Load the defined Meta data for Application (or set defaults).
         */ 
-        private static function assignMeta() {
+        public static function assignMeta() {
             $defData = array('title' => "Rapid.", 'keywords' => "rapid,framework", 'description' => "The Rapid Framework.");
             if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']) )
                 $data = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
@@ -572,6 +580,13 @@
             $files = array_diff(scandir($dir), array('.', '..'));
             foreach ($files as $file) ( is_dir($dir . DIRECTORY_SEPARATOR . $file) ) ? Rapid::delTree($dir . DIRECTORY_SEPARATOR . $file) : unlink($dir . DIRECTORY_SEPARATOR . $file);
             return rmdir($dir);
+        }
+
+        /**
+         * Returns the minimized HTML string
+        */
+        public static function minimizeHTML($string) {
+            return preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $string);
         }
 
     }

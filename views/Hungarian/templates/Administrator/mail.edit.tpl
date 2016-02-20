@@ -15,7 +15,15 @@
     <div class="form-group">
         <label class="col-lg-2 control-label">Fájlnév</label>
         <div class="col-lg-10">
+            {if="isset($otherMails)"}
+            <select class="form-control" id="other-mail">
+                {loop="otherMails"}
+                <option value="{$value.filename}"{if="$value.filename == $mail.filename"} selected{/if}>{$value.filename} ({$value.last_modified})</option>
+                {/loop}
+            </select>
+            {else}
             <p class="form-control-static">{$mail.filename}</p>
+            {/if}
         </div>
     </div>
     <div class="form-group">

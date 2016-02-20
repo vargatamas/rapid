@@ -632,6 +632,11 @@ $(document).ready(function(){
 		location.href = location.href.substr(0, location.href.indexOf('template:')+9) + $(this).val();
 	});
 
+	// Change mail
+	if ( 0 < $('#other-mail').length ) $('#other-mail').change(function() {
+		location.href = location.href.substr(0, location.href.indexOf('mail:')+5) + $(this).val();
+	});
+
 	// Change layout
 	if ( 0 < $('#other-layout').length ) $('#other-layout').change(function() {
 		location.href = location.href.substr(0, location.href.indexOf('filename:')+9) + $(this).val();

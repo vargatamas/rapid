@@ -443,6 +443,17 @@ class AdministratorController extends RapidAuth {
             if ( 'save' != $args[1] ) {
                 if ( Rpd::nE($args['mail']) ) {
                     $filename = $args['mail'];
+                    $mailsDir = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . 'mails';
+                    $mails = array_diff(scandir($mailsDir), array('.', '..'));
+                    $otherMails = array();
+                    foreach ( $mails as $mail ) {
+                        if ( '.' . Rpd::$c['raintpl']['tpl_ext'] == substr($mail, -4) )
+                            $otherMails[] = array(
+                                                                'filename' => $mail,
+                                                                'last_modified' => date('Y-m-d H:i:s', filemtime($mailsDir . DIRECTORY_SEPARATOR . $template))
+                                                            );
+                    }
+                    if ( 1 < count($otherMails) ) Rpd::a('otherMails', $otherMails);
                     $path = Rpd::$c['raintpl']['tpl_dir'] . Rapid::$culture . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['mailsDir'] . $filename;
                     if ( $content = @file_get_contents($path) ) {
                         Rpd::a('mail', array(
@@ -639,10 +650,12 @@ class AdministratorController extends RapidAuth {
                         preg_match('/\bfrom\b\s*(\w+)/i', $sql, $tableMatches);
                         if ( isset($tableMatches[1]) && !empty($tableMatches[1]) ) Rpd::a('bean', $tableMatches[1]);
                         if ( is_array($result) && 0 < count($result) ) {
+                            foreach ( $result as &$p ) foreach ( $p as $col => &$val ) $val = htmlentities($val);
                             Rpd::a('result', $result);
                             Rpd::a('sql', str_replace(';', '', $sql) . ' LIMIT 100 OFFSET 0;');
                             Rpd::a('success', "The command execution was successful.");
                         } else if ( is_array($result2) && 0 < count($result2) ) {
+                            foreach ( $result2 as &$p ) foreach ( $p as $col => &$val ) $val = htmlentities($val);
                             Rpd::a('result', $result2);
                             Rpd::a('sql', $sql);
                             Rpd::a('success', "The command execution was successful.");
@@ -1013,8 +1026,7 @@ class AdministratorController extends RapidAuth {
                         @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $name . 'Controller.class.php', "<?php\n\nclass " . $name . "Controller {\n\n\tpublic static \$template;\n\n\tpublic function indexAction(\$args = array()) {\n\t\t\n\t}\n\n}");
                         @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $name . 'Modell.class.php', "<?php\n\nclass " . $name . "Modell {\n\n\t\n\n}");
                         @file_put_contents('applications' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['sourcesFile'], "{\"javascripts\":[],\"stylesheets\":[],\"less\":[]}");
-                    }
-                    else Rpd::a('error', "Something went wrong while trying to create Application. Permission denied on applications directory.");
+                    } else Rpd::a('error', "Something went wrong while trying to create Application. Permission denied on applications directory.");
                     foreach ( $languages as $language ) {
                         $data = array();
                         if ( @mkdir(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $name) ) {
@@ -1035,10 +1047,8 @@ class AdministratorController extends RapidAuth {
                         }
                         if ( is_file(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']) ) {
                             $metaData = json_decode(file_get_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile']), true);
-                            echo Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'] . ' EXISTS!<br>';
                         } else {
                             $metaData = array();
-                            echo Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'] . ' NOT EXISTS!<br>';
                         }
                         $metaData[$name] = $data;
                         @file_put_contents(Rpd::$c['raintpl']['tpl_dir'] . $language . DIRECTORY_SEPARATOR . Rpd::$c['rapid']['metaFile'], json_encode($metaData));

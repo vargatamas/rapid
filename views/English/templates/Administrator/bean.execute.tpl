@@ -41,6 +41,7 @@
 				{loop="value"}
 				<td>{$value}</td>
 				{/loop}
+				</tr><tr>
 				{/loop}
 			</tr>
 		</tbody>
